@@ -6,6 +6,7 @@ using VRC.Udon;
 /// <summary>
 /// SyncObject は、アタッチ先の Transform の動きを
 /// 配列で指定した他オブジェクト（m_SyncTargets）に相対的に同期するお
+/// 持って動かしたいならPickUpレイヤーつけるの忘れずにね♪
 /// </summary>
 public class SyncObject : UdonSharpBehaviour
 {
