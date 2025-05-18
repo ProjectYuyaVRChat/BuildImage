@@ -10,7 +10,7 @@ public class WarpBlock : UdonSharpBehaviour
     private bool isOn = false;
     
     [Header("ワープ先")]
-    [SerializeField] private GameObject WarpPoint;
+    [SerializeField] private GameObject warpPoint;
     private Quaternion PlayerRotate;
     private Vector3 WarpPosition;
     [Header("暗転UI")]
@@ -19,20 +19,28 @@ public class WarpBlock : UdonSharpBehaviour
 
     private void Start()
     {
-        WarpPosition = WarpPoint.transform.position;
+        WarpPosition = warpPoint.transform.position;
         fadeCanvas.SetActive(false);
-        fadeAnimator = fadeCanvas.GetComponent<Animator>();
+        fadeAnimator = fadeCanvas.GetComponentInChildren<Animator>();
     }
 
     public override void Interact()
     {
-        fadeCanvas.SetActive(true);
+        DoFade();
+        SendCustomEventDelayedSeconds(nameof(Warp),1);
+        SendCustomEventDelayedSeconds(nameof(EndFade),2);
+    }
+
+    public void Warp()
+    {
+        Debug.Log("aaaaa");
         PlayerRotate = new Quaternion(0, -180, 0, 0);
         Networking.LocalPlayer.TeleportTo(WarpPosition,PlayerRotate);
     }
-
+    
     public void DoFade()
     {
+        fadeCanvas.SetActive(true);
         fadeAnimator.SetTrigger("FadeIn");
     }
 
