@@ -6,21 +6,39 @@ using VRC.Udon;
 
 public class BreakItem : UdonSharpBehaviour
 {
-    [UdonSynced] private bool isAlive = true;
+    public GameObject HummerHead;
+    [Tooltip("同期先の球体")] 
+    public GameObject[] m_SyncTargets;
     
-    private MeshRenderer itemMesh;
-
     private void Start()
     {
-        itemMesh = GetComponent<MeshRenderer>();
+        if (m_SyncTargets != null)
+        {
+            foreach (var target in m_SyncTargets)
+            {
+                if (target == null) continue;
+                if (target.GetComponent<SyncObject>() != null)
+                {
+                    Debug.LogWarning("SyncObjectの同期先「{target.name}」にも同スクリプトが付いてるけど大丈夫そ？");
+                    break;
+                }
+            }
+        }
     }
 
-    private void OnTriggerEnter(Collider col)
+    public void OnTriggerEnter(Collider other)
     {
-        if (col.tag == "HummerHead")
+        if (other.gameObject == HummerHead)
         {
-            isAlive = false;
-            
+            if (m_SyncTargets != null)
+            {
+                foreach (var target in m_SyncTargets)
+                {
+                    if (target == null) continue;
+                    Destroy(gameObject);
+                    Destroy(target);
+                }
+            }
         }
     }
 }
