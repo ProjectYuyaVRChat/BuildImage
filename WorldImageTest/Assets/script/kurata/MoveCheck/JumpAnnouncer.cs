@@ -20,4 +20,3 @@ public class JumpAnnouncer : UdonSharpBehaviour
         door.SetActive(false);
     }
 }
-
