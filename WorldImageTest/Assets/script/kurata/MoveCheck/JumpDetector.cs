@@ -1,53 +1,38 @@
 ﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
-using VRC.Udon;
 
-public class JumpDetector : UdonSharpBehaviour
+public class JumpDetector : BaseActionDetector
 {
-    public JumpAnnouncer announcer;
-
     private bool wasGrounded;
-    private bool jumpDetected = false;
-    private float jumpStartY = 0f;
-    private Vector3 lastPosition;
+    private float jumpStartY;
+    private bool jumpDetected;
 
     void Start()
-    {
-        lastPosition = Networking.LocalPlayer.GetPosition();
-        wasGrounded = Networking.LocalPlayer.IsPlayerGrounded();
-    }
-
-    void Update()
     {
         var player = Networking.LocalPlayer;
         if (player == null) return;
 
-        bool isGrounded = player.IsPlayerGrounded();
-        Vector3 currentPosition = player.GetPosition();
+        wasGrounded = player.IsPlayerGrounded();
+    }
 
-        // 地面から離れたらジャンプ開始
+    public override void CheckAction(VRCPlayerApi player, ActionManager manager)
+    {
+        Vector3 pos = player.GetPosition();
+        bool isGrounded = player.IsPlayerGrounded();
+
         if (wasGrounded && !isGrounded)
         {
-            jumpStartY = currentPosition.y;
+            jumpStartY = pos.y;
         }
 
-        // 空中にいて、一定以上上昇したらジャンプ確定
-        if (!isGrounded && currentPosition.y > jumpStartY + 0.15f && !jumpDetected)
+        if (!isGrounded && pos.y > jumpStartY + 0.15f && !jumpDetected)
         {
-            Debug.Log("Jump detected for player: " + player.displayName);
-            announcer.ShowJumpMessage(player.displayName);
+            manager.TriggerAction("Jump", player);
             jumpDetected = true;
         }
 
-        // 地面に着地したらリセット
-        if (isGrounded)
-        {
-            jumpDetected = false;
-        }
-
+        if (isGrounded) jumpDetected = false;
         wasGrounded = isGrounded;
-        lastPosition = currentPosition;
     }
-
 }
