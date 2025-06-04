@@ -17,6 +17,8 @@ public class JumpDetector : MotionDetectorBase
         {
             isJumping = true;
             ShowMotionMessage("ジャンプ");
+            Debug.Log($"aaaaaaaaaaaaadebugText is null: {debugText == null}");
+
         }
         else if (grounded && isJumping)
         {
