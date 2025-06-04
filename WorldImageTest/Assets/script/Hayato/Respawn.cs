@@ -10,6 +10,6 @@ public class Respawn : UdonSharpBehaviour
 
     public override void OnPlayerTriggerEnter(VRCPlayerApi player)
     {
-        Networking.LocalPlayer.TeleportTo(respawnPoint.position, respawnPoint.rotation);
+        player.TeleportTo(respawnPoint.position, respawnPoint.rotation);
     }
 }
