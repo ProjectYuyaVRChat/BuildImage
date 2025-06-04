@@ -7,7 +7,7 @@ using VRC.Udon;
 public class WarpBlock : UdonSharpBehaviour
 {
     [UdonSynced]
-    private bool isOn = false;
+    public bool isOn = false;
     
     [Header("ワープ先")]
     [SerializeField] private GameObject warpPoint;
@@ -16,6 +16,8 @@ public class WarpBlock : UdonSharpBehaviour
     [Header("暗転UI")]
     public GameObject fadeCanvas;         // Canvas本体
     private Animator fadeAnimator;
+    
+    private VRCPlayerApi player;
 
     private void Start()
     {
@@ -26,22 +28,23 @@ public class WarpBlock : UdonSharpBehaviour
 
     public override void Interact()
     {
-        DoFade();
-        SendCustomEventDelayedSeconds(nameof(Warp),1);
-        SendCustomEventDelayedSeconds(nameof(EndFade),2);
+        isOn = true;
+        player = Networking.LocalPlayer;
     }
 
     public void Warp()
     {
         Debug.Log("aaaaa");
         PlayerRotate = new Quaternion(0, -180, 0, 0);
-        Networking.LocalPlayer.TeleportTo(WarpPosition,PlayerRotate);
+        player.TeleportTo(WarpPosition,PlayerRotate);
     }
     
     public void DoFade()
     {
         fadeCanvas.SetActive(true);
         fadeAnimator.SetTrigger("FadeIn");
+        SendCustomEventDelayedSeconds(nameof(Warp),1);
+        SendCustomEventDelayedSeconds(nameof(EndFade),2);
     }
 
     public void EndFade()
