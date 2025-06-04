@@ -3,26 +3,23 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 using TMPro;
-
 public class JumpDetector : MotionDetectorBase
 {
-    // ジャンプ中かどうかのフラグ
     private bool isJumping = false;
 
-    [SerializeField] private TextMeshProUGUI debugText; // デバッグ用のテキスト表示
+    [SerializeField] private PlayerRoleManagerSimple roleManager;
+    [SerializeField] private TextMeshProUGUI globalNoticeText; // デバッグ用のテキスト表示
+    [UdonSynced, FieldChangeCallback(nameof(NoticeText))] private string _noticeText;
 
-
-    [UdonSynced, FieldChangeCallback(nameof(SyncedText))]
-    private string _syncedText;
-    public string SyncedText
+    public string NoticeText
     {
-        get => _syncedText;
+        get => _noticeText;
         set
         {
-            _syncedText = value;
-            if (debugText != null)
+            _noticeText = value;
+            if (globalNoticeText != null)
             {
-                debugText.text = _syncedText;
+                globalNoticeText.text = value;
             }
         }
     }
@@ -43,36 +40,27 @@ public class JumpDetector : MotionDetectorBase
         {
             // 地面に着地した瞬間 → ジャンプ終了
             isJumping = false;
-            OnJumpEnd();
         }
     }
 
     private void OnJumpStart()
     {
-        Debug.Log("[JumpDetector] ジャンプ開始！");
-        // 必要ならここにジャンプ開始時の処理を書く
-        SetSyncedMessage("IsJump");
+        string role = roleManager != null ? roleManager.GetPlayerRole(Networking.LocalPlayer) : "Unknown";
+        SetGlobalNotice($"{role} がジャンプしました");
     }
 
-    private void OnJumpEnd()
-    {
-        Debug.Log("[JumpDetector] 着地！");
-        // 必要ならここに着地時の処理を書く
-        SetSyncedMessage("IsLanding");
-    }
-    private void SetSyncedMessage(string message)
+    private void SetGlobalNotice(string msg)
     {
         if (!Networking.IsOwner(gameObject))
-        {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
-        }
 
-        SyncedText = message;
+        NoticeText = msg;
         RequestSerialization();
     }
 
+
     public override void OnDeserialization()
     {
-        SyncedText = _syncedText;
+        NoticeText = _noticeText;
     }
 }

@@ -280,6 +280,18 @@ public class PlayerRoleManagerSimple : UdonSharpBehaviour
         return "";
     }
 
+    //公開メソッド : つけたロールを通知
+    public string GetRoleNameByPlayerId(int playerId)
+    {
+        for (int i = 0; i < playerIds.Length; i++)
+        {
+            if (playerIds[i] == playerId)
+            {
+                return playerRoles[i];
+            }
+        }
+        return null;
+    }
     public bool IsPlayer1(VRCPlayerApi player)
     {
         return GetPlayerRole(player) == "Player1";
