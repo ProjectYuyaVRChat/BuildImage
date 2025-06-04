@@ -11,6 +11,21 @@ public class JumpDetector : MotionDetectorBase
 
     [SerializeField] private TextMeshProUGUI debugText; // デバッグ用のテキスト表示
 
+
+    [UdonSynced, FieldChangeCallback(nameof(SyncedText))]
+    private string _syncedText;
+    public string SyncedText
+    {
+        get => _syncedText;
+        set
+        {
+            _syncedText = value;
+            if (debugText != null)
+            {
+                debugText.text = _syncedText;
+            }
+        }
+    }
     protected override void DetectMotion()
     {
         // localPlayer は基底クラスで初期化済み
@@ -36,13 +51,28 @@ public class JumpDetector : MotionDetectorBase
     {
         Debug.Log("[JumpDetector] ジャンプ開始！");
         // 必要ならここにジャンプ開始時の処理を書く
-        debugText.text = "IsJump"; // デバッグ用テキスト更新
+        SetSyncedMessage("IsJump");
     }
 
     private void OnJumpEnd()
     {
         Debug.Log("[JumpDetector] 着地！");
         // 必要ならここに着地時の処理を書く
-        debugText.text = "Islanding"; // デバッグ用テキスト更新
+        SetSyncedMessage("IsLanding");
+    }
+    private void SetSyncedMessage(string message)
+    {
+        if (!Networking.IsOwner(gameObject))
+        {
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+        }
+
+        SyncedText = message;
+        RequestSerialization();
+    }
+
+    public override void OnDeserialization()
+    {
+        SyncedText = _syncedText;
     }
 }
