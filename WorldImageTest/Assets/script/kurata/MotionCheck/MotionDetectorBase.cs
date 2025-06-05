@@ -39,7 +39,6 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
 
         string message = $"{role} が {motionName} しました！";
         SetGlobalNotice(message);
-        Debug.Log(message);
     }
 
     protected void SetGlobalNotice(string msg)
@@ -51,6 +50,9 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
 
         NoticeText = msg;
         RequestSerialization();
+        // 自分の画面にも即反映
+        if (debugText != null)
+            debugText.text = msg;
     }
 
     public override void OnDeserialization()
