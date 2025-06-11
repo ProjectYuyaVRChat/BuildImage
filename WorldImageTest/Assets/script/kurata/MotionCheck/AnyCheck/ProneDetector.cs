@@ -2,15 +2,11 @@
 using UnityEngine;
 using VRC.SDKBase;
 
-
-/// <summary>
-/// 伏せの時も反応しちゃうから必要になったらやろう
-/// </summary>
-public class CrouchDetector : MotionDetectorBase
+public class ProneDetector : MotionDetectorBase
 {
-    private bool isCrouching = false;
+    private bool isProne = false;
     private float baseHeadHeight = 0f;
-    private float crouchThreshold = 0.3f; // 基準高さからどれだけ下がったらしゃがみか
+    private float proneThreshold = 0.7f;    // しゃがみ=0.3
 
     private bool initialized = false;
 
@@ -21,7 +17,6 @@ public class CrouchDetector : MotionDetectorBase
         Vector3 headPosition = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
         float headHeight = headPosition.y - localPlayer.GetPosition().y;
 
-        // 最初の1回だけ基準を記録
         if (!initialized)
         {
             baseHeadHeight = headHeight;
@@ -31,15 +26,15 @@ public class CrouchDetector : MotionDetectorBase
 
         float heightDiff = baseHeadHeight - headHeight;
 
-        if (heightDiff > crouchThreshold && !isCrouching)
+        if (heightDiff > proneThreshold && !isProne)
         {
-            isCrouching = true;
-            ShowMotionMessage("しゃがみ");
+            isProne = true;
+            ShowMotionMessage("伏せ");
         }
-        else if (heightDiff <= crouchThreshold && isCrouching)
+        else if (heightDiff <= proneThreshold && isProne)
         {
-            isCrouching = false;
-            ShowMotionMessage("立ち上がり");
+            isProne = false;
+            ShowMotionMessage("伏せ解除");
         }
     }
 }
