@@ -6,7 +6,7 @@ public class ProneDetector : MotionDetectorBase
 {
     private bool isProne = false;
     private float baseHeadHeight = 0f;
-    private float proneThreshold = 0.7f;    // しゃがみ=0.3
+    private float proneThreshold = 0.3f;    // しゃがみ=0.3
 
     private bool initialized = false;
 
