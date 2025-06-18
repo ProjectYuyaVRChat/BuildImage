@@ -20,11 +20,8 @@ public class BodyLeanDetector : MotionDetectorBase
 
     protected override void DetectMotion()
     {
-        Vector3 headPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
-        Vector3 bodyPos = localPlayer.GetPosition();
-
         // プレイヤーの体の回転を考慮してローカル座標系に変換
-        Vector3 localHeadOffset = Quaternion.Inverse(localPlayer.GetRotation()) * (headPos - bodyPos);
+        Vector3 localHeadOffset = Quaternion.Inverse(baseRot) * (headPos - basePos);
 
         LeanState newState = LeanState.Default;
 

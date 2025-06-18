@@ -4,10 +4,10 @@ using VRC.SDKBase;
 using UnityEngine;
 
 public class JumpDetector : MotionDetectorBase
-{ 
+{
     private bool isJumping = false;
 
-    private float HeadHight = 0f;
+    private float lastHeadHight = 0f;
     private bool initialized = false;
     private float JumpVelocity = 1.2f;  //　閾値
 
@@ -16,19 +16,16 @@ public class JumpDetector : MotionDetectorBase
     protected override void DetectMotion()
     {
         bool grounded = localPlayer.IsPlayerGrounded();
-
-        Vector3 headPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
-        Vector3 basePos = localPlayer.GetPosition();
         float currentHeadHeight = headPos.y - basePos.y;
-        
-        if(!initialized)
+
+        if (!initialized)
         {
-            HeadHight = currentHeadHeight;
+            lastHeadHight = currentHeadHeight;
             initialized = true;
             return;
         }
 
-        float verticalVelocity = (currentHeadHeight - HeadHight) / Time.deltaTime;
+        float verticalVelocity = (currentHeadHeight - lastHeadHight) / Time.deltaTime;
 
 
         if (verticalVelocity > JumpVelocity && !isJumping)
@@ -52,6 +49,6 @@ public class JumpDetector : MotionDetectorBase
             isJumping = false;
             ShowMotionMessage("着地");
         }
-        HeadHight = currentHeadHeight;
+        lastHeadHight = currentHeadHeight;
     }
 }

@@ -21,7 +21,6 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
 
     protected override void DetectMotion()
     {
-        Quaternion headRot = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
         Vector3 euler = headRot.eulerAngles;
 
         // Euler角は0〜360なので -180〜180 に変換

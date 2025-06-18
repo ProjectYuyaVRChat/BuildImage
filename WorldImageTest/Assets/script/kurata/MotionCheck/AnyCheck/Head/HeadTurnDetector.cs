@@ -18,9 +18,6 @@ public class HeadTurnDetector : MotionDetectorBase
 
     protected override void DetectMotion()
     {
-        Quaternion bodyRot = localPlayer.GetRotation();
-        Quaternion headRot = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
-
         float bodyYaw = bodyRot.eulerAngles.y;
         float headYaw = headRot.eulerAngles.y;
 

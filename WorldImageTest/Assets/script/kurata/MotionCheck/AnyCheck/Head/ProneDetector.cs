@@ -5,26 +5,25 @@ using VRC.SDKBase;
 public class ProneDetector : MotionDetectorBase
 {
     private bool isProne = false;
-    private float baseHeadHeight = 0f;
-    private float proneThreshold = 0.3f;    // しゃがみ=0.3
+    private float proneThreshold = 0.3f;
 
     private bool initialized = false;
+    private float proneBaseHeight = 0f; // 名前を変えて重複を避ける
 
     protected override void DetectMotion()
     {
         if (!localPlayer.IsPlayerGrounded()) return;
 
-        Vector3 headPosition = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
-        float headHeight = headPosition.y - localPlayer.GetPosition().y;
+        float currentHeight = headPos.y - basePos.y;
 
         if (!initialized)
         {
-            baseHeadHeight = headHeight;
+            proneBaseHeight = currentHeight;
             initialized = true;
             return;
         }
 
-        float heightDiff = baseHeadHeight - headHeight;
+        float heightDiff = proneBaseHeight - currentHeight;
 
         if (heightDiff > proneThreshold && !isProne)
         {
