@@ -16,7 +16,7 @@ public class BodyLeanDetector : MotionDetectorBase
     private LeanState currentState = LeanState.Default;
 
     [SerializeField] private float forwardBackwardThreshold = 0.15f; // 閾値(m)
-    [SerializeField] private float leftRightThreshold = 0.10f; 
+    [SerializeField] private float leftRightThreshold = 0.10f; ///
 
     protected override void DetectMotion()
     {
