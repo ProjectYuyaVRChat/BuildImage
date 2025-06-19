@@ -21,7 +21,7 @@ public class HeadTurnDetector : MotionDetectorBase
     private float lastTurnTime = 0f;
     protected override void DetectMotion()
     {
-        float bodyYaw = bodyRot.eulerAngles.y;
+        float bodyYaw = baseRot.eulerAngles.y;
         float headYaw = headRot.eulerAngles.y;
 
         // 差分を-180〜180の範囲にする
