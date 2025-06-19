@@ -16,6 +16,9 @@ public class HeadTurnDetector : MotionDetectorBase
 
     [SerializeField] private float turnThreshold = 20f; // Yaw差
 
+    [SerializeField] private float returnCooldown = 1.0f; // Yaw差
+
+    private float lastTurnTime = 0f;
     protected override void DetectMotion()
     {
         float bodyYaw = bodyRot.eulerAngles.y;
@@ -35,9 +38,11 @@ public class HeadTurnDetector : MotionDetectorBase
             newState = HeadTurnState.LookingLeft;
         }
 
-        if (newState != currentState)
+        if (newState != currentState && newState != HeadTurnState.Default)
         {
             currentState = newState;
+            lastTurnTime = Time.time;
+
             switch (currentState)
             {
                 case HeadTurnState.LookingLeft:
@@ -46,14 +51,11 @@ public class HeadTurnDetector : MotionDetectorBase
                 case HeadTurnState.LookingRight:
                     ShowMotionMessage("首を右に向けた");
                     break;
-                case HeadTurnState.Default:
-                    ShowMotionMessage("首の向きを戻した");
-                    break;
             }
         }
 
         // 戻したときもNeutralに戻す（±turnThresholdの範囲内）
-        if (currentState != HeadTurnState.Default && Mathf.Abs(yawDiff) <= turnThreshold)
+        if (currentState != HeadTurnState.Default && Mathf.Abs(yawDiff) <= turnThreshold && Time.time - lastTurnTime > returnCooldown)
         {
             currentState = HeadTurnState.Default;
             ShowMotionMessage("首の向きを戻した");

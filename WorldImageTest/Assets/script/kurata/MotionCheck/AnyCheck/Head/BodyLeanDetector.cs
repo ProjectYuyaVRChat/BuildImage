@@ -17,7 +17,9 @@ public class BodyLeanDetector : MotionDetectorBase
 
     [SerializeField] private float forwardBackwardThreshold = 0.15f; // 閾値(m)
     [SerializeField] private float leftRightThreshold = 0.10f; ///
+    [SerializeField] private float returnCooldown = 1.0f;
 
+    private float lastLeanChangeTime = 0f;
     protected override void DetectMotion()
     {
         // プレイヤーの体の回転を考慮してローカル座標系に変換
@@ -42,9 +44,10 @@ public class BodyLeanDetector : MotionDetectorBase
             newState = LeanState.LeaningLeft;
         }
 
-        if (newState != currentState)
+        if (newState != currentState && newState != LeanState.Default)
         {
             currentState = newState;
+            lastLeanChangeTime = Time.time;
             switch (currentState)
             {
                 case LeanState.Bowing:
@@ -72,7 +75,7 @@ public class BodyLeanDetector : MotionDetectorBase
                 Mathf.Abs(localHeadOffset.z) <= forwardBackwardThreshold &&
                 Mathf.Abs(localHeadOffset.x) <= leftRightThreshold;
 
-            if (nearNeutral)
+            if (nearNeutral && Time.time - lastLeanChangeTime > returnCooldown)
             {
                 currentState = LeanState.Default;
                 ShowMotionMessage("姿勢を戻した");

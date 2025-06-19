@@ -17,7 +17,9 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
     private NeckTiltState currentState = NeckTiltState.Default;
 
     // 傾き判定の閾値（度数）
-    [SerializeField] private float tiltThreshold = 15f;
+    [SerializeField] private float tiltThresholdRoll = 15f;
+    [SerializeField] private float tiltThresholdPitch = 15f;
+
 
     protected override void DetectMotion()
     {
@@ -29,19 +31,19 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
 
         NeckTiltState newState = NeckTiltState.Default;
 
-        if (roll > tiltThreshold)
+        if (roll > tiltThresholdRoll)
         {
             newState = NeckTiltState.TiltRight;
         }
-        else if (roll < -tiltThreshold)
+        else if (roll < -tiltThresholdRoll)
         {
             newState = NeckTiltState.TiltLeft;
         }
-        else if (pitch > tiltThreshold)
+        else if (pitch > tiltThresholdPitch)
         {
             newState = NeckTiltState.TiltForward;
         }
-        else if (pitch < -tiltThreshold)
+        else if (pitch < -tiltThresholdPitch)
         {
             newState = NeckTiltState.TiltBackward;
         }
