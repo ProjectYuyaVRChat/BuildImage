@@ -12,6 +12,12 @@ public class HandUpDetectorLeft : MotionDetectorBase
     private bool isUp = false;
     private bool initialized = false;
 
+    // 外部から状態を取得するためのプロパティ
+    public bool IsUp => isUp;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+
     protected override void DetectMotion()
     {
         Vector3 localHand = Quaternion.Inverse(baseRot) * (leftHandPos - basePos);
@@ -29,6 +35,8 @@ public class HandUpDetectorLeft : MotionDetectorBase
             return;
         }
 
+        bool wasUp = isUp;
+
         if (!isUp && localHand.y > upThreshold)
         {
             isUp = true;
@@ -38,6 +46,12 @@ public class HandUpDetectorLeft : MotionDetectorBase
         {
             isUp = false;
             ShowMotionMessage("左手を上から戻した");
+        }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (wasUp != isUp && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetLeftHandUpState(isUp);
         }
     }
 }

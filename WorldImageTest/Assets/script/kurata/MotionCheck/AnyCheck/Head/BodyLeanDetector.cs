@@ -20,6 +20,17 @@ public class BodyLeanDetector : MotionDetectorBase
     [SerializeField] private float returnCooldown = 1.0f;
 
     private float lastLeanChangeTime = 0f;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    
+    // 外部から状態を取得するためのプロパティ
+    public LeanState CurrentState => currentState;
+    public bool IsLeanLeft => currentState == LeanState.LeaningLeft;
+    public bool IsLeanRight => currentState == LeanState.LeaningRight;
+    public bool IsLeanForward => currentState == LeanState.Bowing;
+    public bool IsLeanBackward => currentState == LeanState.LeaningBack;
+    
     protected override void DetectMotion()
     {
         // プレイヤーの体の回転を考慮してローカル座標系に変換
@@ -43,6 +54,8 @@ public class BodyLeanDetector : MotionDetectorBase
         {
             newState = LeanState.LeaningLeft;
         }
+
+        LeanState previousState = currentState;
 
         if (newState != currentState && newState != LeanState.Default)
         {
@@ -80,6 +93,15 @@ public class BodyLeanDetector : MotionDetectorBase
                 currentState = LeanState.Default;
                 ShowMotionMessage("姿勢を戻した");
             }
+        }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (previousState != currentState && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetBodyLeanLeftState(currentState == LeanState.LeaningLeft);
+            doorGimmickSystem.SetBodyLeanRightState(currentState == LeanState.LeaningRight);
+            doorGimmickSystem.SetBodyLeanForwardState(currentState == LeanState.Bowing);
+            doorGimmickSystem.SetBodyLeanBackwardState(currentState == LeanState.LeaningBack);
         }
     }
 }

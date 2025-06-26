@@ -12,6 +12,12 @@ public class HandForwardDetectorRight : MotionDetectorBase
     private bool isForward = false;
     private bool initialized = false;
 
+    // 外部から状態を取得するためのプロパティ
+    public bool IsForward => isForward;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+
     protected override void DetectMotion()
     {
         // 体基準のローカル座標に変換
@@ -25,6 +31,8 @@ public class HandForwardDetectorRight : MotionDetectorBase
             return;
         }
 
+        bool wasForward = isForward;
+
         if (!isForward && localHand.z > forwardThreshold)
         {
             isForward = true;
@@ -34,6 +42,12 @@ public class HandForwardDetectorRight : MotionDetectorBase
         {
             isForward = false;
             ShowMotionMessage("右手を前から戻した");
+        }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (wasForward != isForward && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetRightHandForwardState(isForward);
         }
     }
 }

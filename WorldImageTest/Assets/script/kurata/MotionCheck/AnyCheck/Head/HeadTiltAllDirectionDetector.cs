@@ -1,5 +1,4 @@
-﻿
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
@@ -20,6 +19,15 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
     [SerializeField] private float tiltThresholdRoll = 15f;
     [SerializeField] private float tiltThresholdPitch = 15f;
 
+    // 外部から状態を取得するためのプロパティ
+    public NeckTiltState CurrentState => currentState;
+    public bool IsTiltLeft => currentState == NeckTiltState.TiltLeft;
+    public bool IsTiltRight => currentState == NeckTiltState.TiltRight;
+    public bool IsTiltForward => currentState == NeckTiltState.TiltForward;
+    public bool IsTiltBackward => currentState == NeckTiltState.TiltBackward;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
 
     protected override void DetectMotion()
     {
@@ -50,7 +58,9 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
 
         if (newState != currentState)
         {
+            NeckTiltState previousState = currentState;
             currentState = newState;
+            
             switch (currentState)
             {
                 case NeckTiltState.TiltLeft:
@@ -68,6 +78,15 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
                 case NeckTiltState.Default:
                     ShowMotionMessage("首を戻した");
                     break;
+            }
+            
+            // 状態が変化したらDoorGimmickSystemに通知
+            if (doorGimmickSystem != null)
+            {
+                doorGimmickSystem.SetHeadTiltLeftState(currentState == NeckTiltState.TiltLeft);
+                doorGimmickSystem.SetHeadTiltRightState(currentState == NeckTiltState.TiltRight);
+                doorGimmickSystem.SetHeadTiltForwardState(currentState == NeckTiltState.TiltForward);
+                doorGimmickSystem.SetHeadTiltBackwardState(currentState == NeckTiltState.TiltBackward);
             }
         }
     }
