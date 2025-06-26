@@ -8,13 +8,19 @@ using VRC.Udon;
 /// </summary>
 public class HandUpDetectorRight : MotionDetectorBase
 {
-    [SerializeField] private float upThreshold = 0.3f;
+    [SerializeField] private float upThreshold = 0.1f;
     private bool isUp = false;
     private bool initialized = false;
 
     protected override void DetectMotion()
     {
         Vector3 localHand = Quaternion.Inverse(baseRot) * (rightHandPos - basePos);
+
+        // デバッグ情報を表示
+        if (debugText != null)
+        {
+            debugText.text = $"右手位置: {localHand.y:F3}\n閾値: {upThreshold:F3}\n状態: {(isUp ? "上げた" : "下げた")}";
+        }
 
         if (!initialized)
         {
