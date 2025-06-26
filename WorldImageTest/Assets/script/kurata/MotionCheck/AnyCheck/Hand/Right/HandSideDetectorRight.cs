@@ -12,6 +12,12 @@ public class HandSideDetectorRight : MotionDetectorBase
     private bool isSide = false;
     private bool initialized = false;
 
+    // 外部から状態を取得するためのプロパティ
+    public bool IsSide => isSide;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+
     protected override void DetectMotion()
     {
         Vector3 localHand = Quaternion.Inverse(baseRot) * (rightHandPos - basePos);
@@ -23,6 +29,8 @@ public class HandSideDetectorRight : MotionDetectorBase
             return;
         }
 
+        bool wasSide = isSide;
+
         if (!isSide && Mathf.Abs(localHand.x) > sideThreshold)
         {
             isSide = true;
@@ -32,6 +40,12 @@ public class HandSideDetectorRight : MotionDetectorBase
         {
             isSide = false;
             ShowMotionMessage("右手を横から戻した");
+        }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (wasSide != isSide && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetRightHandSideState(isSide);
         }
     }
 }

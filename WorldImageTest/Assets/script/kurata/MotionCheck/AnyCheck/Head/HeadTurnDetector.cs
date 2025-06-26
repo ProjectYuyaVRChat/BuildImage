@@ -19,6 +19,15 @@ public class HeadTurnDetector : MotionDetectorBase
     [SerializeField] private float returnCooldown = 1.0f; // Yaw差
 
     private float lastTurnTime = 0f;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    
+    // 外部から状態を取得するためのプロパティ
+    public HeadTurnState CurrentState => currentState;
+    public bool IsTurnLeft => currentState == HeadTurnState.LookingLeft;
+    public bool IsTurnRight => currentState == HeadTurnState.LookingRight;
+    
     protected override void DetectMotion()
     {
         float bodyYaw = baseRot.eulerAngles.y;
@@ -37,6 +46,8 @@ public class HeadTurnDetector : MotionDetectorBase
         {
             newState = HeadTurnState.LookingLeft;
         }
+
+        HeadTurnState previousState = currentState;
 
         if (newState != currentState && newState != HeadTurnState.Default)
         {
@@ -59,6 +70,13 @@ public class HeadTurnDetector : MotionDetectorBase
         {
             currentState = HeadTurnState.Default;
             ShowMotionMessage("首の向きを戻した");
+        }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (previousState != currentState && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetHeadTurnLeftState(currentState == HeadTurnState.LookingLeft);
+            doorGimmickSystem.SetHeadTurnRightState(currentState == HeadTurnState.LookingRight);
         }
     }
 }

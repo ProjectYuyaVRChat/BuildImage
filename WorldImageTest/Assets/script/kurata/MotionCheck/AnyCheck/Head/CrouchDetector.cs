@@ -18,6 +18,13 @@ public class CrouchDetector : MotionDetectorBase
 
     //private int calibrationFrameCount = 0;
     private const int calibrationFramesNeeded = 30;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    
+    // 外部から状態を取得するためのプロパティ
+    public bool IsCrouching => isCrouching;
+
     protected override void DetectMotion()
     {
         if (!localPlayer.IsPlayerGrounded()) return;
@@ -25,6 +32,8 @@ public class CrouchDetector : MotionDetectorBase
         float currentHeadHeight = headPos.y - basePos.y;
         float heightDiff = baseHeadHeight - currentHeadHeight;
         float verticalVelocity = (currentHeadHeight - lastHeadHeight) / Time.deltaTime;
+
+        bool wasCrouching = isCrouching;
 
         if (heightDiff > crouchThreshold && !isCrouching && Mathf.Abs(verticalVelocity) < CrouchVelocity)
         {
@@ -35,6 +44,12 @@ public class CrouchDetector : MotionDetectorBase
         {
             isCrouching = false;
             ShowMotionMessage("立ち上がり");
+        }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (wasCrouching != isCrouching && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetCrouchState(isCrouching);
         }
 
         lastHeadHeight = currentHeadHeight;

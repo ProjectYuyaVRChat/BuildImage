@@ -13,6 +13,12 @@ public class JumpDetector : MotionDetectorBase
 
     //[SerializeField] private TextMeshProUGUI debugtext; // 子クラスでInspectorからセット
 
+    // 外部から状態を取得するためのプロパティ
+    public bool IsJumping => isJumping;
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+
     protected override void DetectMotion()
     {
         bool grounded = localPlayer.IsPlayerGrounded();
@@ -27,6 +33,7 @@ public class JumpDetector : MotionDetectorBase
 
         float verticalVelocity = (currentHeadHeight - lastHeadHight) / Time.deltaTime;
 
+        bool wasJumping = isJumping;
 
         if (verticalVelocity > JumpVelocity && !isJumping)
         {
@@ -49,6 +56,13 @@ public class JumpDetector : MotionDetectorBase
             isJumping = false;
             ShowMotionMessage("着地");
         }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (wasJumping != isJumping && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetJumpState(isJumping);
+        }
+        
         lastHeadHight = currentHeadHeight;
     }
 }
