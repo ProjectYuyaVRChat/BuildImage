@@ -71,6 +71,21 @@ public class DoorGimmickSystem : UdonSharpBehaviour
     [Header("デバッグ")]
     [SerializeField] private bool showDebugInfo = true;
     
+
+    [Header("順次モード設定")]
+    [Tooltip("各ステップの制限時間（秒）。この時間内に次のステップを完了しないとリセットされます")]
+    [SerializeField] private float stepTimeout = 10f; // 各ステップの制限時間
+    [Tooltip("ステップ完了後のクールダウン時間（秒）。この時間中は次のステップに進めません")]
+    [SerializeField] private float stepCooldown = 1f; // ステップ完了後のクールダウン時間
+    [Tooltip("モーションの安定化時間（秒）。この時間継続してからステップ完了とします")]
+    [SerializeField] private float motionStabilizeTime = 0.5f; // モーションの安定化時間
+    [Tooltip("間違った動作をした場合のリセット時間（秒）。この時間内に間違った動作をするとリセットされます")]
+    [SerializeField] private float wrongMotionResetTime = 2f; // 間違った動作のリセット時間
+    [Tooltip("間違った動作をした場合にリセットするかどうか")]
+    [SerializeField] private bool resetOnWrongMotion = true; // 間違った動作でリセットするかどうか
+    [Tooltip("ドアが開いた後に順次モードをリセットするかどうか")]
+    [SerializeField] private bool resetSequentialAfterOpen = false; // ドアが開いた後に順次モードをリセットするかどうか
+    
     // 内部状態
     private bool isDoorOpen = false;
     private bool isOpening = false;
@@ -83,6 +98,12 @@ public class DoorGimmickSystem : UdonSharpBehaviour
     private int currentStep = 0; // 現在のステップ（0, 1, 2）
     private bool[] stepCompleted = new bool[3]; // 各ステップの完了状態
     private bool[] motionAchieved = new bool[3]; // 各モーションを一度でも達成したかどうか
+    private float stepTimer = 0f; // ステップのタイマー
+    private float cooldownTimer = 0f; // クールダウンのタイマー
+    private bool isInCooldown = false; // クールダウン中かどうか
+    private float[] motionStabilizeTimers = new float[3]; // 各モーションの安定化タイマー
+    private float wrongMotionTimer = 0f; // 間違った動作のタイマー
+    private bool hasWrongMotion = false; // 間違った動作があったかどうか
     
     // カウンターモード用
     private int motionCounter = 0; // 満たしたモーションの数
@@ -114,10 +135,17 @@ public class DoorGimmickSystem : UdonSharpBehaviour
         
         // 順次モード用の初期化
         currentStep = 0;
+        stepTimer = 0f;
+        cooldownTimer = 0f;
+        isInCooldown = false;
+        wrongMotionTimer = 0f;
+        hasWrongMotion = false;
+        
         for (int i = 0; i < stepCompleted.Length; i++)
         {
             stepCompleted[i] = false;
             motionAchieved[i] = false;
+            motionStabilizeTimers[i] = 0f;
         }
         
         // カウンターモード用の初期化
@@ -216,55 +244,246 @@ public class DoorGimmickSystem : UdonSharpBehaviour
     
     private bool CheckSequentialRequirements()
     {
-        // 現在のステップのモーションが満たされているかチェック
-        bool currentStepMet = false;
+        // すべてのステップが完了している場合は、間違った動作のチェックを停止
+        if (stepCompleted[0] && stepCompleted[1] && stepCompleted[2])
+        {
+            return true;
+        }
+        
+        // クールダウン中は何もしない
+        if (isInCooldown)
+        {
+            cooldownTimer += Time.deltaTime;
+            if (cooldownTimer >= stepCooldown)
+            {
+                isInCooldown = false;
+                cooldownTimer = 0f;
+                if (showDebugInfo)
+                {
+                    Debug.Log("[DoorGimmick] クールダウン終了");
+                }
+            }
+            return false;
+        }
+        
+        // ステップタイマーを更新
+        stepTimer += Time.deltaTime;
+        
+        // タイムアウトチェック
+        if (stepTimer >= stepTimeout)
+        {
+            ResetSequentialMode();
+            if (showDebugInfo)
+            {
+                Debug.Log("[DoorGimmick] ステップタイムアウト - リセット");
+            }
+            return false;
+        }
+        
+        // 間違った動作のチェック
+        if (resetOnWrongMotion)
+        {
+            CheckWrongMotions();
+        }
+        
+        // 現在のステップのモーションをチェック
+        bool currentMotionActive = false;
+        MotionType currentRequiredMotion = MotionType.Jump;
         
         switch (currentStep)
         {
             case 0:
-                if (useMotion1 && motionStates[(int)requiredMotion1])
+                if (useMotion1)
                 {
-                    stepCompleted[0] = true;
-                    motionAchieved[0] = true; // 一度達成したことを記録
-                    currentStep = 1;
-                    currentStepMet = true;
-                    if (showDebugInfo)
-                    {
-                        Debug.Log("[DoorGimmick] ステップ1完了: " + requiredMotion1);
-                    }
+                    currentRequiredMotion = requiredMotion1;
+                    currentMotionActive = motionStates[(int)requiredMotion1];
                 }
                 break;
                 
             case 1:
-                if (useMotion2 && motionStates[(int)requiredMotion2])
+                if (useMotion2)
                 {
-                    stepCompleted[1] = true;
-                    motionAchieved[1] = true; // 一度達成したことを記録
-                    currentStep = 2;
-                    currentStepMet = true;
-                    if (showDebugInfo)
-                    {
-                        Debug.Log("[DoorGimmick] ステップ2完了: " + requiredMotion2);
-                    }
+                    currentRequiredMotion = requiredMotion2;
+                    currentMotionActive = motionStates[(int)requiredMotion2];
                 }
                 break;
                 
             case 2:
-                if (useMotion3 && motionStates[(int)requiredMotion3])
+                if (useMotion3)
                 {
-                    stepCompleted[2] = true;
-                    motionAchieved[2] = true; // 一度達成したことを記録
-                    currentStepMet = true;
-                    if (showDebugInfo)
-                    {
-                        Debug.Log("[DoorGimmick] ステップ3完了: " + requiredMotion3);
-                    }
+                    currentRequiredMotion = requiredMotion3;
+                    currentMotionActive = motionStates[(int)requiredMotion3];
                 }
                 break;
         }
         
+        // デバッグ情報: 現在のステップと期待されるモーション
+        if (showDebugInfo && currentStep < 3)
+        {
+            Debug.Log($"[DoorGimmick] ステップ{currentStep + 1}: 期待={currentRequiredMotion}, アクティブ={currentMotionActive}");
+        }
+        
+        // 現在のモーションがアクティブな場合、安定化タイマーを更新
+        if (currentMotionActive)
+        {
+            motionStabilizeTimers[currentStep] += Time.deltaTime;
+            
+            // 安定化時間を満たした場合、ステップ完了
+            if (motionStabilizeTimers[currentStep] >= motionStabilizeTime)
+            {
+                CompleteCurrentStep(currentRequiredMotion);
+            }
+        }
+        else
+        {
+            // モーションが非アクティブになった場合、安定化タイマーをリセット
+            motionStabilizeTimers[currentStep] = 0f;
+        }
+        
         // すべてのステップが完了しているかチェック
         return stepCompleted[0] && stepCompleted[1] && stepCompleted[2];
+    }
+    
+    private void CheckWrongMotions()
+    {
+        // すべてのステップが完了している場合は、間違った動作のチェックを停止
+        if (stepCompleted[0] && stepCompleted[1] && stepCompleted[2])
+        {
+            return;
+        }
+        
+        // 現在のステップ以外のモーションがアクティブになった場合
+        bool wrongMotionDetected = false;
+        MotionType wrongMotionType = MotionType.Jump;
+        
+        // ステップ0以外でMotion1が使用されていて、Motion1がアクティブな場合
+        if (currentStep != 0 && useMotion1 && motionStates[(int)requiredMotion1])
+        {
+            wrongMotionDetected = true;
+            wrongMotionType = requiredMotion1;
+        }
+        // ステップ1以外でMotion2が使用されていて、Motion2がアクティブな場合
+        if (currentStep != 1 && useMotion2 && motionStates[(int)requiredMotion2])
+        {
+            wrongMotionDetected = true;
+            wrongMotionType = requiredMotion2;
+        }
+        // ステップ2以外でMotion3が使用されていて、Motion3がアクティブな場合
+        if (currentStep != 2 && useMotion3 && motionStates[(int)requiredMotion3])
+        {
+            wrongMotionDetected = true;
+            wrongMotionType = requiredMotion3;
+        }
+        
+        if (wrongMotionDetected)
+        {
+            if (!hasWrongMotion)
+            {
+                hasWrongMotion = true;
+                wrongMotionTimer = 0f;
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[DoorGimmick] 間違った動作を検出: {wrongMotionType} (現在のステップ: {currentStep + 1})");
+                    Debug.Log($"[DoorGimmick] 設定: Motion1={requiredMotion1}(使用:{useMotion1}), Motion2={requiredMotion2}(使用:{useMotion2}), Motion3={requiredMotion3}(使用:{useMotion3})");
+                }
+            }
+            
+            wrongMotionTimer += Time.deltaTime;
+            
+            if (wrongMotionTimer >= wrongMotionResetTime)
+            {
+                ResetSequentialMode();
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[DoorGimmick] 間違った動作でリセット: {wrongMotionType}");
+                }
+            }
+        }
+        else
+        {
+            hasWrongMotion = false;
+            wrongMotionTimer = 0f;
+        }
+    }
+    
+    private void CompleteCurrentStep(MotionType completedMotion)
+    {
+        stepCompleted[currentStep] = true;
+        motionAchieved[currentStep] = true;
+        
+        if (showDebugInfo)
+        {
+            Debug.Log($"[DoorGimmick] ステップ{currentStep + 1}完了: {completedMotion}");
+        }
+        
+        // 次のステップに進む
+        currentStep++;
+        
+        // すべてのステップが完了した場合
+        if (currentStep >= 3)
+        {
+            if (showDebugInfo)
+            {
+                Debug.Log("[DoorGimmick] すべてのステップが完了しました！");
+            }
+        }
+        else
+        {
+            // クールダウンを開始
+            isInCooldown = true;
+            cooldownTimer = 0f;
+            
+            // ステップタイマーをリセット
+            stepTimer = 0f;
+            
+            if (showDebugInfo)
+            {
+                Debug.Log($"[DoorGimmick] ステップ{currentStep + 1}に進みます（クールダウン開始）");
+                
+                // 次のステップの設定を確認
+                MotionType nextMotion = MotionType.Jump;
+                bool nextMotionEnabled = false;
+                
+                switch (currentStep)
+                {
+                    case 0:
+                        nextMotion = requiredMotion1;
+                        nextMotionEnabled = useMotion1;
+                        break;
+                    case 1:
+                        nextMotion = requiredMotion2;
+                        nextMotionEnabled = useMotion2;
+                        break;
+                    case 2:
+                        nextMotion = requiredMotion3;
+                        nextMotionEnabled = useMotion3;
+                        break;
+                }
+                
+                Debug.Log($"[DoorGimmick] 次のステップ{currentStep + 1}: {nextMotion} (使用: {nextMotionEnabled})");
+            }
+        }
+    }
+    
+    private void ResetSequentialMode()
+    {
+        currentStep = 0;
+        stepTimer = 0f;
+        cooldownTimer = 0f;
+        isInCooldown = false;
+        wrongMotionTimer = 0f;
+        hasWrongMotion = false;
+        
+        for (int i = 0; i < stepCompleted.Length; i++)
+        {
+            stepCompleted[i] = false;
+            motionStabilizeTimers[i] = 0f;
+        }
+        
+        if (showDebugInfo)
+        {
+            Debug.Log("[DoorGimmick] 順次モードをリセットしました");
+        }
     }
     
     private bool CheckCounterRequirements()
@@ -356,6 +575,17 @@ public class DoorGimmickSystem : UdonSharpBehaviour
         if (!isOpening && !isDoorOpen)
         {
             isOpening = true;
+            
+            // 順次モードでドアが開いた場合、リセットするかどうかチェック
+            if (motionMode == MOTION_MODE_SEQUENTIAL && resetSequentialAfterOpen)
+            {
+                ResetSequentialMode();
+                if (showDebugInfo)
+                {
+                    Debug.Log("[DoorGimmick] ドアが開いたため順次モードをリセットしました");
+                }
+            }
+            
             if (showDebugInfo)
             {
                 Debug.Log("[DoorGimmick] ドアを開いています");
@@ -411,16 +641,23 @@ public class DoorGimmickSystem : UdonSharpBehaviour
         }
     }
     
+    // 順次モードを手動でリセット
+    public void ResetSequentialModeManual()
+    {
+        ResetSequentialMode();
+    }
+    
     // モーション要求をリセット
     public void ResetMotionRequirements()
     {
-        // 順次モードのリセット
-        currentStep = 0;
-        for (int i = 0; i < stepCompleted.Length; i++)
+        // すべてのモーション状態をリセット
+        for (int i = 0; i < motionStates.Length; i++)
         {
-            stepCompleted[i] = false;
-            motionAchieved[i] = false;
+            motionStates[i] = false;
         }
+        
+        // 順次モードのリセット
+        ResetSequentialMode();
         
         // カウンターモードのリセット
         motionCounter = 0;
