@@ -27,7 +27,7 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
     public bool IsTiltBackward => currentState == NeckTiltState.TiltBackward;
     
     // DoorGimmickSystemへの参照
-    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
 
     protected override void DetectMotion()
     {

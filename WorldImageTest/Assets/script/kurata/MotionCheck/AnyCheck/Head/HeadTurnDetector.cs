@@ -21,7 +21,7 @@ public class HeadTurnDetector : MotionDetectorBase
     private float lastTurnTime = 0f;
     
     // DoorGimmickSystemへの参照
-    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
     
     // 外部から状態を取得するためのプロパティ
     public HeadTurnState CurrentState => currentState;

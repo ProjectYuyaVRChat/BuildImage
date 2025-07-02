@@ -17,7 +17,7 @@ public class JumpDetector : MotionDetectorBase
     public bool IsJumping => isJumping;
     
     // DoorGimmickSystemへの参照
-    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
 
     protected override void DetectMotion()
     {

@@ -11,7 +11,7 @@ public class ProneDetector : MotionDetectorBase
     private float proneBaseHeight = 0f; // 名前を変えて重複を避ける
     
     // DoorGimmickSystemへの参照
-    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
     
     // 外部から状態を取得するためのプロパティ
     public bool IsProne => isProne;
