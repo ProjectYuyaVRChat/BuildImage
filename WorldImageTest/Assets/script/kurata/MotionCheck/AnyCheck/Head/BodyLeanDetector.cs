@@ -22,7 +22,7 @@ public class BodyLeanDetector : MotionDetectorBase
     private float lastLeanChangeTime = 0f;
     
     // DoorGimmickSystemへの参照
-    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
     
     // 外部から状態を取得するためのプロパティ
     public LeanState CurrentState => currentState;

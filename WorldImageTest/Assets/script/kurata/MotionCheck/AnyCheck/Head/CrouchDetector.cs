@@ -20,7 +20,7 @@ public class CrouchDetector : MotionDetectorBase
     private const int calibrationFramesNeeded = 30;
     
     // DoorGimmickSystemへの参照
-    [SerializeField] private DoorGimmickSystem doorGimmickSystem;
+    [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
     
     // 外部から状態を取得するためのプロパティ
     public bool IsCrouching => isCrouching;
