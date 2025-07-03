@@ -9,6 +9,12 @@ public class ProneDetector : MotionDetectorBase
 
     private bool initialized = false;
     private float proneBaseHeight = 0f; // 名前を変えて重複を避ける
+    
+    // DoorGimmickSystemへの参照
+    [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
+    
+    // 外部から状態を取得するためのプロパティ
+    public bool IsProne => isProne;
 
     protected override void DetectMotion()
     {
@@ -25,6 +31,8 @@ public class ProneDetector : MotionDetectorBase
 
         float heightDiff = proneBaseHeight - currentHeight;
 
+        bool wasProne = isProne;
+
         if (heightDiff > proneThreshold && !isProne)
         {
             isProne = true;
@@ -34,6 +42,12 @@ public class ProneDetector : MotionDetectorBase
         {
             isProne = false;
             ShowMotionMessage("伏せ解除");
+        }
+        
+        // 状態が変化したらDoorGimmickSystemに通知
+        if (wasProne != isProne && doorGimmickSystem != null)
+        {
+            doorGimmickSystem.SetProneState(isProne);
         }
     }
 }
