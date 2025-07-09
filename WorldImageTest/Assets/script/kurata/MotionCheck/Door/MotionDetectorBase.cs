@@ -40,7 +40,11 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
     private const int calibrationFramesNeeded = 30;
     protected float baseHeadHeight = 0f;
     protected float lastHeadHeight = 0f;
+    protected Vector3 baseLeftHandPos;
+    protected Vector3 baseRightHandPos;
 
+    protected bool handPosInitialized = false;
+    protected Vector3 lastLeftHandPos, lastRightHandPos;
 
     // ロール通知
     [UdonSynced] private string NoticeText = "";
@@ -62,6 +66,7 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
         
         UpdateTrackingData();
         if(!CalibrateHeadHeight()) return;
+        if(!CalibrateHandPositions()) return;
         DetectMotion();
         CheckHeightChange();
     }
@@ -162,17 +167,40 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
         return true; // キャリブレーション完了済
     }
 
+    protected bool CalibrateHandPositions()
+    {
+        if (!handPosInitialized)
+        {
+            calibrationFrameCount++;
+            baseLeftHandPos = Vector3.Lerp(baseLeftHandPos, leftHandPos, 0.1f);
+            baseRightHandPos = Vector3.Lerp(baseRightHandPos, rightHandPos, 0.1f);
+            if (calibrationFrameCount >= calibrationFramesNeeded)
+            {
+                handPosInitialized = true;
+                lastLeftHandPos = baseLeftHandPos;
+                lastRightHandPos = baseRightHandPos;
+            }
+            return false; // まだ未完了
+        }
+        return true; // キャリブレーション完了済
+    }
+
     /// <summary>
     /// キャリブレーション（基準値再設定）
     /// </summary>
     public virtual void Calibrate()
     {
-        // 代表的な基準値を再設定
+        // 頭の基準値
         baseHeadHeight = headPos.y - basePos.y;
         previousHeadHeight = baseHeadHeight;
         headHeightInitialized = true;
+
+        // 手の基準値
+        baseLeftHandPos = leftHandPos;
+        baseRightHandPos = rightHandPos;
+        handPosInitialized = true;
+
         calibrationFrameCount = calibrationFramesNeeded;
-        // 必要に応じて他の基準値もここで初期化
     }
 
 

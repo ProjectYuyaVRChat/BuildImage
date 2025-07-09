@@ -23,29 +23,29 @@ public class HandUpDetectorLeft : MotionDetectorBase
 
     protected override void DetectMotion()
     {
-        Vector3 localHand = Quaternion.Inverse(baseRot) * (leftHandPos - basePos);
+        float handDelta = leftHandPos.y - baseLeftHandPos.y;
 
         // デバッグ情報を表示
         if (debugText != null)
         {
-            debugText.text = $"左手位置: {localHand.y:F3}\n閾値: {upThreshold:F3}\n状態: {(isUp ? "上げた" : "下げた")}";
+            debugText.text = $"左手高さΔ: {handDelta:F3}\n閾値: {upThreshold:F3}\n状態: {(isUp ? "上げた" : "下げた")}";
         }
 
         if (!initialized)
         {
-            isUp = (localHand.y > upThreshold);
+            isUp = (handDelta > upThreshold);
             initialized = true;
             return;
         }
 
         bool wasUp = isUp;
 
-        if (!isUp && localHand.y > upThreshold)
+        if (!isUp && handDelta > upThreshold)
         {
             isUp = true;
             ShowMotionMessage("左手を上に上げた");
         }
-        else if (isUp && localHand.y <= upThreshold)
+        else if (isUp && handDelta <= upThreshold)
         {
             isUp = false;
             ShowMotionMessage("左手を上から戻した");
@@ -54,12 +54,10 @@ public class HandUpDetectorLeft : MotionDetectorBase
         // 状態が変化したらシステムに通知
         if (wasUp != isUp)
         {
-            // 中央集権型システムが設定されている場合はそちらに送信
             if (centralizedDetector != null)
             {
                 centralizedDetector.SetLeftHandUpState(isUp);
             }
-            // 従来の個別システムにも送信（後方互換性）
             else if (doorGimmickSystem != null)
             {
                 doorGimmickSystem.SetLeftHandUpState(isUp);
