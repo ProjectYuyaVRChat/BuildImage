@@ -40,11 +40,16 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
     [SerializeField] private bool resetSequentialAfterOpen = false;
     
     [Header("デバッグ")]
-    [SerializeField] private bool showDebugInfo = true;
+    [SerializeField] public bool showDebugInfo = true;
+    
+    [Header("範囲検知システム")]
+    [SerializeField] public bool useAreaTrigger = false;
+    [SerializeField] public DoorAreaTrigger areaTrigger;
     
     // 内部状態
     private bool hasBeenOpened = false;
     private float autoCloseTimer = 0f;
+    private bool isAreaActive = false;
     
     // モーション状態
     private bool[] motionStates = new bool[19];
@@ -58,6 +63,12 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
     
     void Update()
     {
+        // 範囲検知システムが有効で、エリアが非アクティブの場合は処理をスキップ
+        if (useAreaTrigger && !isAreaActive)
+        {
+            return;
+        }
+        
         CheckDoorRequirements();
         UpdateUI();
     }
@@ -94,9 +105,14 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
             doorController.CloseDoorImmediate();
         }
         
-        if (showDebugInfo)
+        // 範囲検知システムの初期状態を設定
+        if (useAreaTrigger)
         {
-            Debug.Log("[DoorGimmickSystem] システムを初期化しました");
+            isAreaActive = false;
+        }
+        else
+        {
+            isAreaActive = true; // 範囲検知システムを使用しない場合は常にアクティブ
         }
     }
     
@@ -134,6 +150,10 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
             case DOOR_MODE_ONE_SHOT:
                 if (allRequirementsMet && !doorController.IsDoorOpen && !doorController.IsOpening && !hasBeenOpened)
                 {
+                    if (showDebugInfo)
+                    {
+                        Debug.Log("[DoorGimmickSystem] ワンショットモード: ドアを開く条件が満たされました！");
+                    }
                     OpenDoor();
                     hasBeenOpened = true;
                 }
@@ -142,6 +162,10 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
             case DOOR_MODE_AUTO_CLOSE:
                 if (allRequirementsMet && !doorController.IsDoorOpen && !doorController.IsOpening)
                 {
+                    if (showDebugInfo)
+                    {
+                        Debug.Log("[DoorGimmickSystem] 自動閉じモード: ドアを開く条件が満たされました！");
+                    }
                     OpenDoor();
                     autoCloseTimer = 0f;
                 }
@@ -197,15 +221,6 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
             if (motionMode == MOTION_MODE_SEQUENTIAL && resetSequentialAfterOpen && sequentialHandler != null)
             {
                 sequentialHandler.ResetSequentialMode();
-                if (showDebugInfo)
-                {
-                    Debug.Log("[DoorGimmickSystem] ドアが開いたため順次モードをリセットしました");
-                }
-            }
-            
-            if (showDebugInfo)
-            {
-                Debug.Log("[DoorGimmickSystem] ドアを開いています");
             }
         }
     }
@@ -215,10 +230,6 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
         if (doorController != null)
         {
             doorController.CloseDoor();
-            if (showDebugInfo)
-            {
-                Debug.Log("[DoorGimmickSystem] ドアを閉じています");
-            }
         }
     }
     
@@ -226,10 +237,6 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
     public void SetMotionState(MotionType motionType, bool state)
     {
         motionStates[(int)motionType] = state;
-        if (showDebugInfo)
-        {
-            Debug.Log($"[DoorGimmickSystem] {GetMotionName(motionType)}: {state}");
-        }
     }
     
     // 各モーション検出器用の専用メソッド
@@ -253,14 +260,25 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
     public void SetLeftHandSideState(bool state) => SetMotionState(MotionType.LeftHandSide, state);
     public void SetLeftHandForwardState(bool state) => SetMotionState(MotionType.LeftHandForward, state);
     
+    // 範囲検知システムとの連携
+    public void SetAreaActive(bool active)
+    {
+        isAreaActive = active;
+        
+        if (!active)
+        {
+            // エリアが非アクティブになった時の処理
+            ResetMotionRequirements();
+        }
+    }
+    
+    // エリアの状態を取得
+    public bool IsAreaActive => isAreaActive;
+    
     // リセットメソッド
     public void ResetOneShotMode()
     {
         hasBeenOpened = false;
-        if (showDebugInfo)
-        {
-            Debug.Log("[DoorGimmickSystem] ワンショットモードをリセットしました");
-        }
     }
     
     public void ResetMotionRequirements()
@@ -280,11 +298,6 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
         if (counterHandler != null)
         {
             counterHandler.ResetCounter();
-        }
-        
-        if (showDebugInfo)
-        {
-            Debug.Log("[DoorGimmickSystem] モーション要求をリセットしました");
         }
     }
     

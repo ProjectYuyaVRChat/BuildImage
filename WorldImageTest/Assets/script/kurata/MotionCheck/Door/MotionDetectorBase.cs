@@ -54,6 +54,12 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
 
     protected virtual void Update()
     {
+        // 範囲検知システムが有効で、エリアが非アクティブの場合は処理をスキップ
+        if (!IsMotionDetectionEnabled())
+        {
+            return;
+        }
+        
         UpdateTrackingData();
         if(!CalibrateHeadHeight()) return;
         DetectMotion();
@@ -156,11 +162,33 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
         return true; // キャリブレーション完了済
     }
 
+    /// <summary>
+    /// キャリブレーション（基準値再設定）
+    /// </summary>
+    public virtual void Calibrate()
+    {
+        // 代表的な基準値を再設定
+        baseHeadHeight = headPos.y - basePos.y;
+        previousHeadHeight = baseHeadHeight;
+        headHeightInitialized = true;
+        calibrationFrameCount = calibrationFramesNeeded;
+        // 必要に応じて他の基準値もここで初期化
+    }
+
 
     /// <summary>
     /// 派生クラスで各モーションを検出するための抽象メソッド
     /// </summary>
     protected abstract void DetectMotion();
+    
+    /// <summary>
+    /// モーション検知が有効かどうかをチェック
+    /// 派生クラスでオーバーライドして範囲検知システムとの連携を実装
+    /// </summary>
+    protected virtual bool IsMotionDetectionEnabled()
+    {
+        return true; // デフォルトは常に有効
+    }
 
     /// <summary>
     /// デバッグ用のTextMeshProを外部から設定

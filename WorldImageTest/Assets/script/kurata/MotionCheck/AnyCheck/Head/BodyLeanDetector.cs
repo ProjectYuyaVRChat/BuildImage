@@ -21,7 +21,10 @@ public class BodyLeanDetector : MotionDetectorBase
 
     private float lastLeanChangeTime = 0f;
     
-    // DoorGimmickSystemへの参照
+    // 中央集権型モーション検出器への参照（推奨）
+    [SerializeField] private CentralizedMotionDetector centralizedDetector;
+    
+    // 従来の個別参照（後方互換性のため）
     [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
     
     // 外部から状態を取得するためのプロパティ
@@ -95,13 +98,25 @@ public class BodyLeanDetector : MotionDetectorBase
             }
         }
         
-        // 状態が変化したらDoorGimmickSystemに通知
-        if (previousState != currentState && doorGimmickSystem != null)
+        // 状態が変化したらシステムに通知
+        if (previousState != currentState)
         {
-            doorGimmickSystem.SetBodyLeanLeftState(currentState == LeanState.LeaningLeft);
-            doorGimmickSystem.SetBodyLeanRightState(currentState == LeanState.LeaningRight);
-            doorGimmickSystem.SetBodyLeanForwardState(currentState == LeanState.Bowing);
-            doorGimmickSystem.SetBodyLeanBackwardState(currentState == LeanState.LeaningBack);
+            // 中央集権型システムが設定されている場合はそちらに送信
+            if (centralizedDetector != null)
+            {
+                centralizedDetector.SetBodyLeanLeftState(currentState == LeanState.LeaningLeft);
+                centralizedDetector.SetBodyLeanRightState(currentState == LeanState.LeaningRight);
+                centralizedDetector.SetBodyLeanForwardState(currentState == LeanState.Bowing);
+                centralizedDetector.SetBodyLeanBackwardState(currentState == LeanState.LeaningBack);
+            }
+            // 従来の個別システムにも送信（後方互換性）
+            else if (doorGimmickSystem != null)
+            {
+                doorGimmickSystem.SetBodyLeanLeftState(currentState == LeanState.LeaningLeft);
+                doorGimmickSystem.SetBodyLeanRightState(currentState == LeanState.LeaningRight);
+                doorGimmickSystem.SetBodyLeanForwardState(currentState == LeanState.Bowing);
+                doorGimmickSystem.SetBodyLeanBackwardState(currentState == LeanState.LeaningBack);
+            }
         }
     }
 }
