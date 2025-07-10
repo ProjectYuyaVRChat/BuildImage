@@ -1,25 +1,26 @@
 using System;
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VRC.SDKBase;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
 
 public class TwoPeopleTouch : UdonSharpBehaviour
 {
-    [SerializeField] private WarpBlock PastWarpBlock;
-    [SerializeField] private WarpBlock FutureWarpBlock;
+    [FormerlySerializedAs("PastWarpBlock")] [SerializeField] private WarpBlockTwoPeople pastWarpBlockTwoPeople;
+    [FormerlySerializedAs("FutureWarpBlock")] [SerializeField] private WarpBlockTwoPeople futureWarpBlockTwoPeople;
     
     private bool isSequenceActive = false;
 
     void Start()
     {
-        if (PastWarpBlock == null)
+        if (pastWarpBlockTwoPeople == null)
         {
             Debug.LogWarning("PastWarpBlockが入ってない");
         }
 
-        if (FutureWarpBlock == null)
+        if (futureWarpBlockTwoPeople == null)
         {
             Debug.LogWarning("FutureWarpBlockが入ってない");
         }
@@ -32,7 +33,7 @@ public class TwoPeopleTouch : UdonSharpBehaviour
             return;
         }
         
-        if (PastWarpBlock.isOn && FutureWarpBlock.isOn)
+        if (pastWarpBlockTwoPeople.isOn && futureWarpBlockTwoPeople.isOn)
         {
             isSequenceActive = true; // 即座に再判定されないようにロックする
             
@@ -49,23 +50,23 @@ public class TwoPeopleTouch : UdonSharpBehaviour
     {
         // 各ブロックにワープ開始を命令
         // ブロック内部のロジックにより、実際にワープするのは操作した本人のみ
-        if (PastWarpBlock != null) PastWarpBlock.Warp();
-        if (FutureWarpBlock != null) FutureWarpBlock.Warp();
+        if (pastWarpBlockTwoPeople != null) pastWarpBlockTwoPeople.Warp();
+        if (futureWarpBlockTwoPeople != null) futureWarpBlockTwoPeople.Warp();
     }
     
     // マスターのみで実行されるリセット処理
     public void MasterResetBlocks()
     {
         // マスターが各ブロックのオーナーになり、リセットを命令する
-        if (PastWarpBlock != null)
+        if (pastWarpBlockTwoPeople != null)
         {
-            Networking.SetOwner(Networking.LocalPlayer, PastWarpBlock.gameObject);
-            PastWarpBlock.ResetState();
+            Networking.SetOwner(Networking.LocalPlayer, pastWarpBlockTwoPeople.gameObject);
+            pastWarpBlockTwoPeople.ResetState();
         }
-        if (FutureWarpBlock != null)
+        if (futureWarpBlockTwoPeople != null)
         {
-            Networking.SetOwner(Networking.LocalPlayer, FutureWarpBlock.gameObject);
-            FutureWarpBlock.ResetState();
+            Networking.SetOwner(Networking.LocalPlayer, futureWarpBlockTwoPeople.gameObject);
+            futureWarpBlockTwoPeople.ResetState();
         }
         
         isSequenceActive = false; // 再度、判定できるようにロックを解除する

@@ -4,7 +4,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
-public class WarpBlock : UdonSharpBehaviour
+public class WarpBlockSole : UdonSharpBehaviour
 {
     [UdonSynced]
     public bool isOn = false;
@@ -41,8 +41,7 @@ public class WarpBlock : UdonSharpBehaviour
         this.isOn = true;
         this.interactingPlayerId = Networking.LocalPlayer.playerId;
         
-        // 同期変数の変更を他のプレイヤーに通知
-        RequestSerialization();
+        Warp();
     }
 
     public void Warp()
@@ -89,6 +88,8 @@ public class WarpBlock : UdonSharpBehaviour
             fadeCanvas.SetActive(false);
         }
         isSequenceRunning = false;
+        
+        ResetState();
     }
     
     public void ResetState()
