@@ -48,10 +48,26 @@ public class SyncObject : UdonSharpBehaviour
             {
                 if (target == null) continue;
 
-                // 位置を相対移動
-                target.position += positionDelta;
+                // スケール比を計算
+                Vector3 scaleA = transform.lossyScale;
+                Vector3 scaleB = target.lossyScale;
+                Vector3 scaleRatio = Vector3.one;
+                // 0除算防止
+                scaleRatio.x = (Mathf.Abs(scaleA.x) > 1e-6f) ? (scaleB.x / scaleA.x) : 1f;
+                scaleRatio.y = (Mathf.Abs(scaleA.y) > 1e-6f) ? (scaleB.y / scaleA.y) : 1f;
+                scaleRatio.z = (Mathf.Abs(scaleA.z) > 1e-6f) ? (scaleB.z / scaleA.z) : 1f;
 
-                // 回転をワールド空間ベースで同期
+                // スケール比で補正した移動量
+                Vector3 scaledDelta = new Vector3(
+                    positionDelta.x * scaleRatio.x,
+                    positionDelta.y * scaleRatio.y,
+                    positionDelta.z * scaleRatio.z
+                );
+
+                // 位置を相対移動（スケール補正後）
+                target.position += scaledDelta;
+
+                // 回転はそのまま
                 target.rotation = rotationDelta * target.rotation;//*=はだめよローカルになるから
             }
         }
