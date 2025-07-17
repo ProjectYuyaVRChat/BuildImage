@@ -31,6 +31,9 @@ public class DoorAreaTrigger : UdonSharpBehaviour
     // ドアシステムの状態
     private bool isAreaActive = false;
     
+    [Header("キャリブレーション対象Detector")]
+    [SerializeField] private MotionDetectorBase motionDetector;
+    
     void Start()
     {
         // プレイヤー配列を初期化
@@ -58,6 +61,12 @@ public class DoorAreaTrigger : UdonSharpBehaviour
         }
         // キャリブレーション開始
         SendCustomEventDelayedSeconds(nameof(CalibratePlayerMotions), calibrationDelay);
+
+        // LocalPlayerがエリアに入ったらキャリブレーション
+        if (player.isLocal && motionDetector != null)
+        {
+            motionDetector.Calibrate();
+        }
     }
     
     public override void OnPlayerTriggerExit(VRCPlayerApi player)

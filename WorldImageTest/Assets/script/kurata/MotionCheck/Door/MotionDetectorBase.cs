@@ -40,6 +40,9 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
     private const int calibrationFramesNeeded = 30;
     protected float baseHeadHeight = 0f;
     protected float lastHeadHeight = 0f;
+    protected Vector3 baseLeftHandPos;
+    protected Vector3 baseRightHandPos;
+    protected bool handPosInitialized = false;
 
 
     // ロール通知
@@ -167,12 +170,17 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
     /// </summary>
     public virtual void Calibrate()
     {
-        // 代表的な基準値を再設定
+        // 頭の基準値
         baseHeadHeight = headPos.y - basePos.y;
         previousHeadHeight = baseHeadHeight;
         headHeightInitialized = true;
+
+        // 手の基準値
+        baseLeftHandPos = leftHandPos;
+        baseRightHandPos = rightHandPos;
+        handPosInitialized = true;
+
         calibrationFrameCount = calibrationFramesNeeded;
-        // 必要に応じて他の基準値もここで初期化
     }
 
 
