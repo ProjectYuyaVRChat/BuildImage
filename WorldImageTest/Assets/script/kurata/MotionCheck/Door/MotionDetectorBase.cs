@@ -42,9 +42,8 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
     protected float lastHeadHeight = 0f;
     protected Vector3 baseLeftHandPos;
     protected Vector3 baseRightHandPos;
-
     protected bool handPosInitialized = false;
-    protected Vector3 lastLeftHandPos, lastRightHandPos;
+
 
     // ロール通知
     [UdonSynced] private string NoticeText = "";
@@ -66,7 +65,6 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
         
         UpdateTrackingData();
         if(!CalibrateHeadHeight()) return;
-        if(!CalibrateHandPositions()) return;
         DetectMotion();
         CheckHeightChange();
     }
@@ -164,24 +162,6 @@ public abstract class MotionDetectorBase : UdonSharpBehaviour
             return false; // まだ未完了
         }
 
-        return true; // キャリブレーション完了済
-    }
-
-    protected bool CalibrateHandPositions()
-    {
-        if (!handPosInitialized)
-        {
-            calibrationFrameCount++;
-            baseLeftHandPos = Vector3.Lerp(baseLeftHandPos, leftHandPos, 0.1f);
-            baseRightHandPos = Vector3.Lerp(baseRightHandPos, rightHandPos, 0.1f);
-            if (calibrationFrameCount >= calibrationFramesNeeded)
-            {
-                handPosInitialized = true;
-                lastLeftHandPos = baseLeftHandPos;
-                lastRightHandPos = baseRightHandPos;
-            }
-            return false; // まだ未完了
-        }
         return true; // キャリブレーション完了済
     }
 
