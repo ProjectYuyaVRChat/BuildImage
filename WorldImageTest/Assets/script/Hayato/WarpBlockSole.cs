@@ -47,7 +47,7 @@ public class WarpBlockSole : UdonSharpBehaviour
     public void Warp()
     {
         // 連続で実行されないようにガード
-        if (isSequenceRunning) return;
+        if (isSequenceRunning) return; 
         
         // 誰も操作していない場合は何もしない
         if (interactingPlayerId == -1) return;
