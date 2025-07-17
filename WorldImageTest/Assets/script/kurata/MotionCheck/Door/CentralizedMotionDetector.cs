@@ -22,6 +22,9 @@ public class CentralizedMotionDetector : UdonSharpBehaviour
     // 各ドアシステムのアクティブ状態
     private bool[] doorSystemActiveStates;
     
+    [Header("キャリブレーション対象Detector一覧")]
+    [SerializeField] private MotionDetectorBase[] detectors;
+    
     void Start()
     {
         InitializeSystem();
@@ -229,31 +232,19 @@ public class CentralizedMotionDetector : UdonSharpBehaviour
         }
     }
 
-    // 全MotionDetectorBaseにキャリブレーションを実行
+    // 全てのMotionDetectorBaseにキャリブレーションを指示
     public void CalibrateAllDetectors()
     {
-        int calibratedCount = 0;
-        
-        // 管理している全てのMotionDetectorBaseにキャリブレーションを実行
-        foreach (var doorSystem in doorSystems)
+        foreach (var detector in detectors)
         {
-            if (doorSystem != null)
+            if (detector != null)
             {
-                var detectors = doorSystem.GetComponentsInChildren<MotionDetectorBase>();
-                foreach (var detector in detectors)
-                {
-                    if (detector != null)
-                    {
-                        detector.Calibrate();
-                        calibratedCount++;
-                    }
-                }
+                detector.Calibrate();
             }
         }
-        
         if (showDebugInfo)
         {
-            Debug.Log($"[CentralizedMotionDetector] {calibratedCount}個のMotionDetectorBaseにキャリブレーションを実行しました");
+            Debug.Log("[CentralizedMotionDetector] 全DetectorにCalibrate()を実行しました");
         }
     }
 } 
