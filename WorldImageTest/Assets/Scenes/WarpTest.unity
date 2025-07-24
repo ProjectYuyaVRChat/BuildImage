@@ -543,6 +543,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &241636682 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4514964744707605550, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+  m_PrefabInstance: {fileID: 2399412319873337171}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &246068065
 GameObject:
   m_ObjectHideFlags: 0
@@ -1403,6 +1408,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041772880}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &2399412319873337171
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.21757337
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9037293
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.55686957
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4270479458128571837, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      propertyPath: m_Name
+      value: Hummer
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
 --- !u!114 &3231720197660963110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1673,6 +1735,10 @@ MonoBehaviour:
     ID: 16
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 241636682}
+    ID: 17
+    SerializedTypeNames:
+    - VRC.SDK3.Components.VRCPickup
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence: []
@@ -1795,3 +1861,4 @@ SceneRoots:
   - {fileID: 280727936}
   - {fileID: 1786057910}
   - {fileID: 238694275}
+  - {fileID: 2399412319873337171}
