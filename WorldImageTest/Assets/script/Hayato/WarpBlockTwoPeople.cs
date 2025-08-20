@@ -77,7 +77,7 @@ public class WarpBlockTwoPeople : UdonSharpBehaviour
         {
             playerToWarp.TeleportTo(
                 warpPoint.transform.position,
-                Quaternion.Euler(0, 180f, 0)
+                Quaternion.Euler(0, 0f, 0)
             );
         }
     }
