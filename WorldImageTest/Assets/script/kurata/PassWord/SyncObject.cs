@@ -13,6 +13,22 @@ public class SyncObject : UdonSharpBehaviour
     [Tooltip("同期先の Transform を複数設定")]
     public Transform[] m_SyncTargets;
 
+    [Header("Position制限設定")]
+    [Tooltip("X軸の移動をロック")]
+    public bool lockPositionX = false;
+    [Tooltip("Y軸の移動をロック")]
+    public bool lockPositionY = false;
+    [Tooltip("Z軸の移動をロック")]
+    public bool lockPositionZ = false;
+
+    [Header("Rotation制限設定")]
+    [Tooltip("X軸の回転をロック")]
+    public bool lockRotationX = false;
+    [Tooltip("Y軸の回転をロック")]
+    public bool lockRotationY = false;
+    [Tooltip("Z軸の回転をロック")]
+    public bool lockRotationZ = false;
+
     private Vector3 _previousPosition;
     private Quaternion _previousRotation;
 
@@ -42,6 +58,12 @@ public class SyncObject : UdonSharpBehaviour
         Vector3 positionDelta = transform.position - _previousPosition;
         Quaternion rotationDelta = transform.rotation * Quaternion.Inverse(_previousRotation);
 
+        // Position制限を適用
+        Vector3 restrictedPositionDelta = ApplyPositionRestrictions(positionDelta);
+        
+        // Rotation制限を適用
+        Quaternion restrictedRotationDelta = ApplyRotationRestrictions(rotationDelta);
+
         if (m_SyncTargets != null)
         {
             foreach (var target in m_SyncTargets)
@@ -57,22 +79,123 @@ public class SyncObject : UdonSharpBehaviour
                 scaleRatio.y = (Mathf.Abs(scaleA.y) > 1e-6f) ? (scaleB.y / scaleA.y) : 1f;
                 scaleRatio.z = (Mathf.Abs(scaleA.z) > 1e-6f) ? (scaleB.z / scaleA.z) : 1f;
 
-                // スケール比で補正した移動量
+                // スケール比で補正した移動量（制限適用後）
                 Vector3 scaledDelta = new Vector3(
-                    positionDelta.x * scaleRatio.x,
-                    positionDelta.y * scaleRatio.y,
-                    positionDelta.z * scaleRatio.z
+                    restrictedPositionDelta.x * scaleRatio.x,
+                    restrictedPositionDelta.y * scaleRatio.y,
+                    restrictedPositionDelta.z * scaleRatio.z
                 );
 
                 // 位置を相対移動（スケール補正後）
                 target.position += scaledDelta;
 
-                // 回転はそのまま
-                target.rotation = rotationDelta * target.rotation;//*=はだめよローカルになるから
+                // 回転は制限適用後
+                target.rotation = restrictedRotationDelta * target.rotation;//*=はだめよローカルになるから
             }
         }
 
         _previousPosition = transform.position;
         _previousRotation = transform.rotation;
     }
+
+    /// <summary>
+    /// Positionの制限を適用する
+    /// </summary>
+    /// <param name="positionDelta">元の移動量</param>
+    /// <returns>制限適用後の移動量</returns>
+    private Vector3 ApplyPositionRestrictions(Vector3 positionDelta)
+    {
+        Vector3 restrictedDelta = positionDelta;
+        
+        if (lockPositionX)
+            restrictedDelta.x = 0f;
+        if (lockPositionY)
+            restrictedDelta.y = 0f;
+        if (lockPositionZ)
+            restrictedDelta.z = 0f;
+            
+        return restrictedDelta;
+    }
+
+    /// <summary>
+    /// Rotationの制限を適用する
+    /// </summary>
+    /// <param name="rotationDelta">元の回転量</param>
+    /// <returns>制限適用後の回転量</returns>
+    private Quaternion ApplyRotationRestrictions(Quaternion rotationDelta)
+    {
+        // オイラー角に変換して制限を適用
+        Vector3 eulerDelta = rotationDelta.eulerAngles;
+        
+        if (lockRotationX)
+            eulerDelta.x = 0f;
+        if (lockRotationY)
+            eulerDelta.y = 0f;
+        if (lockRotationZ)
+            eulerDelta.z = 0f;
+            
+        return Quaternion.Euler(eulerDelta);
+    }
+
+    #region 制限設定メソッド
+
+    /// <summary>
+    /// Position制限を設定する
+    /// </summary>
+    /// <param name="lockX">X軸をロック</param>
+    /// <param name="lockY">Y軸をロック</param>
+    /// <param name="lockZ">Z軸をロック</param>
+    public void SetPositionRestrictions(bool lockX, bool lockY, bool lockZ)
+    {
+        lockPositionX = lockX;
+        lockPositionY = lockY;
+        lockPositionZ = lockZ;
+    }
+
+    /// <summary>
+    /// Rotation制限を設定する
+    /// </summary>
+    /// <param name="lockX">X軸をロック</param>
+    /// <param name="lockY">Y軸をロック</param>
+    /// <param name="lockZ">Z軸をロック</param>
+    public void SetRotationRestrictions(bool lockX, bool lockY, bool lockZ)
+    {
+        lockRotationX = lockX;
+        lockRotationY = lockY;
+        lockRotationZ = lockZ;
+    }
+
+    /// <summary>
+    /// すべての制限を解除する
+    /// </summary>
+    public void ClearAllRestrictions()
+    {
+        lockPositionX = false;
+        lockPositionY = false;
+        lockPositionZ = false;
+        lockRotationX = false;
+        lockRotationY = false;
+        lockRotationZ = false;
+    }
+
+    /// <summary>
+    /// 現在の制限状態を取得する
+    /// </summary>
+    /// <returns>制限状態の文字列</returns>
+    public string GetRestrictionStatus()
+    {
+        string status = "Position制限: ";
+        status += lockPositionX ? "X" : "-";
+        status += lockPositionY ? "Y" : "-";
+        status += lockPositionZ ? "Z" : "-";
+        
+        status += " | Rotation制限: ";
+        status += lockRotationX ? "X" : "-";
+        status += lockRotationY ? "Y" : "-";
+        status += lockRotationZ ? "Z" : "-";
+        
+        return status;
+    }
+
+    #endregion
 }
