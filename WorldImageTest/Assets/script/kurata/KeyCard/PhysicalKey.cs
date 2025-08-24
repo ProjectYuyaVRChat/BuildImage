@@ -36,6 +36,32 @@ public class PhysicalKey : UdonSharpBehaviour
         {
             keyName = $"鍵({GetKeySizeString()})";
         }
+        
+        // Colliderの設定を確認
+        CheckColliderSetup();
+    }
+    
+    /// <summary>
+    /// Colliderの設定を確認
+    /// </summary>
+    private void CheckColliderSetup()
+    {
+        Collider keyCollider = GetComponent<Collider>();
+        if (keyCollider == null)
+        {
+            Debug.LogWarning($"[PhysicalKey] {keyName}: Colliderが見つかりません。鍵穴との接触検出ができません。");
+        }
+        else
+        {
+            Debug.Log($"[PhysicalKey] {keyName}: Collider設定確認 - IsTrigger: {keyCollider.isTrigger}");
+        }
+        
+        // Rigidbodyの確認
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogWarning($"[PhysicalKey] {keyName}: Rigidbodyが見つかりません。物理的な移動ができません。");
+        }
     }
     
     /// <summary>
