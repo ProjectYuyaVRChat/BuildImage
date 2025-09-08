@@ -10,32 +10,32 @@ public class KeyCase : UdonSharpBehaviour
     [SerializeField] private Transform leftWall;
     [SerializeField] private float openSpeed = 0;
     
-    private Vector3 initialRightPosition;
-    private Vector3 initialLeftPosition;
+    private Vector3 initialRightLocalPosition;
+    private Vector3 initialLeftLocalPosition;
 
     public bool isMove = false;
 
     private void Start()
     {
-        // Startメソッドで壁の初期位置を保存
-        initialRightPosition = rightWall.position;
-        initialLeftPosition = leftWall.position;
+        // Startメソッドで壁の初期ローカル位置を保存
+        initialRightLocalPosition = rightWall.localPosition;
+        initialLeftLocalPosition = leftWall.localPosition;
     }
 
     private void Update()
     {
         if (isMove)
         {
-            // 右壁の現在の位置が初期位置から0.5未満であれば移動
-            if (Vector3.Distance(initialRightPosition, rightWall.position) < 0.5f)
+            // 右壁の現在のローカル位置が初期ローカル位置から0.5未満であれば移動
+            if (Vector3.Distance(initialRightLocalPosition, rightWall.localPosition) < 0.5f)
             {
-                rightWall.position += Vector3.right * openSpeed * Time.deltaTime;
+                rightWall.localPosition += new Vector3(openSpeed * Time.deltaTime, 0, 0);
             }
 
-            // 左壁の現在の位置が初期位置から0.5未満であれば移動
-            if (Vector3.Distance(initialLeftPosition, leftWall.position) < 0.5f)
+            // 左壁の現在のローカル位置が初期ローカル位置から0.5未満であれば移動
+            if (Vector3.Distance(initialLeftLocalPosition, leftWall.localPosition) < 0.5f)
             {
-                leftWall.position += Vector3.left * openSpeed * Time.deltaTime;
+                leftWall.localPosition += new Vector3(-openSpeed * Time.deltaTime, 0, 0);
             }
         }
     }
