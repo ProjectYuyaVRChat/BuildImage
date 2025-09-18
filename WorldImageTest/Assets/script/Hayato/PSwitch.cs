@@ -28,26 +28,38 @@ public class PSwitch : UdonSharpBehaviour
         {
             count -= Time.deltaTime;
             isObjectActive = true;
-            RequestSerialization();
             targetBridgeF.SetActive(isObjectActive);
             targetBridgeP.SetActive(isObjectActive);
+            RequestSerialization();
         }
 
         if (count <= 0)
         {
             isObjectActive = false;
             isOn = false;
-            RequestSerialization();
             targetBridgeF.SetActive(isObjectActive);
             targetBridgeP.SetActive(isObjectActive);
+            RequestSerialization();
             count = timer;
         }
     }
     
     public override void Interact()
     {
+        if (!Networking.IsOwner(gameObject))
+        {
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+        }
+        
         isOn = true;
         isObjectActive = true;
         RequestSerialization();
+    }
+    
+    public override void OnDeserialization()
+    {
+        // 同期されたisObjectActiveの値を使ってオブジェクトの状態を更新する
+        targetBridgeF.SetActive(isObjectActive);
+        targetBridgeP.SetActive(isObjectActive);
     }
 }
