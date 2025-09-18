@@ -11,12 +11,14 @@ public class PSwitch : UdonSharpBehaviour
     [SerializeField] private float timer = 5f;
     private float count;
     
-    private bool isOn = false;
+    [UdonSynced]private bool isOn = false;
+    [UdonSynced]
+    public bool isObjectActive = false;
 
     private void Start()
     {
-        targetBridgeF.SetActive(false);
-        targetBridgeP.SetActive(false);
+        targetBridgeF.SetActive(isObjectActive);
+        targetBridgeP.SetActive(isObjectActive);
         count = timer;
     }
 
@@ -25,15 +27,19 @@ public class PSwitch : UdonSharpBehaviour
         if (isOn)
         {
             count -= Time.deltaTime;
-            targetBridgeF.SetActive(true);
-            targetBridgeP.SetActive(true);
+            isObjectActive = true;
+            RequestSerialization();
+            targetBridgeF.SetActive(isObjectActive);
+            targetBridgeP.SetActive(isObjectActive);
         }
 
         if (count <= 0)
         {
-            targetBridgeF.SetActive(false);
-            targetBridgeP.SetActive(false);
+            isObjectActive = false;
             isOn = false;
+            RequestSerialization();
+            targetBridgeF.SetActive(isObjectActive);
+            targetBridgeP.SetActive(isObjectActive);
             count = timer;
         }
     }
@@ -41,5 +47,7 @@ public class PSwitch : UdonSharpBehaviour
     public override void Interact()
     {
         isOn = true;
+        isObjectActive = true;
+        RequestSerialization();
     }
 }
