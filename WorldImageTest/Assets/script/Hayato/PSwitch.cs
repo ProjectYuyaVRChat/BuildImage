@@ -33,6 +33,8 @@ public class PSwitch : UdonSharpBehaviour
         {
             targetBridgeF.SetActive(false);
             targetBridgeP.SetActive(false);
+            isOn = false;
+            count = timer;
         }
     }
     
