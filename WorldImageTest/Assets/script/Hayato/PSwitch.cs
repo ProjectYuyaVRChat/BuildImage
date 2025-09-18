@@ -11,12 +11,14 @@ public class PSwitch : UdonSharpBehaviour
     [SerializeField] private float timer = 5f;
     private float count;
     
-    private bool isOn = false;
+    [UdonSynced]private bool isOn = false;
+    [UdonSynced]
+    public bool isObjectActive = false;
 
     private void Start()
     {
-        targetBridgeF.SetActive(false);
-        targetBridgeP.SetActive(false);
+        targetBridgeF.SetActive(isObjectActive);
+        targetBridgeP.SetActive(isObjectActive);
         count = timer;
     }
 
@@ -25,21 +27,39 @@ public class PSwitch : UdonSharpBehaviour
         if (isOn)
         {
             count -= Time.deltaTime;
-            targetBridgeF.SetActive(true);
-            targetBridgeP.SetActive(true);
+            isObjectActive = true;
+            targetBridgeF.SetActive(isObjectActive);
+            targetBridgeP.SetActive(isObjectActive);
+            RequestSerialization();
         }
 
         if (count <= 0)
         {
-            targetBridgeF.SetActive(false);
-            targetBridgeP.SetActive(false);
+            isObjectActive = false;
             isOn = false;
+            targetBridgeF.SetActive(isObjectActive);
+            targetBridgeP.SetActive(isObjectActive);
+            RequestSerialization();
             count = timer;
         }
     }
     
     public override void Interact()
     {
+        if (!Networking.IsOwner(gameObject))
+        {
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+        }
+        
         isOn = true;
+        isObjectActive = true;
+        RequestSerialization();
+    }
+    
+    public override void OnDeserialization()
+    {
+        // 同期されたisObjectActiveの値を使ってオブジェクトの状態を更新する
+        targetBridgeF.SetActive(isObjectActive);
+        targetBridgeP.SetActive(isObjectActive);
     }
 }
