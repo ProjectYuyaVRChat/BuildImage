@@ -9,7 +9,7 @@ using LineRenderer = UnityEngine.LineRenderer;
 public class LazerPointer : UdonSharpBehaviour
 {
     // Unity Inspectorから設定する変数
-    public LineRenderer laserLine; // Line Rendererをアサイン
+    public LineRenderer laserLine; 
     public float maxLaserDistance = 100f; // レーザーの最大距離
     public LayerMask collisionLayers; // 衝突させたいレイヤーを設定
     
