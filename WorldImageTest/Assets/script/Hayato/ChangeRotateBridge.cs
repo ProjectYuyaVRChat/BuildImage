@@ -13,6 +13,6 @@ public class ChangeRotateBridge : UdonSharpBehaviour
     {
         float newRotationZ = Mathf.Sin(Time.time * speed) * rotateLimit;
         
-        transform.rotation = Quaternion.Euler(0, 0, newRotationZ);
+        transform.localRotation  = Quaternion.Euler(0, 0, newRotationZ);
     }
 }

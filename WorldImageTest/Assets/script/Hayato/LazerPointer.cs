@@ -15,7 +15,7 @@ public class LazerPointer : UdonSharpBehaviour
     
     void Update()
     {
-        Vector3 origin = transform.position;
+        Vector3 origin = transform.position + 0.1f * -transform.forward;
         // ⭐ この行が、オブジェクトのローカル-Z軸方向を決定しています。
         Vector3 direction = -transform.forward; 
 
@@ -23,6 +23,7 @@ public class LazerPointer : UdonSharpBehaviour
 
         if (Physics.Raycast(origin, direction, out hit, maxLaserDistance, collisionLayers))
         {
+            Debug.Log("hitを確認");
             // 衝突した場合: レーザーの終点を衝突点に設定
             if (laserLine != null)
             {
