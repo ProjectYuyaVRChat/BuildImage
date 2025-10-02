@@ -18,15 +18,15 @@ public class PassWordCheck : UdonSharpBehaviour
     public GameObject[] numberCubes; // 数字や操作用のCubeを格納する配列
     
     [Header("ボタン設定")]
-    [Tooltip("各ボタンに割り当てる値を設定（配列の順番でnumberCubesと対応）")]
+    [Tooltip("各ボタンに割り当てる値を設定（配列の順番でnumberCubesと対応）\n0-9: 数字\nEnter: 確定\nDelete: クリア\nClear: 削除\n?: デフォルト値")]
     [SerializeField]
     private string[] buttonValues = {
-        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Enter", "Delete"
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Enter", "Delete", "Clear"
     };
     
     [Tooltip("ボタンの数を設定（配列の長さを調整する場合）")]
     [SerializeField, Range(1, 20)]
-    private int buttonCount = 12;
+    private int buttonCount = 13;
 
     private string inputPassword = ""; // 入力中のパスワード
 
@@ -64,6 +64,7 @@ public class PassWordCheck : UdonSharpBehaviour
                     case 9: assignedValue = "9"; break;
                     case 10: assignedValue = "Enter"; break;
                     case 11: assignedValue = "Delete"; break;
+                    case 12: assignedValue = "Clear"; break;
                     default: assignedValue = "?"; break;
                 }
                 
@@ -105,6 +106,16 @@ public class PassWordCheck : UdonSharpBehaviour
             if (inputPassword.Length > 0)
             {
                 inputPassword = inputPassword.Substring(0, inputPassword.Length - 1);
+            }
+        }
+        else if (number == "Clear")
+        {
+            // Clearが押されたら全文字を削除
+            inputPassword = "";
+            
+            if (showDebugInfo)
+            {
+                Debug.Log("[PassWordCheck] 全入力をクリアしました。");
             }
         }
         else
