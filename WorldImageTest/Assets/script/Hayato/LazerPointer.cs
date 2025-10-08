@@ -15,7 +15,7 @@ public class LazerPointer : UdonSharpBehaviour
     
     void Update()
     {
-        Vector3 origin = transform.position;
+        Vector3 origin = transform.position + 0.1f * -transform.forward;
         // ⭐ この行が、オブジェクトのローカル-Z軸方向を決定しています。
         Vector3 direction = -transform.forward; 
 
