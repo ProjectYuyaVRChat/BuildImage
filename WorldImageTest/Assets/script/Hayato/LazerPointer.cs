@@ -23,7 +23,6 @@ public class LazerPointer : UdonSharpBehaviour
 
         if (Physics.Raycast(origin, direction, out hit, maxLaserDistance, collisionLayers))
         {
-            Debug.Log("hitを確認");
             // 衝突した場合: レーザーの終点を衝突点に設定
             if (laserLine != null)
             {
