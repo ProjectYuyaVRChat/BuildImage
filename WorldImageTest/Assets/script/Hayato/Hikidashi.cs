@@ -11,11 +11,13 @@ public class Hikidashi : UdonSharpBehaviour
     private Vector3 hikiObj;
     private Quaternion hikiRot;
     private float currentZ;
+    private Rigidbody rb;
     
     void Start()
     {
         hikiObj = transform.position;
         hikiRot = transform.rotation;
+        rb = gameObject.GetComponent<Rigidbody>();
     }
 
     
@@ -27,6 +29,7 @@ public class Hikidashi : UdonSharpBehaviour
 
         transform.position = newPosition;
         transform.Rotate(0,0,0);
+        rb.velocity = Vector3.zero;
 
         transform.rotation = hikiRot;
     }
