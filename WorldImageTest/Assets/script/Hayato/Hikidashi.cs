@@ -10,8 +10,14 @@ public class Hikidashi : UdonSharpBehaviour
 {
     private Vector3 hikiObj;
     private Quaternion hikiRot;
+    private float currentX;
+    private float currentY;
     private float currentZ;
     private Rigidbody rb;
+    private Vector3 newPosition;
+    public bool x = false;
+    public bool y = false;
+    public bool z = false;
     
     void Start()
     {
@@ -23,9 +29,23 @@ public class Hikidashi : UdonSharpBehaviour
     
     void Update()
     {
-        currentZ = transform.position.z;
+        if (x)
+        {
+            currentX = transform.position.x;
+            newPosition = new Vector3(currentX, hikiObj.y, hikiObj.z);
+        }
+        
+        if (y)
+        {
+            currentY = transform.position.y;
+            newPosition = new Vector3(hikiObj.x, currentY, hikiObj.z);
+        }
 
-        Vector3 newPosition = new Vector3(hikiObj.x, hikiObj.y, currentZ);
+        if (z)
+        {
+            currentZ = transform.position.z;
+            newPosition = new Vector3(hikiObj.x, hikiObj.y, currentZ);
+        }
 
         transform.position = newPosition;
         transform.Rotate(0,0,0);
