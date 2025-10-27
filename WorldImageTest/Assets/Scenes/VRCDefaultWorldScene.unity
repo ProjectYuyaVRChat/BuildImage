@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &238320269 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7440221200351108526, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-  m_PrefabInstance: {fileID: 2560873534658452659}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &358170787
 GameObject:
   m_ObjectHideFlags: 0
@@ -288,11 +283,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1397358083 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3068791909368067924, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-  m_PrefabInstance: {fileID: 2560873534658452659}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1787983409
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,67 +377,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 55, y: 125, z: 100}
---- !u!1001 &2560873534658452659
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4941965143392437257, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: serializationData.Prefab
-      value: 
-      objectReference: {fileID: 4941965143392437257, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-    - target: {fileID: 7239567513771740027, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_Name
-      value: Tana
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.28153837
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.59746677
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5.175514
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8235996216482679186, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8d78f71761e80af4abdd8e2a79489eeb, type: 3}
 --- !u!114 &3231720197660963110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,12 +582,12 @@ MonoBehaviour:
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
     - VRC.Udon.UdonBehaviour
-  - gameObject: {fileID: 238320269}
+  - gameObject: {fileID: 0}
     ID: 12
     SerializedTypeNames:
     - VRC.SDK3.Components.VRCPickup
     - VRC.Udon.UdonBehaviour
-  - gameObject: {fileID: 1397358083}
+  - gameObject: {fileID: 0}
     ID: 13
     SerializedTypeNames:
     - VRC.SDK3.Components.VRCPickup
@@ -782,4 +711,3 @@ SceneRoots:
   - {fileID: 1787983411}
   - {fileID: 7606902903243430487}
   - {fileID: 358170790}
-  - {fileID: 2560873534658452659}
