@@ -7,7 +7,7 @@ public class TakeSwitchTest : UdonSharpBehaviour
 {
     public PhotoTaker photoTaker;
 
-    public override void Interact()
+    public override void OnPlayerTriggerEnter(VRCPlayerApi player)
     {
         photoTaker.ToggleCapturing();
     }

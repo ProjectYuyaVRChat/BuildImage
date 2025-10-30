@@ -17,7 +17,6 @@ public class Respawn : UdonSharpBehaviour
 
     public override void OnPlayerTriggerEnter(VRCPlayerApi player)
     {
-        Debug.Log("passssssssssssss");
         if (!mid.isOn)
         {
             player.TeleportTo(respawnPoint.position, Quaternion.Euler(0, respawnRotateY, 0));
