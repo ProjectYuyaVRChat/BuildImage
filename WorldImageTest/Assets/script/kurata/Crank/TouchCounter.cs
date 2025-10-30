@@ -8,8 +8,8 @@ public class TouchCounter : UdonSharpBehaviour
     [Header("触れたらカウントするオブジェクト")]
     public GameObject targetObject;
 
-    [Header("カウント数")]
-    public int count = 0;
+    //[Header("カウント数")]
+    [HideInInspector]public int count = 0;
 
      // 一度だけカウントするためのフラグ
     private bool counted = false;
