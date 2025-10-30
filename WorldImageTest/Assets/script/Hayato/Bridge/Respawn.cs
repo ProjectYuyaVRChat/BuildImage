@@ -11,35 +11,20 @@ public class Respawn : UdonSharpBehaviour
     [SerializeField] private Transform respawnPoint2;
     public PassMidPoint mid;
 
-    [SerializeField] private float respawnRotateY;
+    [SerializeField] private float respawnRotateY = 0;
     private Quaternion startRespawnRotation;
     private Quaternion midRespawnRotation;
-
-    private void Start()
-    {
-        startRespawnRotation = Quaternion.Euler(
-            respawnPoint.rotation.eulerAngles.x,
-            respawnRotateY, 
-            respawnPoint.rotation.eulerAngles.z
-        );
-        
-        midRespawnRotation = Quaternion.Euler(
-            respawnPoint2.rotation.eulerAngles.x,
-            respawnRotateY, 
-            respawnPoint2.rotation.eulerAngles.z
-        );
-    }
 
     public override void OnPlayerTriggerEnter(VRCPlayerApi player)
     {
         Debug.Log("passssssssssssss");
         if (!mid.isOn)
         {
-            player.TeleportTo(respawnPoint.position, startRespawnRotation);
+            player.TeleportTo(respawnPoint.position, Quaternion.Euler(0, respawnRotateY, 0));
         }
         else
         {
-            player.TeleportTo(respawnPoint2.position, midRespawnRotation);
+            player.TeleportTo(respawnPoint2.position, Quaternion.Euler(0, respawnRotateY, 0));
         }
     }
 }
