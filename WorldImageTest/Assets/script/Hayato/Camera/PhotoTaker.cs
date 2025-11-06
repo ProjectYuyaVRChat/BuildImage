@@ -31,7 +31,10 @@ public class PhotoTaker : UdonSharpBehaviour
         }
         
         updateCameraState();
-        isCapturing = !isCapturing;
+        if (isCapturing == true)
+        {
+            isCapturing = !isCapturing;
+        }
         RequestSerialization();
     }
 
@@ -47,11 +50,11 @@ public class PhotoTaker : UdonSharpBehaviour
 
     private void updateCameraState()
     {
-        /*if (worldCamera == null)
+        if (worldCamera == null)
         {
-            debugText3.text = ("PhotoTaker: worldCameraがインスペクタで設定されていません。");
+            Debug.Log("PhotoTaker: worldCameraがインスペクタで設定されていません。");
             return;
-        }*/
+        }
         
         worldCamera.gameObject.SetActive(isCapturing);
 
