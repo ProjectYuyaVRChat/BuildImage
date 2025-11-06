@@ -20,6 +20,8 @@ public class CardReader : UdonSharpBehaviour
     private Vector3 rightClosedPos;
     private bool[] cardFlags;
     private bool doorOpened = false;
+
+    public Animator GateAnimator;
     
 
     void Start()
@@ -80,8 +82,9 @@ public class CardReader : UdonSharpBehaviour
 
     public void OpenDoors()
     {
-        leftDoor.position = Vector3.Lerp(leftDoor.position, leftClosedPos + leftOpenOffset, doorOpenSpeed * Time.deltaTime);
-        rightDoor.position = Vector3.Lerp(rightDoor.position, rightClosedPos + rightOpenOffset, doorOpenSpeed * Time.deltaTime);
+        /*leftDoor.position = Vector3.Lerp(leftDoor.position, leftClosedPos + leftOpenOffset, doorOpenSpeed * Time.deltaTime);
+        rightDoor.position = Vector3.Lerp(rightDoor.position, rightClosedPos + rightOpenOffset, doorOpenSpeed * Time.deltaTime);*/
+        GateAnimator.SetTrigger("DoorOpenTrigger");
         // Lerpだけだと一回しか実行されないから、継続的に動かすには Update 内で処理してもOK
     }
 

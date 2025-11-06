@@ -28,6 +28,8 @@ public class ElevatorWarp : UdonSharpBehaviour
     
     private bool isSequenceRunning = false;
     AudioSource audioSource;
+    
+    [SerializeField] private Animator closeAnimation;
 
     private void Start()
     {
@@ -88,6 +90,7 @@ public class ElevatorWarp : UdonSharpBehaviour
     public void DoFade()
     {
         ElevatorCloseSE();
+        closeAnimation.SetTrigger("DoorCloseTrigger");
         fadeCanvas.SetActive(true);
         SendCustomEventDelayedSeconds(nameof(StartFadeAnimater),3);
         SendCustomEventDelayedSeconds(nameof(WarpPlayer),4);
