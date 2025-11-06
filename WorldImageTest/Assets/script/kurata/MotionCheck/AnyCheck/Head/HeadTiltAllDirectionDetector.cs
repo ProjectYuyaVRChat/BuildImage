@@ -44,11 +44,11 @@ public class HeadTiltAllDirectionDetector : MotionDetectorBase
 
         if (roll > tiltThresholdRoll)
         {
-            newState = NeckTiltState.TiltRight;
+            newState = NeckTiltState.TiltLeft;
         }
         else if (roll < -tiltThresholdRoll)
         {
-            newState = NeckTiltState.TiltLeft;
+            newState = NeckTiltState.TiltRight;
         }
         else if (pitch > tiltThresholdPitch)
         {

@@ -9,7 +9,7 @@ public class CrouchDetector : MotionDetectorBase
 {
     private bool isCrouching = false;
     //private float baseHeadHeight = 0f;
-    private float crouchThreshold = 0.3f; // 基準高さからどれだけ下がったらしゃがみか
+    [SerializeField]  private float crouchThreshold = 0.05f; // 基準高さからどれだけ下がったらしゃがみか
     private float HeadHeight = 0f;
 
     private bool initialized = false;
