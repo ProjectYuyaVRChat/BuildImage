@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using VRC.SDKBase;
 using VRC.Udon;
-
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class PassWordCheck : UdonSharpBehaviour
 {
     [Header("パスワード設定")]
@@ -28,7 +28,8 @@ public class PassWordCheck : UdonSharpBehaviour
     [SerializeField, Range(1, 20)]
     private int buttonCount = 12;
 
-    private string inputPassword = ""; // 入力中のパスワード
+
+    [UdonSynced]private string inputPassword = ""; // 入力中のパスワード
 
     private void Start()
     {
@@ -93,8 +94,21 @@ public class PassWordCheck : UdonSharpBehaviour
         }
     }
 
+    // 入力内容を更新
+    public override void OnDeserialization()
+    {
+            if(displayText != null)
+                displayText.text = inputPassword;
+    }
+
     public void AppendNumber(string number)
     {
+        VRCPlayerApi player = Networking.LocalPlayer;
+        if(!Networking.IsOwner(gameObject))
+        {
+            Networking.SetOwner(player, gameObject);
+        }
+
         if (number == "Enter")
         {
             CheckPassword(); // Enterが押されたらパスワードを確認
@@ -113,7 +127,7 @@ public class PassWordCheck : UdonSharpBehaviour
             inputPassword += number;
         }
 
-        // 入力内容を更新
+        RequestSerialization();
         displayText.text = inputPassword;
     }
 
