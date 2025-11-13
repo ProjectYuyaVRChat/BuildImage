@@ -9,7 +9,7 @@ public class JumpDetector : MotionDetectorBase
 
     private float lastHeadHight = 0f;
     private bool initialized = false;
-    private float JumpVelocity = 1.2f;  //　閾値
+    [SerializeField] private float JumpVelocity = 1.2f;  //　閾値
 
     //[SerializeField] private TextMeshProUGUI debugtext; // 子クラスでInspectorからセット
 
