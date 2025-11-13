@@ -8,7 +8,9 @@ using VRC.Udon;
 /// </summary>
 public class HandForwardDetectorRight : MotionDetectorBase
 {
-    [SerializeField] private float forwardThreshold = 0.3f; // 判定のしきい値[m]
+    [SerializeField, Range(0f, 1f)]
+    private float forwardThresholdRatio = 0.2f; // 判定のしきい値[m]
+
     private bool isForward = false;
     private bool initialized = false;
 
@@ -23,18 +25,20 @@ public class HandForwardDetectorRight : MotionDetectorBase
 
     protected override void DetectMotion()
     {
-        VRCPlayerApi.TrackingData headData = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
-        Vector3 headPos = headData.position;
-        Quaternion headRot = headData.rotation;
 
-        // 頭（プレイヤー）基準のローカル座標に変換
+        Vector3 headPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
+        Quaternion headRot = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
+        Vector3 rightHandPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.RightHand).position;
+
+
+        // 頭を基準にしたローカル空間での手の位置
         Vector3 localHand = Quaternion.Inverse(headRot) * (rightHandPos - headPos);
 
-        // デバッグ出力
-        if (debugText != null)
-        {
-            debugText.text = $"右手Z: {localHand.z:F3}\n閾値: {forwardThreshold:F3}\n状態: {(isForward ? "前" : "戻し")}";
-        }
+        // 身長を取得して前方閾値を比率で計算
+        float playerHeight = EstimatePlayerHeight(); // basePos.y〜headPos.yの2倍
+        float forwardThreshold = playerHeight * forwardThresholdRatio;
+
+       
 
         // 初期化
         if (!initialized)
@@ -65,6 +69,12 @@ public class HandForwardDetectorRight : MotionDetectorBase
                 centralizedDetector.SetRightHandForwardState(isForward);
             else if (doorGimmickSystem != null)
                 doorGimmickSystem.SetRightHandForwardState(isForward);
+        }
+
+        // デバッグ出力
+        if (debugText != null)
+        {
+            debugText.text = $"右手Z: {localHand.z:F3}\n閾値: {forwardThreshold:F3}\n状態: {(isForward ? "前" : "戻し")}";
         }
     }
 }
