@@ -4,66 +4,60 @@ using VRC.SDKBase;
 using VRC.Udon;
 
 /// <summary>
-/// 右手を体の上に上げたか判定する
+/// 右手が頭の高さより上かどうかを判定する
 /// </summary>
 public class HandUpDetectorRight : MotionDetectorBase
 {
-    [SerializeField] private float upThreshold = 0.1f;
+    [SerializeField] private float upThreshold = 0.05f; // 少し余裕を持たせた閾値
     private bool isUp = false;
     private bool initialized = false;
 
-    // 外部から状態を取得するためのプロパティ
     public bool IsUp => isUp;
-    
-    // 中央集権型モーション検出器への参照（推奨）
+
     [SerializeField] private CentralizedMotionDetector centralizedDetector;
-    
-    // 従来の個別参照（後方互換性のため）
     [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
 
     protected override void DetectMotion()
     {
-        Vector3 localHand = Quaternion.Inverse(baseRot) * (rightHandPos - basePos);
+        // 現在の頭と右手のワールド座標を取得
+        Vector3 handPos = rightHandPos;
+        Vector3 headPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
 
-        // デバッグ情報を表示
+        float heightDiff = handPos.y - headPos.y;
+
+        // デバッグ出力
         if (debugText != null)
         {
-            debugText.text = $"右手位置: {localHand.y:F3}\n閾値: {upThreshold:F3}\n状態: {(isUp ? "上げた" : "下げた")}";
+            debugText.text = $"右手 - 頭の高さ差: {heightDiff:F3}\n閾値: {upThreshold:F3}\n状態: {(isUp ? "上げた" : "下げた")}";
         }
 
         if (!initialized)
         {
-            isUp = (localHand.y > upThreshold);
+            isUp = (heightDiff > upThreshold);
             initialized = true;
             return;
         }
 
         bool wasUp = isUp;
 
-        if (!isUp && localHand.y > upThreshold)
+        if (!isUp && heightDiff > upThreshold)
         {
             isUp = true;
-            ShowMotionMessage("右手を上に上げた");
+            ShowMotionMessage("右手を頭より上に上げた");
         }
-        else if (isUp && localHand.y <= upThreshold)
+        else if (isUp && heightDiff <= 0f)
         {
             isUp = false;
-            ShowMotionMessage("右手を上から戻した");
+            ShowMotionMessage("右手を頭より下に戻した");
         }
-        
-        // 状態が変化したらシステムに通知
+
+        // 状態が変わったら通知
         if (wasUp != isUp)
         {
-            // 中央集権型システムが設定されている場合はそちらに送信
             if (centralizedDetector != null)
-            {
                 centralizedDetector.SetRightHandUpState(isUp);
-            }
-            // 従来の個別システムにも送信（後方互換性）
             else if (doorGimmickSystem != null)
-            {
                 doorGimmickSystem.SetRightHandUpState(isUp);
-            }
         }
     }
 }
