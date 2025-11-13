@@ -13,7 +13,7 @@ public class Bullet : UdonSharpBehaviour
         SendCustomEventDelayedSeconds(nameof(DestroyBullet), lifeTime);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         DestroyBullet();
     }
