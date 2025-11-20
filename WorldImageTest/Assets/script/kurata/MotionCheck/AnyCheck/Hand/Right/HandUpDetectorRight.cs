@@ -4,7 +4,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 
 /// <summary>
-/// 右手を体の上に上げたか判定する
+/// 右手を体の上に上げたか判定する（ローカル基準版）
 /// </summary>
 public class HandUpDetectorRight : MotionDetectorBase
 {
@@ -12,23 +12,22 @@ public class HandUpDetectorRight : MotionDetectorBase
     private bool isUp = false;
     private bool initialized = false;
 
-    // 外部から状態を取得するためのプロパティ
     public bool IsUp => isUp;
-    
-    // 中央集権型モーション検出器への参照（推奨）
+
     [SerializeField] private CentralizedMotionDetector centralizedDetector;
-    
-    // 従来の個別参照（後方互換性のため）
     [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
 
     protected override void DetectMotion()
     {
+        // 右手の位置を体ローカルに変換
         Vector3 localHand = Quaternion.Inverse(baseRot) * (rightHandPos - basePos);
 
-        // デバッグ情報を表示
+        // デバッグ
         if (debugText != null)
         {
-            debugText.text = $"右手位置: {localHand.y:F3}\n閾値: {upThreshold:F3}\n状態: {(isUp ? "上げた" : "下げた")}";
+            debugText.text = $"右手位置(ローカルY): {localHand.y:F3}\n" +
+                             $"閾値: {upThreshold:F3}\n" +
+                             $"状態: {(isUp ? "上げた" : "下げた")}";
         }
 
         if (!initialized)
@@ -40,26 +39,26 @@ public class HandUpDetectorRight : MotionDetectorBase
 
         bool wasUp = isUp;
 
+        // 上げた
         if (!isUp && localHand.y > upThreshold)
         {
             isUp = true;
             ShowMotionMessage("右手を上に上げた");
         }
+        // 下げた
         else if (isUp && localHand.y <= upThreshold)
         {
             isUp = false;
             ShowMotionMessage("右手を上から戻した");
         }
-        
-        // 状態が変化したらシステムに通知
+
+        // 状態変化を通知
         if (wasUp != isUp)
         {
-            // 中央集権型システムが設定されている場合はそちらに送信
             if (centralizedDetector != null)
             {
                 centralizedDetector.SetRightHandUpState(isUp);
             }
-            // 従来の個別システムにも送信（後方互換性）
             else if (doorGimmickSystem != null)
             {
                 doorGimmickSystem.SetRightHandUpState(isUp);

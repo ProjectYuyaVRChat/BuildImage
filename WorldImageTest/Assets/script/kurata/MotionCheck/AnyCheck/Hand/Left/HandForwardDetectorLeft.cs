@@ -5,25 +5,33 @@ using VRC.Udon;
 
 /// <summary>
 /// 左手を体の前に突き出したか判定する
+/// （頭の位置と向きを基準、身長に応じて閾値自動調整）
 /// </summary>
 public class HandForwardDetectorLeft : MotionDetectorBase
 {
-    [SerializeField] private float forwardThreshold = 0.3f;
+    [SerializeField, Range(0f, 1f)]
+    private float forwardThresholdRatio = 0.2f; // 身長比での前方閾値
+
     private bool isForward = false;
     private bool initialized = false;
 
-    // 外部から状態を取得するためのプロパティ
     public bool IsForward => isForward;
-    
-    // 中央集権型モーション検出器への参照（推奨）
+
     [SerializeField] private CentralizedMotionDetector centralizedDetector;
-    
-    // 従来の個別参照（後方互換性のため）
     [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
 
     protected override void DetectMotion()
     {
-        Vector3 localHand = Quaternion.Inverse(baseRot) * (leftHandPos - basePos);
+        Vector3 headPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).position;
+        Quaternion headRot = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head).rotation;
+        Vector3 leftHandPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.LeftHand).position;
+
+        // 頭を基準にしたローカル空間での手の位置
+        Vector3 localHand = Quaternion.Inverse(headRot) * (leftHandPos - headPos);
+
+        // 身長を取得して前方閾値を比率で計算
+        float playerHeight = EstimatePlayerHeight(); // basePos.y〜headPos.yの2倍
+        float forwardThreshold = playerHeight * forwardThresholdRatio;
 
         if (!initialized)
         {
@@ -44,20 +52,18 @@ public class HandForwardDetectorLeft : MotionDetectorBase
             isForward = false;
             ShowMotionMessage("左手を前から戻した");
         }
-        
-        // 状態が変化したらシステムに通知
+
         if (wasForward != isForward)
         {
-            // 中央集権型システムが設定されている場合はそちらに送信
             if (centralizedDetector != null)
-            {
                 centralizedDetector.SetLeftHandForwardState(isForward);
-            }
-            // 従来の個別システムにも送信（後方互換性）
             else if (doorGimmickSystem != null)
-            {
                 doorGimmickSystem.SetLeftHandForwardState(isForward);
-            }
+        }
+
+        if (debugText != null)
+        {
+            debugText.text = $"左手ローカルZ: {localHand.z:F3}\n閾値: {forwardThreshold:F3} (身長比)\n状態: {(isForward ? "前" : "戻し")}";
         }
     }
 }
