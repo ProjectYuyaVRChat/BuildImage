@@ -239,6 +239,31 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
         motionStates[(int)motionType] = state;
     }
     
+    // 外部からモーション状態を取得するメソッド
+    public bool GetMotionState(MotionType motionType)
+    {
+        return motionStates[(int)motionType];
+    }
+    
+    // 各モーションの成功状態を取得するメソッド（MotionSuccessObjectActivator用）
+    public bool IsMotion1Success()
+    {
+        if (!useMotions[0]) return false;
+        return motionStates[(int)requiredMotions[0]];
+    }
+    
+    public bool IsMotion2Success()
+    {
+        if (!useMotions[1]) return false;
+        return motionStates[(int)requiredMotions[1]];
+    }
+    
+    public bool IsMotion3Success()
+    {
+        if (!useMotions[2]) return false;
+        return motionStates[(int)requiredMotions[2]];
+    }
+    
     // 各モーション検出器用の専用メソッド
     public void SetJumpState(bool state) => SetMotionState(MotionType.Jump, state);
     public void SetCrouchState(bool state) => SetMotionState(MotionType.Crouch, state);
