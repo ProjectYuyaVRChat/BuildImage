@@ -6,7 +6,8 @@ public class SequentialMotionHandler : UdonSharpBehaviour
     [Header("順次モード設定")]
     [SerializeField] private float stepTimeout = 10f;
     [SerializeField] private float stepCooldown = 1f;
-    [SerializeField] private float motionStabilizeTime = 0.5f;
+    [Tooltip("モーションの安定化時間（秒）。短くすると瞬間的なモーション（Jump等）も検出しやすくなります")]
+    [SerializeField] private float motionStabilizeTime = 0.1f;
     [SerializeField] private float wrongMotionResetTime = 2f;
     [SerializeField] private bool resetOnWrongMotion = true;
     [SerializeField] private bool showDebugInfo = true;
