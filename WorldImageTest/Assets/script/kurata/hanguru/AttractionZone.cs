@@ -1,47 +1,75 @@
-﻿
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
 public class AttractionZone : UdonSharpBehaviour
 {
-    [Header("吸い寄せる中心点")]
-    //public Transform centerPoint;
-
-    [Header("引き寄せ速度")]
     public float pullSpeed = 2f;
+    public float rotateSpeed = 180f;
 
-    [Header("正解のオブジェクト")]
-    public GameObject correctObject; //正解のオブジェクト
-     
-    [Header("消すオブジェクト")]
+    [Header("正解オブジェクト(複数対応)")]
+    public GameObject[] correctObjects;
+
+    [Header("全部揃ったら消すオブジェクト")]
     public GameObject objectToHide;
+
+    private bool[] placedFlags; //吸着したか判定用
+
+    private void Start()
+    {
+        placedFlags = new bool[correctObjects.Length];
+    }
 
     private void OnTriggerStay(Collider other)
     {
-       AttractableObject attractable = other.GetComponent<AttractableObject>();
+        AttractableObject attractable = other.GetComponent<AttractableObject>();
         if (attractable == null) return;
-       
-       // 吸い寄せ処理
+
+        // Move position toward center
         other.transform.position = Vector3.MoveTowards(
             other.transform.position,
-           // centerPoint.position,
-           transform.position,
+            transform.position,
             pullSpeed * Time.deltaTime
         );
 
-        // 距離が近くなったら正解判定
+        // Rotate gradually to zero
+        other.transform.rotation = Quaternion.RotateTowards(
+            other.transform.rotation,
+            Quaternion.identity,
+            rotateSpeed * Time.deltaTime
+        );
+
+        // 判定距離以内か
         if (Vector3.Distance(other.transform.position, transform.position) < 0.05f)
         {
-            // 正解のオブジェクトだった場合
-            if (other.gameObject == correctObject)
+            for (int i = 0; i < correctObjects.Length; i++)
             {
-                if (objectToHide != null)
+                if (other.gameObject == correctObjects[i] && !placedFlags[i])
                 {
-                    objectToHide.SetActive(false);
+                    placedFlags[i] = true;
+                    Debug.Log($"✔ {other.name} セット完了");
+
+                    // 吸着後位置固定
+                    other.transform.position = transform.position;
+                    other.transform.rotation = Quaternion.identity;
                 }
             }
+
+            // 全部揃ったらイベント実行
+            if (AllPlaced() && objectToHide != null)
+            {
+                objectToHide.SetActive(false);
+            }
         }
+    }
+
+    private bool AllPlaced()
+    {
+        foreach (bool placed in placedFlags)
+        {
+            if (!placed) return false;
+        }
+        return true;
     }
 }
