@@ -31004,6 +31004,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43ebfd18037129f4aa9b7ad11ad2bfa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1136641989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136641983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1783056023, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowCollisionOwnershipTransfer: 1
+  ForceKinematicOnRemote: 0
 --- !u!1 &1142780357 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2320191215611075114, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
@@ -41096,6 +41110,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 420578454}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4619746566167752146, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1136641989}
     - targetCorrespondingSourceObject: {fileID: 7346994374989359168, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2098880815}
