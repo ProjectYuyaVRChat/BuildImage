@@ -35,7 +35,14 @@ public class MotionSuccess : UdonSharpBehaviour
         // 値が変わったときだけ同期
         if (new1 != motion1State || new2 != motion2State || new3 != motion3State)
         {
-            // 変更を送る前に自分がオーナーになる
+            // ローカルでモーションを成功させた人だけが同期を送る
+            // → 他の人が受信後に「自分は成功していない」判定で書き戻すのを防ぐ
+            if (!Networking.IsOwner(gameObject) && !(new1 || new2 || new3))
+            {
+                // オーナーでなく、ローカルでは成功していないなら何もしない
+                return;
+            }
+            // ローカルで成功を検知した人はオーナーを取得して同期を送る
             if (!Networking.IsOwner(gameObject))
             {
                 Networking.SetOwner(Networking.LocalPlayer, gameObject);
