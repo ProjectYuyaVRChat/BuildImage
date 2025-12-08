@@ -16,9 +16,18 @@ public class MotionSuccess : UdonSharpBehaviour
     public GameObject motion2Object;
     public GameObject motion3Object;
 
+    void Start()
+    {
+        EnsureMasterOwnership();
+        UpdateDisplay();
+    }
+
     void Update()
     {
         if (!Networking.LocalPlayer.isMaster) return; // ホストだけが制御
+
+        // マスターが所有権を持っていないと同期が送られない
+        EnsureMasterOwnership();
 
         if (gimmick == null) return;
 
@@ -43,15 +52,25 @@ public class MotionSuccess : UdonSharpBehaviour
         UpdateDisplay();
     }
 
-    void Start()
-    {
-        UpdateDisplay();
-    }
-
     void UpdateDisplay()
     {
         if (motion1Object) motion1Object.SetActive(motion1State);
         if (motion2Object) motion2Object.SetActive(motion2State);
         if (motion3Object) motion3Object.SetActive(motion3State);
+    }
+
+    // マスターが必ずオーナーになるようにする
+    void EnsureMasterOwnership()
+    {
+        if (Networking.IsMaster && !Networking.IsOwner(gameObject))
+        {
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+        }
+    }
+
+    // マスターが入れ替わったときに再度オーナーを取り直す
+    public override void OnPlayerLeft(VRCPlayerApi player)
+    {
+        EnsureMasterOwnership();
     }
 }
