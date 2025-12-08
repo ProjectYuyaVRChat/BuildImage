@@ -43,6 +43,7 @@ public class MotionSuccess : UdonSharpBehaviour
             motion3State = new3;
 
             RequestSerialization(); // ★同期発動
+            UpdateDisplay();        // オーナー自身の画面も即時反映
         }
     }
 
