@@ -1,8 +1,13 @@
 ﻿using UdonSharp;
 using UnityEngine;
+using VRC.SDKBase;
 
 public class MotionSuccess : UdonSharpBehaviour
 {
+    [UdonSynced] private bool motion1State;
+    [UdonSynced] private bool motion2State;
+    [UdonSynced] private bool motion3State;
+
     [Header("ドアギミック本体")]
     public DoorGimmickSystemNew gimmick;
 
@@ -13,18 +18,40 @@ public class MotionSuccess : UdonSharpBehaviour
 
     void Update()
     {
+        if (!Networking.LocalPlayer.isMaster) return; // ホストだけが制御
+
         if (gimmick == null) return;
 
-        // 1つ目のモーション
-        if (motion1Object != null)
-            motion1Object.SetActive(gimmick.IsMotion1Success());
+        bool new1 = gimmick.IsMotion1Success();
+        bool new2 = gimmick.IsMotion2Success();
+        bool new3 = gimmick.IsMotion3Success();
 
-        // 2つ目のモーション
-        if (motion2Object != null)
-            motion2Object.SetActive(gimmick.IsMotion2Success());
+        // 値が変わったときだけ同期
+        if (new1 != motion1State || new2 != motion2State || new3 != motion3State)
+        {
+            motion1State = new1;
+            motion2State = new2;
+            motion3State = new3;
 
-        // 3つ目のモーション
-        if (motion3Object != null)
-            motion3Object.SetActive(gimmick.IsMotion3Success());
+            RequestSerialization(); // ★同期発動
+        }
+    }
+
+    // プレイヤー全員の表示更新
+    public override void OnDeserialization()
+    {
+        UpdateDisplay();
+    }
+
+    void Start()
+    {
+        UpdateDisplay();
+    }
+
+    void UpdateDisplay()
+    {
+        if (motion1Object) motion1Object.SetActive(motion1State);
+        if (motion2Object) motion2Object.SetActive(motion2State);
+        if (motion3Object) motion3Object.SetActive(motion3State);
     }
 }
