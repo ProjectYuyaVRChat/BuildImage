@@ -1,18 +1,17 @@
 ﻿using UdonSharp;
-using TMPro;
-using VRC.SDKBase;
 using UnityEngine;
+using VRC.SDKBase;
 
 public class JumpDetector : MotionDetectorBase
 {
-    private bool isJumping = false;
-
-    private float aalastHeadHeight = 0f;
+    private bool JunpState = false;
+    private float JunpHeadHeight = 0f;
     private bool initialized = false;
 
-    [SerializeField] private float aajumpThreshold = 0.08f; // ← 前フレーム差分での判定閾値（0.05〜0.12あたり）
+    [SerializeField] private float jumpThreshold = 0.08f; // HMDジャンプ判定しきい値
+    [SerializeField] private float velocityJumpThreshold = 1.2f; // VRChatジャンプ判定しきい値
 
-    public bool IsJumping => isJumping;
+    public bool IsJumping => JunpState;
 
     [SerializeField] private CentralizedMotionDetector centralizedDetector;
     [SerializeField] private DoorGimmickSystemNew doorGimmickSystem;
@@ -21,49 +20,62 @@ public class JumpDetector : MotionDetectorBase
     protected override void DetectMotion()
     {
         float currentHeadHeight = headPos.y - basePos.y;
+        Vector3 vel = localPlayer.GetVelocity();
         bool grounded = localPlayer.IsPlayerGrounded();
 
         if (!initialized)
         {
-            aalastHeadHeight = currentHeadHeight;
+            JunpHeadHeight = currentHeadHeight;
             initialized = true;
             return;
         }
 
-        float diff = currentHeadHeight - aalastHeadHeight;
+        float diff = currentHeadHeight - JunpHeadHeight;
+        bool wasJumping = JunpState;
 
-        bool wasJumping = isJumping;
-
-        // ★★ 差分でジャンプ判定 ★★
-        if (diff > aajumpThreshold && !isJumping)
+        // ---------------------------------------------------
+        // ★ VRChatのジャンプボタンで上昇中 + 地面を離れた瞬間に反応
+        // ---------------------------------------------------
+        if (!grounded && !JunpState && vel.y > velocityJumpThreshold)
         {
-            isJumping = true;
-            ShowMotionMessage("ジャンプ（差分判定）");
+            JunpState = true;
+            ShowMotionMessage("ジャンプ（VRChat入力検出）");
         }
-        // ★★ 接地して差分が小さいなら着地判定 ★★
-        else if (grounded && isJumping && diff < aajumpThreshold * 0.5f)
+
+        // ---------------------------------------------------
+        // ★ HMD差分ジャンプ（自然ジャンプ）
+        // ---------------------------------------------------
+        if (grounded && diff > jumpThreshold && !JunpState)
         {
-            isJumping = false;
+            JunpState = true;
+            ShowMotionMessage("ジャンプ（HMD検出）");
+        }
+
+        // ---------------------------------------------------
+        // ★ 着地判定（地面に触れた + 下降が終わった）
+        // ---------------------------------------------------
+        if (grounded && JunpState && vel.y <= 0f)
+        {
+            JunpState = false;
             ShowMotionMessage("着地");
         }
 
-        // 状態変化があれば通知
-        if (wasJumping != isJumping)
+        // ---------------------------------------------------
+        // ★ 状態変化通知（中央検出器 or ドアシステムへ）
+        // ---------------------------------------------------
+        if (wasJumping != JunpState)
         {
             if (centralizedDetector != null)
-                centralizedDetector.SetJumpState(isJumping);
+                centralizedDetector.SetJumpState(JunpState);
             else if (doorGimmickSystem != null)
-                doorGimmickSystem.SetJumpState(isJumping);
+                doorGimmickSystem.SetJumpState(JunpState);
         }
 
-        aalastHeadHeight = currentHeadHeight;
+        JunpHeadHeight = currentHeadHeight;
     }
 
     protected override bool IsMotionDetectionEnabled()
     {
-        if (areaTrigger == null)
-            return true;
-
-        return areaTrigger.IsAreaActive;
+        return areaTrigger == null || areaTrigger.IsAreaActive;
     }
 }
