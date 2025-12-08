@@ -1,7 +1,9 @@
 ﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
+using VRC.Udon;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class MotionSuccess : UdonSharpBehaviour
 {
     [UdonSynced] private bool motion1State;
@@ -18,6 +20,7 @@ public class MotionSuccess : UdonSharpBehaviour
 
     void Start()
     {
+        // 初期表示を全員で揃える
         UpdateDisplay();
     }
 
@@ -42,7 +45,7 @@ public class MotionSuccess : UdonSharpBehaviour
             motion2State = new2;
             motion3State = new3;
 
-            RequestSerialization(); // ★同期発動
+            RequestSerialization(); // ★同期発動（Manualモード）
             UpdateDisplay();        // オーナー自身の画面も即時反映
         }
     }
