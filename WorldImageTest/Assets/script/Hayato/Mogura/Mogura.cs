@@ -11,7 +11,7 @@ public class Mogura : UdonSharpBehaviour
 
     private CapsuleCollider mogura;
     private bool move = false;
-    private bool up = true;
+    [UdonSynced] private bool up = true;
     private Vector3 startPosition;
     
     private void Start()
@@ -29,41 +29,54 @@ public class Mogura : UdonSharpBehaviour
             {
                 transform.position += Vector3.up * speed * Time.deltaTime;
 
-                float currentDistance = transform.position.y - startPosition.y;
-
-                if (currentDistance >= upperLimit)
+                if (Networking.IsOwner(gameObject))
                 {
-                    up = false;
+                    float currentDistance = transform.position.y - startPosition.y;
+
+                    if (currentDistance >= upperLimit)
+                    {
+                        up = false; // 下降へ切り替え
+                        RequestSerialization(); // 変更を全員に送信
+                    }
                 }
             }
             else
             {
                 transform.position += Vector3.down * speed * Time.deltaTime;
-                float currentDistance = transform.position.y - startPosition.y;
                 
-                if (currentDistance <= 0)
+                if (Networking.IsOwner(gameObject))
                 {
-                    move = false;
+                    float currentDistance = transform.position.y - startPosition.y;
+                
+                    if (currentDistance <= 0)
+                    {
+                        move = false; // 停止
+                        transform.position = startPosition; // 位置ズレ補正
+                        RequestSerialization(); // 変更を全員に送信
+                    }
                 }
             }
-            
         }
     }
 
     //ここを他から呼んで稼働
     public void MoveMogura()
     {
+        Networking.SetOwner(Networking.LocalPlayer, gameObject);
         mogura.enabled = true;
         move = true;
         up = true;
+        RequestSerialization();
     }
     
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.name == "HummerHead")
         {
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
             mogura.enabled = false;
             up = false;
+            RequestSerialization();
         }
     }
 }
