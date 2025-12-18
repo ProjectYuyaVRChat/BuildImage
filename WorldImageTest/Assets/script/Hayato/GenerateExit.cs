@@ -9,7 +9,8 @@ public class GenerateExit : UdonSharpBehaviour
 {
     [SerializeField] private GameObject teleportGate;
     [SerializeField] private AudioClip spawnKeySE;
-    public KeyCase keyCase;
+    public Animator key;
+    public Animator button;
 
     private AudioSource _audioSource;
 
@@ -23,6 +24,7 @@ public class GenerateExit : UdonSharpBehaviour
     {
         teleportGate.SetActive(true);
         _audioSource.PlayOneShot(spawnKeySE);
-        keyCase.isMove = true;
+        key.SetTrigger("Open");
+        button.SetTrigger("Push");
     }
 }
