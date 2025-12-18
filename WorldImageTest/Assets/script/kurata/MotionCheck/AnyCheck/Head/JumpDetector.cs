@@ -8,7 +8,9 @@ public class JumpDetector : MotionDetectorBase
     private float JunpHeadHeight = 0f;
     private bool initialized = false;
 
-    [SerializeField] private float jumpThreshold = 0.08f; // HMDジャンプ判定しきい値
+
+
+    [SerializeField] private float jumpThreshold = 0.01f; // HMDジャンプ判定しきい値
     [SerializeField] private float velocityJumpThreshold = 1.2f; // VRChatジャンプ判定しきい値
 
     public bool IsJumping => JunpState;
@@ -19,18 +21,23 @@ public class JumpDetector : MotionDetectorBase
 
     protected override void DetectMotion()
     {
-        float currentHeadHeight = headPos.y - basePos.y;
+        float currentHeadHeight = headPos.y;
         Vector3 vel = localPlayer.GetVelocity();
         bool grounded = localPlayer.IsPlayerGrounded();
+
+        float a = headPos.y - basePos.y;
 
         if (!initialized)
         {
             JunpHeadHeight = currentHeadHeight;
+
             initialized = true;
             return;
         }
 
         float diff = currentHeadHeight - JunpHeadHeight;
+        baseHeadHeight = Mathf.Min(baseHeadHeight, a);
+        float b = a - baseHeadHeight;
         bool wasJumping = JunpState;
 
         // ---------------------------------------------------
@@ -45,7 +52,9 @@ public class JumpDetector : MotionDetectorBase
         // ---------------------------------------------------
         // ★ HMD差分ジャンプ（自然ジャンプ）
         // ---------------------------------------------------
-        if (grounded && diff > jumpThreshold && !JunpState)
+        //if (diff >jumpThreshold && !JunpState)
+        ///if(!JunpState && diff > jumpThreshold)
+        if (!JunpState && diff > jumpThreshold)
         {
             JunpState = true;
             ShowMotionMessage("ジャンプ（HMD検出）");
@@ -54,7 +63,9 @@ public class JumpDetector : MotionDetectorBase
         // ---------------------------------------------------
         // ★ 着地判定（地面に触れた + 下降が終わった）
         // ---------------------------------------------------
-        if (grounded && JunpState && vel.y <= 0f)
+        //if (grounded && JunpState && vel.y <= 0f)
+        if (JunpState && diff < -jumpThreshold)
+
         {
             JunpState = false;
             ShowMotionMessage("着地");
