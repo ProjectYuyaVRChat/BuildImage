@@ -15,10 +15,10 @@ public class HapticOnCollision : UdonSharpBehaviour
     
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Mogura"))
+        /*if (other.gameObject.CompareTag("Mogura"))
         {
             TriggerHaptic();
-        }
+        }*/
     }
     
     private void TriggerHaptic()
