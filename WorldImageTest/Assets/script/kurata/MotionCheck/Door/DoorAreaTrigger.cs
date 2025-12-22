@@ -252,4 +252,11 @@ public class DoorAreaTrigger : UdonSharpBehaviour
             }
         }
     }
+
+    public void ForceCalibration()
+    {
+        if (!isAreaActive) return;
+
+        CalibratePlayerMotions();
+    }
 } 

@@ -16,6 +16,12 @@ public class MotionToggle : UdonSharpBehaviour
     public GameObject objectB;
     public GameObject objectC;
 
+    [Header("制御するTrigger")]
+    public DoorAreaTrigger triggerA;
+    public DoorAreaTrigger triggerB;
+    public DoorAreaTrigger triggerC;
+    
+
     [Header("SE")]
     public AudioClip successSE_A;
     public AudioClip successSE_B;
@@ -73,6 +79,11 @@ public class MotionToggle : UdonSharpBehaviour
             RequestSerialization();
             if (successSE_A) audioSource.PlayOneShot(successSE_A);
             ApplyState();
+
+            if (triggerA != null)
+            {
+                triggerA.ForceCalibration();
+            }
         }
 
         // B
@@ -87,6 +98,11 @@ public class MotionToggle : UdonSharpBehaviour
             RequestSerialization();
             if (successSE_B) audioSource.PlayOneShot(successSE_B);
             ApplyState();
+
+            if (triggerB != null)
+            {
+                triggerB.ForceCalibration();
+            }
         }
 
         // C
@@ -101,6 +117,11 @@ public class MotionToggle : UdonSharpBehaviour
             RequestSerialization();
             if (successSE_C) audioSource.PlayOneShot(successSE_C);
             ApplyState();
+
+            if (triggerC != null)
+            {
+                triggerC.ForceCalibration();
+            }
         }
 
         prevA = nowA;
