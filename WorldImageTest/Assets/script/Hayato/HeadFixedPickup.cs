@@ -81,4 +81,20 @@ public class HeadFixedPickup : UdonSharpBehaviour
             }
         }
     }
+    public void OnTriggerEnter(Collider other)
+    {
+        // 念のためnullチェック
+        if (other == null || pickup == null) return;
+
+        // 今持っている状態か確認
+        if (pickup.IsHeld)
+        {
+            // 触れたオブジェクトのタグが指定したものと一致するか確認
+            if (other.gameObject.name == "DropArea")
+            {
+                // 強制的にドロップさせる
+                pickup.Drop();
+            }
+        }
+    }
 }
