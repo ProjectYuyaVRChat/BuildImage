@@ -10,6 +10,7 @@ public class PSwitch : UdonSharpBehaviour
     [SerializeField] private GameObject targetBridgeP;
     [SerializeField] private float timer = 5f;
     private float count;
+    public Animator button;
     
     [UdonSynced]private bool isOn = false;
     [UdonSynced]
@@ -50,7 +51,7 @@ public class PSwitch : UdonSharpBehaviour
         {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
         }
-        
+        button.SetTrigger("Push");
         isOn = true;
         isObjectActive = true;
         RequestSerialization();

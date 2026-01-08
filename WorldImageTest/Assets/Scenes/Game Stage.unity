@@ -11788,6 +11788,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 710c4917924085a44955095c47ace620, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1057664871}
     - targetCorrespondingSourceObject: {fileID: 2640888133834772799, guid: 710c4917924085a44955095c47ace620, type: 3}
       insertIndex: -1
       addedObject: {fileID: 715063066}
@@ -11798,6 +11801,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 715063064}
   m_SourcePrefab: {fileID: 100100000, guid: 710c4917924085a44955095c47ace620, type: 3}
+--- !u!1 &415815537 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 710c4917924085a44955095c47ace620, type: 3}
+  m_PrefabInstance: {fileID: 415815536}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &424751694
 GameObject:
   m_ObjectHideFlags: 0
@@ -21474,6 +21482,7 @@ MonoBehaviour:
   targetBridgeF: {fileID: 323090563}
   targetBridgeP: {fileID: 1211620098}
   timer: 10
+  button: {fileID: 1057664871}
   isObjectActive: 0
 --- !u!65 &715063066
 BoxCollider:
@@ -31166,6 +31175,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 710c4917924085a44955095c47ace620, type: 3}
   m_PrefabInstance: {fileID: 415815536}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1057664871
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 415815537}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 040f8caa4c0839646a1a2e8ccdc8482c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1058493036 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 630161035192460020, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
@@ -40162,8 +40192,8 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 1376880787}
   teleportGate: {fileID: 2056999259}
   spawnKeySE: {fileID: 8300000, guid: 5c24d6aafd3abae45b494fbb34e4bc55, type: 3}
-  key: {fileID: 0}
-  button: {fileID: 0}
+  key: {fileID: 326561980}
+  button: {fileID: 1147904950}
 --- !u!1 &1380507691
 GameObject:
   m_ObjectHideFlags: 0

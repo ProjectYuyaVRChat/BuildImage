@@ -16,8 +16,8 @@ GameObject:
   - component: {fileID: 2812228054029366056}
   - component: {fileID: 3940600349976647212}
   m_Layer: 0
-  m_Name: Mogura (4)
-  m_TagString: Untagged
+  m_Name: Mogura
+  m_TagString: Mogura
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -202,8 +202,8 @@ GameObject:
   - component: {fileID: 3049763276834751763}
   - component: {fileID: 9095305632415560872}
   m_Layer: 0
-  m_Name: Mogura (2)
-  m_TagString: Untagged
+  m_Name: Mogura
+  m_TagString: Mogura
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -560,8 +560,8 @@ GameObject:
   - component: {fileID: 4532010203209092482}
   - component: {fileID: 6998329839633255359}
   m_Layer: 0
-  m_Name: Mogura (3)
-  m_TagString: Untagged
+  m_Name: Mogura
+  m_TagString: Mogura
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -901,8 +901,8 @@ GameObject:
   - component: {fileID: 7463588297508938995}
   - component: {fileID: 2583594074451263879}
   m_Layer: 0
-  m_Name: Mogura (6)
-  m_TagString: Untagged
+  m_Name: Mogura
+  m_TagString: Mogura
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1087,8 +1087,8 @@ GameObject:
   - component: {fileID: 2357865534534878134}
   - component: {fileID: 1142109565049929346}
   m_Layer: 0
-  m_Name: Mogura (5)
-  m_TagString: Untagged
+  m_Name: Mogura
+  m_TagString: Mogura
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1307,7 +1307,7 @@ GameObject:
   - component: {fileID: 3112143832363914766}
   m_Layer: 0
   m_Name: Mogura
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1492,8 +1492,8 @@ GameObject:
   - component: {fileID: 8532229582456400615}
   - component: {fileID: 4163293250157106797}
   m_Layer: 0
-  m_Name: Mogura (1)
-  m_TagString: Untagged
+  m_Name: Mogura
+  m_TagString: Mogura
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1712,15 +1712,118 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4270479458128571837, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
       propertyPath: m_Name
-      value: Hummer (1)
+      value: Hummer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7445383658289105991, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4293337952358958280}
+    - targetCorrespondingSourceObject: {fileID: 7445383658289105991, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3177108773792375602}
+    - targetCorrespondingSourceObject: {fileID: 7445383658289105991, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5885534603420367152}
   m_SourcePrefab: {fileID: 100100000, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
 --- !u!4 &932549452428596264 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3473160422173780426, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
   m_PrefabInstance: {fileID: 4378116529881939426}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3457847970626881590 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1386703657137190356, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+  m_PrefabInstance: {fileID: 4378116529881939426}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1804438810, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &6598161808466571685 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7445383658289105991, guid: ab5d9308e6f0b97408bc1d5ab630f3fa, type: 3}
+  m_PrefabInstance: {fileID: 4378116529881939426}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4293337952358958280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6598161808466571685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6c913ee722d78d46bdddf5b4de2facb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _udonSharpBackingUdonBehaviour: {fileID: 3177108773792375602}
+  duration: 0.6
+  amplitude: 0.8
+  frequency: 0.2
+  pickup: {fileID: 3457847970626881590}
+--- !u!114 &3177108773792375602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6598161808466571685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 2
+  serializedProgramAsset: {fileID: 11400000, guid: 9d924c0b4fb07604c80131fd7e0a1901, type: 2}
+  programSource: {fileID: 11400000, guid: 94f859e7ae3650d4d9c8abc475ba84bd, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
+--- !u!54 &5885534603420367152
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6598161808466571685}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
