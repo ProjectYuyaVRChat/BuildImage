@@ -3,44 +3,43 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class TouchCounter : UdonSharpBehaviour
 {
     [Header("触れたらカウントするオブジェクト")]
     public GameObject targetObject;
 
-    //[Header("カウント数")]
-    [HideInInspector]public int count = 0;
+    [HideInInspector]
+    public int count = 0;
 
-     // 一度だけカウントするためのフラグ
-    private bool counted = false;
-
-
-   [Header("回転数によってTrueにするオブジェクト")]
+    [Header("回転数によってTrueにするオブジェクト")]
     public GameObject activateObject;
 
     [Header("設定")]
-    public float checkInterval = 1f;       // 秒間の回転数を測る間隔
-    public int minCount = 1;               // この回数以上で回転数OK
-    
+    public float checkInterval = 1f;
+    public int minCount = 1;
+
     private float timer = 0f;
+
+    // ★ 同期フラグ
+    [UdonSynced]
+    private bool isActive = false;
 
     void Update()
     {
-        // タイマー更新
+        // ★ オーナーだけが処理
+        if (!Networking.IsOwner(gameObject)) return;
+
         timer += Time.deltaTime;
 
         if (timer >= checkInterval)
         {
-            // 回転数判定
-            if (count >= minCount)
+            bool nextState = count >= minCount;
+
+            if (isActive != nextState)
             {
-                if (activateObject != null)
-                    activateObject.SetActive(true); // Trueに
-            }
-            else
-            {
-                if (activateObject != null)
-                    activateObject.SetActive(false); // Falseに
+                isActive = nextState;
+                RequestSerialization();
             }
 
             count = 0;
@@ -48,12 +47,24 @@ public class TouchCounter : UdonSharpBehaviour
         }
     }
 
-     void OnTriggerEnter(Collider other)
+    public override void OnDeserialization()
     {
+        if (activateObject != null)
+        {
+            activateObject.SetActive(isActive);
+        }
+    }
 
+    void OnTriggerEnter(Collider other)
+    {
+        // ★ 最後に触った人がオーナーになる
+        if (!Networking.IsOwner(gameObject))
+        {
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+        }
 
-        // 触れたオブジェクトが targetObject ならカウント
-        if (other.gameObject == targetObject)
+        // ★ オーナーになった人だけカウント
+        if (Networking.IsOwner(gameObject) && other.gameObject == targetObject)
         {
             count++;
             Debug.Log("カウント数: " + count);
