@@ -50,7 +50,7 @@ public class ElevatorWarp : UdonSharpBehaviour
         this.isOn = true;
         this.interactingPlayerId = Networking.LocalPlayer.playerId;
         
-        Warp();
+        RequestSerialization();
     }
 
     public void Warp()
