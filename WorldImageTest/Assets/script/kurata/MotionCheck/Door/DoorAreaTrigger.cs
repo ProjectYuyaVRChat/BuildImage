@@ -23,6 +23,7 @@ public class DoorAreaTrigger : UdonSharpBehaviour
     
     [Header("範囲内プレイヤー管理")]
     [SerializeField] private int maxPlayersInArea = 10;
+    [SerializeField] private float stayCalibrationDelay = 2.0f; // TriggerStay検出時の待機秒数
     
     // 範囲内のプレイヤーを管理
     private VRCPlayerApi[] playersInArea;
@@ -66,6 +67,31 @@ public class DoorAreaTrigger : UdonSharpBehaviour
         if (player.isLocal && motionDetector != null)
         {
             motionDetector.Calibrate();
+        }
+    }
+
+    // 既にトリガー内にいた場合でも毎フレーム呼ばれるので、入り直さずに検出できる
+    public override void OnPlayerTriggerStay(VRCPlayerApi player)
+    {
+        if (player == null) return;
+
+        int before = playerCount;
+        AddPlayerToArea(player);
+
+        // 新規に検知したときだけキャリブレーションを開始
+        if (playerCount > before)
+        {
+            if (showDebugInfo)
+            {
+                Debug.Log($"[DoorAreaTrigger] {areaName} エリアに {player.displayName} を検出しました (TriggerStay)");
+            }
+            // Stay検出時は少し待ってからキャリブレーション開始
+            SendCustomEventDelayedSeconds(nameof(CalibratePlayerMotions), stayCalibrationDelay);
+
+            if (player.isLocal && motionDetector != null)
+            {
+                motionDetector.Calibrate();
+            }
         }
     }
     
