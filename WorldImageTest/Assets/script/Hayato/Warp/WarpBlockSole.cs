@@ -16,7 +16,7 @@ public class WarpBlockSole : UdonSharpBehaviour
     [Header("ワープ先")]
     [SerializeField] private GameObject warpPoint;
     private Quaternion PlayerRotate;
-    private Vector3 WarpPosition;
+    [SerializeField] private float warpYQuaternion = 0f;
     [Header("暗転UI")]
     public GameObject fadeCanvas;         // Canvas本体
     private Animator fadeAnimator;
@@ -25,7 +25,6 @@ public class WarpBlockSole : UdonSharpBehaviour
 
     private void Start()
     {
-        WarpPosition = warpPoint.transform.position;
         fadeCanvas.SetActive(false);
         fadeAnimator = fadeCanvas.GetComponentInChildren<Animator>();
     }
@@ -76,7 +75,7 @@ public class WarpBlockSole : UdonSharpBehaviour
         {
             playerToWarp.TeleportTo(
                 warpPoint.transform.position,
-                Quaternion.Euler(0, 0f, 0)
+                Quaternion.Euler(0, warpYQuaternion, 0)
             );
         }
     }

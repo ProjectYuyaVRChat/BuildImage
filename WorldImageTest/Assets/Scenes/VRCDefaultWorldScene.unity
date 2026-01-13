@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: b36d1786d379cd34a9ce3bc19eed7a73, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 4b8a43ebbf75e264cab47ee0fc244c3d, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3322065, g: 0.3627174, b: 0.46474278, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -494,6 +494,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawns:
   - {fileID: 3480278762663400089}
+  spawnRadius: 0.2
   spawnOrder: 2
   spawnOrientation: 0
   ReferenceCamera: {fileID: 1069902874}
@@ -520,10 +521,10 @@ MonoBehaviour:
   useAssignedLayers: 0
   DynamicPrefabs: []
   DynamicMaterials:
-  - {fileID: 2100000, guid: a5eee7121d95bba49915f0c494a43049, type: 2}
-  - {fileID: 2100000, guid: 0e7090aaa46c6c44aafb9f131ac2f446, type: 2}
-  - {fileID: 2100000, guid: cb3d6275712702b439c89fc9d827a6a7, type: 2}
-  - {fileID: 2100000, guid: 6a2a5568ddf46614eb0542419c2318f2, type: 2}
+  - {fileID: 2100000, guid: f84d88f526c6a61499b00c1eeb539cf9, type: 2}
+  - {fileID: 2100000, guid: 35a75c74cfc6b2a4fa3d3c80e2b26cae, type: 2}
+  - {fileID: 2100000, guid: a5b4e824dae081b489d549de62bf94ae, type: 2}
+  - {fileID: 2100000, guid: 1cfdae8b5706f3b4488ecd29e2913c9c, type: 2}
   LightMapsNear: []
   LightMapsFar: []
   LightMode: 0
@@ -576,22 +577,7 @@ MonoBehaviour:
   RenderReflectionBounces: 0
   RenderReflectionIntensity: 0
   RenderSkybox: {fileID: 0}
-  NetworkIDs:
-  - gameObject: {fileID: 3480278762663670689}
-    ID: 11
-    SerializedTypeNames:
-    - VRC.Udon.UdonBehaviour
-    - VRC.Udon.UdonBehaviour
-  - gameObject: {fileID: 0}
-    ID: 12
-    SerializedTypeNames:
-    - VRC.SDK3.Components.VRCPickup
-    - VRC.Udon.UdonBehaviour
-  - gameObject: {fileID: 0}
-    ID: 13
-    SerializedTypeNames:
-    - VRC.SDK3.Components.VRCPickup
-    - VRC.Udon.UdonBehaviour
+  NetworkIDs: []
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence: []
@@ -665,7 +651,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6a2a5568ddf46614eb0542419c2318f2, type: 2}
+  - {fileID: 2100000, guid: 1cfdae8b5706f3b4488ecd29e2913c9c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
