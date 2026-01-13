@@ -1,117 +1,236 @@
 using UdonSharp;
 using UnityEngine;
+using TMPro; // TextMeshProを使うために必要
 using VRC.SDKBase;
 using VRC.Udon;
+using VRC.Udon.Common.Interfaces;
 
 public class MoguraGameManager : UdonSharpBehaviour
 {
     [Header("モグラ達のリスト")]
-    [SerializeField] private Mogura[] moles; // クラス名がMoguraControllerなら適宜変更してください
+    [SerializeField] private Mogura[] moles;
+
+    [Header("UI設定")]
+    [Tooltip("全ての状態（待機・カウントダウン・スコア・結果）を表示するテキスト")]
+    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private TextMeshProUGUI statusText2;
 
     [Header("ゲーム設定")]
-    [Tooltip("モグラが出る間隔（秒）")]
-    [SerializeField] private float spawnInterval = 1.0f;
-    
-    [Tooltip("ゲームの制限時間（秒）")]
-    [SerializeField] private float gameDuration = 30.0f;
+    [SerializeField] private float spawnInterval = 2.0f;
+    [SerializeField] private float gameDuration = 60.0f;
+    [SerializeField] private float countdownDuration = 3.0f;
+    [SerializeField] private int targetScore = 15;
+    [SerializeField] private int maxMoleCount = 30;
 
     // --- 同期用変数 ---
-    // [UdonSynced]をつけると、オーナーの値が全員にコピーされます
     [UdonSynced] private bool isPlaying = false;
+    [UdonSynced] private bool isCountingDown = false;
     
-    // 次に動かすモグラの番号
     [UdonSynced] private int syncMoleIndex = -1;
-    
-    // 命令が実行された回数（同じモグラが連続で選ばれた時も反応できるようにカウンターを使う）
     [UdonSynced] private int syncPopCounter = 0;
+    
+    [UdonSynced] private int currentScore = 0;
+    [UdonSynced] private int syncCountdownVal = 0;
 
-    // ローカル（自分のPC）での前回のカウンター値
+    // ローカル用変数
     private int localPopCounter = 0;
-
     private float spawnTimer = 0f;
     private float totalGameTimer = 0f;
+    private float currentCountdownTimer = 0f;
+    private int spawnedMoleCount = 0;
+    private int lastDisplayCount = -1;
+
+    private void Start()
+    {
+        // 初期表示
+        if (statusText != null) statusText.text = "Press Button\nto Start";
+        if (statusText2 != null) statusText2.text = "Start?";
+    }
 
     private void Update()
     {
-        // 処理はオーナー（このオブジェクトの所有者）のみが計算する
-        // オーナー以外は何もしないで、オーナーからの同期変数が変わるのを待つだけ
         if (!Networking.IsOwner(gameObject)) return;
 
-        // ゲーム中じゃなければ何もしない
-        if (!isPlaying) return;
-
-        // 1. 制限時間の管理
-        totalGameTimer += Time.deltaTime;
-        if (totalGameTimer >= gameDuration)
+        // 1. カウントダウン処理
+        if (isCountingDown)
         {
-            EndGame();
+            currentCountdownTimer -= Time.deltaTime;
+            int displayCount = Mathf.CeilToInt(currentCountdownTimer);
+
+            // 数字が変わった時だけ更新
+            if (displayCount != lastDisplayCount)
+            {
+                syncCountdownVal = displayCount;
+                UpdateUI(); 
+                RequestSerialization();
+                
+                lastDisplayCount = displayCount;
+            }
+
+            if (currentCountdownTimer <= 0f)
+            {
+                isCountingDown = false;
+                isPlaying = true;
+                
+                syncCountdownVal = 0; // 0は「START!」の合図
+                UpdateUI();
+                RequestSerialization();
+
+                spawnTimer = spawnInterval;
+            }
             return;
         }
 
-        // 2. モグラの出現管理
+        // 2. ゲーム中の処理
+        if (!isPlaying) return;
+
+        totalGameTimer += Time.deltaTime;
+
+        if (totalGameTimer >= gameDuration)
+        {
+            EndGame(false);
+            return;
+        }
+
         spawnTimer += Time.deltaTime;
         if (spawnTimer >= spawnInterval)
         {
             spawnTimer = 0f;
-            PopRandomMoleAsOwner(); // オーナーとして抽選を行う
+            if (spawnedMoleCount < maxMoleCount)
+            {
+                PopRandomMoleAsOwner();
+            }
         }
     }
 
-    // スタートボタンのInteractなどから呼ぶ
     public void StartGame()
     {
-        // ボタンを押した人をこのオブジェクトのオーナーにする（重要）
         Networking.SetOwner(Networking.LocalPlayer, gameObject);
 
-        isPlaying = true;
+        isCountingDown = true;
+        isPlaying = false;
+        currentCountdownTimer = countdownDuration;
+        lastDisplayCount = -1;
+        
         spawnTimer = 0f;
         totalGameTimer = 0f;
+        currentScore = 0;
+        spawnedMoleCount = 0;
         
-        // 変数が変わったことを全員に送信
+        syncCountdownVal = (int)countdownDuration;
+
         RequestSerialization();
-        
-        Debug.Log("Game Started!");
+        // UI更新はUpdate内で行われるためここでは呼ばなくても即座に反映されますが
+        // 念のため呼んでも良いです
     }
 
-    public void EndGame()
+    public void EndGame(bool isClear)
     {
         isPlaying = false;
+        isCountingDown = false;
+        
+        UpdateUI(); 
         RequestSerialization();
-        Debug.Log("Game Over!");
     }
 
-    // オーナーだけが実行する抽選処理
     private void PopRandomMoleAsOwner()
     {
         if (moles == null || moles.Length == 0) return;
 
-        // ランダムに番号を決める
         int randomIndex = Random.Range(0, moles.Length);
-
-        // 同期変数を更新
         syncMoleIndex = randomIndex;
-        syncPopCounter++; // カウンターを増やして「新しい命令が来た」ことを知らせる
+        syncPopCounter++;
+        spawnedMoleCount++;
 
-        // 全員にデータを送信
         RequestSerialization();
-
-        // オーナー自身の画面でも動かす（通信ラグなしで即座に動かすため）
         MoveMoleLocal(syncMoleIndex);
-        localPopCounter = syncPopCounter; // ローカルカウンタも合わせておく
+        localPopCounter = syncPopCounter;
     }
 
-    // UdonSynced変数が更新されたときに、全プレイヤーで自動的に呼ばれる関数
-    public override void OnDeserialization()
+    public void OnMoleHit()
     {
-        // カウンターの値が変わっていたら、新しいモグラ命令が来たと判断する
-        if (syncPopCounter != localPopCounter)
+        if (!Networking.IsOwner(gameObject))
         {
-            MoveMoleLocal(syncMoleIndex);
-            localPopCounter = syncPopCounter; // 最新のカウンター値に更新
+            SendCustomNetworkEvent(NetworkEventTarget.Owner, nameof(AddScoreOwner));
+        }
+        else
+        {
+            AddScoreOwner();
         }
     }
 
-    // 実際にモグラを動かす処理（画面表示用）
+    public void AddScoreOwner()
+    {
+        if (!isPlaying) return;
+
+        currentScore++;
+        UpdateUI(); 
+        RequestSerialization();
+
+        if (currentScore >= targetScore)
+        {
+            EndGame(true);
+        }
+    }
+
+    public override void OnDeserialization()
+    {
+        if (syncPopCounter != localPopCounter)
+        {
+            MoveMoleLocal(syncMoleIndex);
+            localPopCounter = syncPopCounter;
+        }
+
+        UpdateUI();
+    }
+
+    // --- UI更新ロジック（ここを統合しました） ---
+    private void UpdateUI()
+    {
+        if (statusText == null) return;
+        if (statusText2 == null) return;
+
+        if (isCountingDown)
+        {
+            // カウントダウン中は数字だけを大きく表示
+            if (syncCountdownVal > 0)
+            {
+                statusText.text = syncCountdownVal.ToString();
+                statusText2.text = syncCountdownVal.ToString();
+            }
+            else
+            {
+                statusText.text = "START!";
+                statusText2.text = "START!";
+            }
+        }
+        else if (isPlaying)
+        {
+            // ゲーム中はスコアを表示
+            statusText.text = "Score: " + currentScore + " / " + targetScore;
+            statusText2.text = "Score: " + currentScore + " / " + targetScore;
+        }
+        else
+        {
+            // ゲーム終了後または待機状態
+            if (currentScore >= targetScore && totalGameTimer > 0) // クリア後
+            {
+                statusText.text = "GAME CLEAR!!\nScore: " + currentScore;
+                statusText2.text = "GAME CLEAR!!\nScore: " + currentScore;
+            }
+            else if (totalGameTimer >= gameDuration) // 時間切れ
+            {
+                statusText.text = "TIME UP...\nScore: " + currentScore;
+                statusText2.text = "TIME UP...\nScore: " + currentScore;
+            }
+            else // 初期状態（totalGameTimerがリセットされている場合など）
+            {
+                statusText.text = "Press Button\nto Start";
+                statusText2.text = "Press Button\nto Start";
+            }
+        }
+    }
+
     private void MoveMoleLocal(int index)
     {
         if (index >= 0 && index < moles.Length && moles[index] != null)
