@@ -59,8 +59,8 @@ public class HeadFixedPickup : UdonSharpBehaviour
         // 以下のロジックはそのままで、レーザーの角度も追従します。
 
         // 元のロジック（-transform.forward方向）
-        Vector3 origin = transform.position + 0.1f * -transform.forward;
-        Vector3 direction = -transform.forward;
+        Vector3 origin = transform.position + 0.1f * transform.forward;
+        Vector3 direction = transform.forward;
 
         RaycastHit hit;
         if (Physics.Raycast(origin, direction, out hit, maxLaserDistance, collisionLayers))
