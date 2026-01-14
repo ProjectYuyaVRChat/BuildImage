@@ -24,16 +24,28 @@ public class DoorAnimationController : UdonSharpBehaviour
     // 初期位置
     private Vector3 leftStartPos;
     private Vector3 rightStartPos;
+    private bool positionsInitialized = false;
 
-    void Start()
+    void Awake()
     {
+        // Awake()で初期位置を保存（Start()より前に実行されるため、他のスクリプトが位置を変更する前に保存できる）
         if (leftDoor != null)
             leftStartPos = leftDoor.transform.localPosition;
 
         if (rightDoor != null)
             rightStartPos = rightDoor.transform.localPosition;
 
-        CloseDoorImmediate();
+        positionsInitialized = true;
+    }
+
+    void Start()
+    {
+        // 初期位置を保存しただけなので、ドアの位置は変更しない
+        // CloseDoorImmediate()は必要に応じて外部から呼ばれる
+        currentOffset = 0f;
+        isDoorOpen = false;
+        isOpening = false;
+        isClosing = false;
     }
 
     void Update()
@@ -81,6 +93,9 @@ public class DoorAnimationController : UdonSharpBehaviour
 
     private void UpdateDoorPosition()
     {
+        // 初期位置が保存されている場合のみ位置を更新
+        if (!positionsInitialized) return;
+
         if (leftDoor != null)
         {
             leftDoor.transform.localPosition =
