@@ -124,17 +124,26 @@ public class SyncObject : UdonSharpBehaviour
     /// <returns>制限適用後の回転量</returns>
     private Quaternion ApplyRotationRestrictions(Quaternion rotationDelta)
     {
-        // オイラー角に変換して制限を適用
-        Vector3 eulerDelta = rotationDelta.eulerAngles;
-        
-        if (lockRotationX)
-            eulerDelta.x = 0f;
-        if (lockRotationY)
-            eulerDelta.y = 0f;
-        if (lockRotationZ)
-            eulerDelta.z = 0f;
-            
-        return Quaternion.Euler(eulerDelta);
+        // 差分回転を「角度 + 回転軸」に分解
+        rotationDelta.ToAngleAxis(out float angle, out Vector3 axis);
+
+        // 数値誤差対策
+        if (float.IsNaN(axis.x) || axis.sqrMagnitude < 1e-6f)
+            return Quaternion.identity;
+
+        // 軸ごとの回転制限
+        if (lockRotationX) axis.x = 0f;
+        if (lockRotationY) axis.y = 0f;
+        if (lockRotationZ) axis.z = 0f;
+
+        // 全軸ロックされたら回転なし
+        if (axis.sqrMagnitude < 1e-6f)
+            return Quaternion.identity;
+
+        axis.Normalize();
+
+        // 制限後の回転差分を再生成
+        return Quaternion.AngleAxis(angle, axis);
     }
 
     #region 制限設定メソッド
