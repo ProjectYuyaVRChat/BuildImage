@@ -60,7 +60,7 @@ public class SyncObject : UdonSharpBehaviour
 
         // Position制限を適用
         Vector3 restrictedPositionDelta = ApplyPositionRestrictions(positionDelta);
-        
+
         // Rotation制限を適用
         Quaternion restrictedRotationDelta = ApplyRotationRestrictions(rotationDelta);
 
@@ -106,14 +106,14 @@ public class SyncObject : UdonSharpBehaviour
     private Vector3 ApplyPositionRestrictions(Vector3 positionDelta)
     {
         Vector3 restrictedDelta = positionDelta;
-        
+
         if (lockPositionX)
             restrictedDelta.x = 0f;
         if (lockPositionY)
             restrictedDelta.y = 0f;
         if (lockPositionZ)
             restrictedDelta.z = 0f;
-            
+
         return restrictedDelta;
     }
 
@@ -197,12 +197,12 @@ public class SyncObject : UdonSharpBehaviour
         status += lockPositionX ? "X" : "-";
         status += lockPositionY ? "Y" : "-";
         status += lockPositionZ ? "Z" : "-";
-        
+
         status += " | Rotation制限: ";
         status += lockRotationX ? "X" : "-";
         status += lockRotationY ? "Y" : "-";
         status += lockRotationZ ? "Z" : "-";
-        
+
         return status;
     }
 
