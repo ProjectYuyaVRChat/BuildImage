@@ -10,6 +10,7 @@ public class Mogura : UdonSharpBehaviour
     [SerializeField] private float upperLimit = 0f;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float downSpeed = 0.7f;
+    [SerializeField] private float waitSeconds = 0.2f;
 
     [Header("参照")]
     // ここにMoguraGameManagerを割り当てる必要があります
@@ -49,21 +50,30 @@ public class Mogura : UdonSharpBehaviour
             }
             else
             {
-                // 下降中
-                transform.position += Vector3.down * downSpeed * Time.deltaTime;
+                Wait();
+            }
+        }
+    }
+
+    private void Wait()
+    {
+        SendCustomEventDelayedSeconds(nameof(Down), waitSeconds);
+    }
+
+    public void Down()
+    {
+        transform.position += Vector3.down * downSpeed * Time.deltaTime;
                 
-                if (Networking.IsOwner(gameObject))
-                {
-                    float currentDistance = transform.position.y - startPosition.y;
+        if (Networking.IsOwner(gameObject))
+        {
+            float currentDistance = transform.position.y - startPosition.y;
                 
-                    // スタート位置に戻ったら停止
-                    if (currentDistance <= 0)
-                    {
-                        move = false; 
-                        transform.position = startPosition;
-                        RequestSerialization();
-                    }
-                }
+            // スタート位置に戻ったら停止
+            if (currentDistance <= 0)
+            {
+                move = false; 
+                transform.position = startPosition;
+                RequestSerialization();
             }
         }
     }
