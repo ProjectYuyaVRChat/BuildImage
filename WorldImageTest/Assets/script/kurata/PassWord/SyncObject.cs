@@ -89,8 +89,8 @@ public class SyncObject : UdonSharpBehaviour
                 // 位置を相対移動（スケール補正後）
                 target.position += scaledDelta;
 
-                // 回転は制限適用後
-                target.rotation = restrictedRotationDelta * target.rotation;//*=はだめよローカルになるから
+                // 回転は参照元の現在値を直接コピーし、ロックした軸だけを維持
+                ApplyRotationWithRestrictions(target);
             }
         }
 
@@ -118,32 +118,70 @@ public class SyncObject : UdonSharpBehaviour
     }
 
     /// <summary>
-    /// Rotationの制限を適用する
+    /// Rotationの制限を適用する（旧メソッド、互換性のため残す）
     /// </summary>
     /// <param name="rotationDelta">元の回転量</param>
     /// <returns>制限適用後の回転量</returns>
     private Quaternion ApplyRotationRestrictions(Quaternion rotationDelta)
     {
-        // 差分回転を「角度 + 回転軸」に分解
-        rotationDelta.ToAngleAxis(out float angle, out Vector3 axis);
+        // オイラー角に変換して軸ごとに制限を適用（より正確）
+        Vector3 eulerDelta = rotationDelta.eulerAngles;
+        
+        // オイラー角を-180～180度の範囲に正規化
+        eulerDelta.x = NormalizeAngle(eulerDelta.x);
+        eulerDelta.y = NormalizeAngle(eulerDelta.y);
+        eulerDelta.z = NormalizeAngle(eulerDelta.z);
 
-        // 数値誤差対策
-        if (float.IsNaN(axis.x) || axis.sqrMagnitude < 1e-6f)
-            return Quaternion.identity;
+        // ロックされた軸の角度を0にする
+        if (lockRotationX) eulerDelta.x = 0f;
+        if (lockRotationY) eulerDelta.y = 0f;
+        if (lockRotationZ) eulerDelta.z = 0f;
 
-        // 軸ごとの回転制限
-        if (lockRotationX) axis.x = 0f;
-        if (lockRotationY) axis.y = 0f;
-        if (lockRotationZ) axis.z = 0f;
+        // クォータニオンに戻す
+        return Quaternion.Euler(eulerDelta);
+    }
 
-        // 全軸ロックされたら回転なし
-        if (axis.sqrMagnitude < 1e-6f)
-            return Quaternion.identity;
+    /// <summary>
+    /// ターゲットの回転に制限を適用して更新する（参照元の現在値を直接コピー）
+    /// </summary>
+    /// <param name="target">同期先のTransform</param>
+    private void ApplyRotationWithRestrictions(Transform target)
+    {
+        // 参照元の現在の回転をオイラー角に変換
+        Vector3 sourceEuler = transform.rotation.eulerAngles;
+        Vector3 sourceEulerNormalized = new Vector3(
+            NormalizeAngle(sourceEuler.x),
+            NormalizeAngle(sourceEuler.y),
+            NormalizeAngle(sourceEuler.z)
+        );
 
-        axis.Normalize();
+        // ターゲットの現在の回転をオイラー角に変換
+        Vector3 targetEuler = target.rotation.eulerAngles;
+        Vector3 targetEulerNormalized = new Vector3(
+            NormalizeAngle(targetEuler.x),
+            NormalizeAngle(targetEuler.y),
+            NormalizeAngle(targetEuler.z)
+        );
 
-        // 制限後の回転差分を再生成
-        return Quaternion.AngleAxis(angle, axis);
+        // ロックされていない軸は参照元の値、ロックされた軸はターゲットの現在値を維持
+        Vector3 newEuler = new Vector3(
+            lockRotationX ? targetEulerNormalized.x : sourceEulerNormalized.x,
+            lockRotationY ? targetEulerNormalized.y : sourceEulerNormalized.y,
+            lockRotationZ ? targetEulerNormalized.z : sourceEulerNormalized.z
+        );
+
+        // クォータニオンに戻して設定
+        target.rotation = Quaternion.Euler(newEuler);
+    }
+
+    /// <summary>
+    /// 角度を-180～180度の範囲に正規化
+    /// </summary>
+    private float NormalizeAngle(float angle)
+    {
+        while (angle > 180f) angle -= 360f;
+        while (angle < -180f) angle += 360f;
+        return angle;
     }
 
     #region 制限設定メソッド
