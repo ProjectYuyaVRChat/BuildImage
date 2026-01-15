@@ -9,6 +9,7 @@ public class Mogura : UdonSharpBehaviour
     [Header("設定")]
     [SerializeField] private float upperLimit = 0f;
     [SerializeField] private float speed = 5f;
+    [SerializeField] private float downSpeed = 0.7f;
 
     [Header("参照")]
     // ここにMoguraGameManagerを割り当てる必要があります
@@ -49,7 +50,7 @@ public class Mogura : UdonSharpBehaviour
             else
             {
                 // 下降中
-                transform.position += Vector3.down * speed * Time.deltaTime;
+                transform.position += Vector3.down * downSpeed * Time.deltaTime;
                 
                 if (Networking.IsOwner(gameObject))
                 {

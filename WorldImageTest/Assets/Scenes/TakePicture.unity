@@ -4503,6 +4503,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f114b618899c90d42a67b3f9ef80d5ba, type: 3}
+--- !u!1 &5186240975864108421 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7586918053428161598, guid: f114b618899c90d42a67b3f9ef80d5ba, type: 3}
+  m_PrefabInstance: {fileID: 5186240975864108420}
+  m_PrefabAsset: {fileID: 0}
 --- !u!65 &5991210627816073127
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4753,14 +4758,14 @@ MonoBehaviour:
   useAssignedLayers: 0
   DynamicPrefabs: []
   DynamicMaterials:
-  - {fileID: 2100000, guid: a4961066b780b8846855bddf72de3516, type: 2}
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 2100000, guid: 11e612b5e4a9d9a489808d17596421e9, type: 2}
   - {fileID: 2100000, guid: 215e946921644af4397d42a068dc9171, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   - {fileID: 2100000, guid: 80c884aaab57d3141b0953fd6785a026, type: 2}
+  - {fileID: 2100000, guid: a4961066b780b8846855bddf72de3516, type: 2}
+  - {fileID: 2100000, guid: b208d342d3a491f49a32e1236fc70dbb, type: 2}
   - {fileID: 2100000, guid: 52422489f5e4de14fb095bd2f6de74cb, type: 2}
   - {fileID: 2100000, guid: a8a28885f0d61b044b9713163208a7d2, type: 2}
-  - {fileID: 2100000, guid: b208d342d3a491f49a32e1236fc70dbb, type: 2}
+  - {fileID: 2100000, guid: 11e612b5e4a9d9a489808d17596421e9, type: 2}
   - {fileID: 2100000, guid: 1cfdae8b5706f3b4488ecd29e2913c9c, type: 2}
   - {fileID: 2100000, guid: acf9fd221389fbd49b1d9ba02889c312, type: 2}
   LightMapsNear: []
@@ -4816,29 +4821,38 @@ MonoBehaviour:
   RenderReflectionIntensity: 0
   RenderSkybox: {fileID: 0}
   NetworkIDs:
-  - gameObject: {fileID: 777515483}
-    ID: 10
-    SerializedTypeNames:
-    - VRC.SDK3.Components.VRCObjectSync
   - gameObject: {fileID: 1877184115}
-    ID: 11
+    ID: 10
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
   - gameObject: {fileID: 492632853}
-    ID: 12
+    ID: 11
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
     - VRC.SDK3.Components.VRCPickup
   - gameObject: {fileID: 799543086}
-    ID: 13
+    ID: 12
     SerializedTypeNames:
     - VRC.SDK3.Components.VRCPickup
+    - VRC.Udon.UdonBehaviour
+    - VRC.SDK3.Components.VRCObjectSync
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 5186240975864108421}
+    ID: 13
+    SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
   - gameObject: {fileID: 1798093590}
     ID: 14
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
     - VRC.SDK3.Components.VRCPickup
+  - gameObject: {fileID: 1465016472}
+    ID: 15
+    SerializedTypeNames:
+    - VRC.SDK3.Components.VRCPickup
+    - VRC.Udon.UdonBehaviour
+    - VRC.SDK3.Components.VRCObjectSync
+    - VRC.Udon.UdonBehaviour
   - gameObject: {fileID: 197716442}
     ID: 16
     SerializedTypeNames:
@@ -4982,13 +4996,6 @@ MonoBehaviour:
     ID: 47
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
-    - VRC.Udon.UdonBehaviour
-  - gameObject: {fileID: 1465016472}
-    ID: 15
-    SerializedTypeNames:
-    - VRC.SDK3.Components.VRCPickup
-    - VRC.Udon.UdonBehaviour
-    - VRC.SDK3.Components.VRCObjectSync
     - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
