@@ -6,8 +6,6 @@ using VRC.Udon;
 public class StageWarp : UdonSharpBehaviour
 {
     [UdonSynced]
-    public bool isOn = false;
-    [UdonSynced]
     private int interactingPlayerId = -1;
     [SerializeField] private GameObject warpPoint;
     [SerializeField] private float warpYQuaternion = 180f;
@@ -15,13 +13,10 @@ public class StageWarp : UdonSharpBehaviour
 
     public override void Interact()
     {
-        if (isOn) return;
         
         // このオブジェクトのオーナーを自分自身に設定し、同期変数を変更する権限を得る
         Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
         
-        // 状態を更新
-        this.isOn = true;
         this.interactingPlayerId = Networking.LocalPlayer.playerId;
         
         Warp();
