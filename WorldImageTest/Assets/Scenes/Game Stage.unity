@@ -3018,6 +3018,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5621172821305009993, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -2234488458798404978, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
       propertyPath: m_LocalPosition.z
       value: 16.7
@@ -3034,9 +3038,29 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 12.9
       objectReference: {fileID: 0}
+    - target: {fileID: -1140927702994723942, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -136603251577821951, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 30114441145710219, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 860051661850841272, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
       propertyPath: m_Name
       value: kansisitu2
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2669580992753581416, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -15926,6 +15950,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a7c9c0f1bb8fa8e43a3700586e307a83, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1791606116}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a7c9c0f1bb8fa8e43a3700586e307a83, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1791606118}
   m_SourcePrefab: {fileID: 100100000, guid: a7c9c0f1bb8fa8e43a3700586e307a83, type: 3}
 --- !u!4 &477407118 stripped
 Transform:
@@ -53048,7 +53075,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6665469800027511752, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
       propertyPath: useMotion3
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6665469800027511752, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
       propertyPath: requiredMotion1
@@ -53060,7 +53087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6665469800027511752, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
       propertyPath: requiredMotion3
-      value: 18
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6665469800027511752, guid: 8240e12aefb5c294686e7935773600cd, type: 3}
       propertyPath: serializationData.Prefab
@@ -65038,6 +65065,20 @@ MonoBehaviour:
   upperLimit: 180.7
   receiver: {fileID: 1396862858}
   receiverHeightDistance: 1
+--- !u!114 &1791606118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791606115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1783056023, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowCollisionOwnershipTransfer: 1
+  ForceKinematicOnRemote: 0
 --- !u!1 &1791841182 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1251754631168110430, guid: 3b41428900a08ed4f9908fa33b8bae32, type: 3}
@@ -71523,6 +71564,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d930ffe55130ad347b4dd770c7090af6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2111709314}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d930ffe55130ad347b4dd770c7090af6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2111709321}
   m_SourcePrefab: {fileID: 100100000, guid: d930ffe55130ad347b4dd770c7090af6, type: 3}
 --- !u!1 &1958368285 stripped
 GameObject:
@@ -81872,6 +81916,20 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1464478809}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2111709321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464478809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1783056023, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowCollisionOwnershipTransfer: 1
+  ForceKinematicOnRemote: 0
 --- !u!1 &2113320426 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3509649462372201239, guid: edd03d207b036cc41bf412563d630e53, type: 3}
@@ -97556,7 +97614,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 80c884aaab57d3141b0953fd6785a026, type: 2}
   - {fileID: 2100000, guid: f92edc1fc066e2c4fb4644bc9a8f8164, type: 2}
   - {fileID: 2100000, guid: 841cea38dc8bbe94a9454cd0657ba8bb, type: 2}
-  - {fileID: 6116672067355431542, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
   - {fileID: 2100000, guid: 6666ba04415e3b345b1b65d0153382a2, type: 2}
   - {fileID: 2100000, guid: e747e11140d8fb34a83f68ba8d20a377, type: 2}
   - {fileID: 2100000, guid: 507acb71d8fb3fa43af3077667abd8f6, type: 2}
@@ -97605,7 +97662,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: ab2214fff6cbdeb4dbd7245c05f8cd44, type: 2}
   - {fileID: 2100000, guid: 9c92c69bbd97bd74a843e2df886ad7c4, type: 2}
   - {fileID: 2100000, guid: 8d7013e1b0e71c5448a085ce8c580f7f, type: 2}
-  - {fileID: 377003951084239239, guid: ab362e1ee6fd85844ac4e811898d8c19, type: 3}
   - {fileID: -2767793760657245348, guid: 6bcacd43f5bf5304a951aca3a84f61d4, type: 3}
   - {fileID: 2100000, guid: aae1fad9036850b478b54efdcce39448, type: 2}
   - {fileID: -6319534323457358351, guid: 6bcacd43f5bf5304a951aca3a84f61d4, type: 3}
