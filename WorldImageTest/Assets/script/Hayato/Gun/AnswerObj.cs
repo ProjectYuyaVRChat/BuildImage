@@ -8,6 +8,8 @@ using VRC.Udon;
 public class AnswerObj : UdonSharpBehaviour
 {
     [SerializeField] private GameObject entranceGate;
+    [SerializeField] private GimmickManager gimmickManager;
+    private bool isCleared = false;
 
     private void Start()
     {
@@ -19,6 +21,12 @@ public class AnswerObj : UdonSharpBehaviour
         if (other.gameObject.name == "Bullet(Clone)")
         {
             entranceGate.SetActive(true);
+            if (!isCleared)
+            {
+                gimmickManager.ReportClear();
+                isCleared = true;
+                RequestSerialization();
+            }
         }
     }
 }

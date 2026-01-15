@@ -31,6 +31,9 @@ public class PassWordCheck : UdonSharpBehaviour
 
     [UdonSynced]private string inputPassword = ""; // 入力中のパスワード
 
+    [SerializeField] private GimmickManager gimmickManager;
+    [UdonSynced]private bool isCleared = false;
+    
     private void Start()
     {
         // 配列の長さチェック
@@ -137,6 +140,13 @@ public class PassWordCheck : UdonSharpBehaviour
         {
             // 正しいパスワードが入力された時の処理
             door.SetActive(false); // 扉を非アクティブにする
+
+            if (!isCleared)
+            {
+                isCleared = true;
+                RequestSerialization();
+                gimmickManager.ReportClear();
+            }
             
             if (showDebugInfo)
             {

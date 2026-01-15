@@ -39,6 +39,9 @@ public class MoguraGameManager : UdonSharpBehaviour
     private float currentCountdownTimer = 0f;
     private int spawnedMoleCount = 0;
     private int lastDisplayCount = -1;
+    
+    [SerializeField] private GimmickManager gimmickManager;
+    [UdonSynced] private bool isCleared = false;
 
     private void Start()
     {
@@ -217,6 +220,7 @@ public class MoguraGameManager : UdonSharpBehaviour
             {
                 statusText.text = "GAME CLEAR!!\nScore: " + currentScore;
                 statusText2.text = "GAME CLEAR!!\nScore: " + currentScore;
+                ClearGame();
             }
             else if (totalGameTimer >= gameDuration) // 時間切れ
             {
@@ -236,6 +240,16 @@ public class MoguraGameManager : UdonSharpBehaviour
         if (index >= 0 && index < moles.Length && moles[index] != null)
         {
             moles[index].MoveMogura();
+        }
+    }
+    
+    private void ClearGame()
+    {
+        if (!isCleared)
+        {
+            gimmickManager.ReportClear();
+            isCleared = true;
+            RequestSerialization();
         }
     }
 }
