@@ -40,6 +40,20 @@ public class DoorAnimationController : UdonSharpBehaviour
 
     void Start()
     {
+        // 初期位置を保存（Awake()が呼ばれない場合に備えてStart()でも実行）
+        if (!positionsInitialized)
+        {
+            if (leftDoor != null)
+                leftStartPos = leftDoor.transform.localPosition;
+
+            if (rightDoor != null)
+                rightStartPos = rightDoor.transform.localPosition;
+
+            positionsInitialized = true;
+            
+            Debug.Log($"[DoorAnimationController] Start()で初期位置を保存しました - leftDoor: {(leftDoor != null ? leftDoor.name : "null")}, rightDoor: {(rightDoor != null ? rightDoor.name : "null")}");
+        }
+        
         // 初期位置を保存しただけなので、ドアの位置は変更しない
         // CloseDoorImmediate()は必要に応じて外部から呼ばれる
         currentOffset = 0f;
@@ -57,12 +71,16 @@ public class DoorAnimationController : UdonSharpBehaviour
     {
         if (isOpening)
         {
+            float previousOffset = currentOffset;
             currentOffset += openSpeed * Time.deltaTime;
+            
             if (currentOffset >= openDistance)
             {
                 currentOffset = openDistance;
                 isOpening = false;
                 isDoorOpen = true;
+                
+                Debug.Log($"[DoorAnimationController] ドアが完全に開きました - currentOffset: {currentOffset}");
 
                 if (doorOpenEventReceiver != null && !string.IsNullOrEmpty(doorOpenEventName))
                 {
@@ -71,6 +89,12 @@ public class DoorAnimationController : UdonSharpBehaviour
             }
 
             UpdateDoorPosition();
+            
+            // デバッグ：5フレームごとにログを出力（更新されているか確認）
+            if (Time.frameCount % 60 == 0)
+            {
+                Debug.Log($"[DoorAnimationController] ドアを開いています... currentOffset: {currentOffset:F3}/{openDistance}, isOpening: {isOpening}");
+            }
         }
         else if (isClosing)
         {
@@ -94,27 +118,72 @@ public class DoorAnimationController : UdonSharpBehaviour
     private void UpdateDoorPosition()
     {
         // 初期位置が保存されている場合のみ位置を更新
-        if (!positionsInitialized) return;
+        if (!positionsInitialized)
+        {
+            Debug.LogWarning("[DoorAnimationController] 初期位置が保存されていません！");
+            return;
+        }
 
         if (leftDoor != null)
         {
-            leftDoor.transform.localPosition =
-                leftStartPos + Vector3.left * currentOffset;
+            Vector3 newLeftPos = leftStartPos + Vector3.left * currentOffset;
+            leftDoor.transform.localPosition = newLeftPos;
+            
+            // デバッグ：最初の数回のみログを出力
+            if (isOpening && currentOffset < 0.1f)
+            {
+                Debug.Log($"[DoorAnimationController] 左扉の位置を更新: {newLeftPos} (offset: {currentOffset:F3})");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[DoorAnimationController] 左扉が設定されていません！");
         }
 
         if (rightDoor != null)
         {
-            rightDoor.transform.localPosition =
-                rightStartPos + Vector3.right * currentOffset;
+            Vector3 newRightPos = rightStartPos + Vector3.right * currentOffset;
+            rightDoor.transform.localPosition = newRightPos;
+            
+            // デバッグ：最初の数回のみログを出力
+            if (isOpening && currentOffset < 0.1f)
+            {
+                Debug.Log($"[DoorAnimationController] 右扉の位置を更新: {newRightPos} (offset: {currentOffset:F3})");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[DoorAnimationController] 右扉が設定されていません！");
         }
     }
 
     public void OpenDoor()
     {
+        Debug.Log($"[DoorAnimationController] OpenDoor() called - isOpening: {isOpening}, isDoorOpen: {isDoorOpen}, positionsInitialized: {positionsInitialized}");
+        
+        // 初期位置が保存されていない場合は今すぐ保存
+        if (!positionsInitialized)
+        {
+            if (leftDoor != null)
+                leftStartPos = leftDoor.transform.localPosition;
+
+            if (rightDoor != null)
+                rightStartPos = rightDoor.transform.localPosition;
+
+            positionsInitialized = true;
+            Debug.Log($"[DoorAnimationController] OpenDoor()内で初期位置を保存しました - leftDoor: {(leftDoor != null ? leftDoor.name : "null")}, rightDoor: {(rightDoor != null ? rightDoor.name : "null")}");
+        }
+        
         if (!isOpening && !isDoorOpen)
         {
             isOpening = true;
             isClosing = false;
+            Debug.Log($"[DoorAnimationController] ドアを開き始めます - leftDoor: {(leftDoor != null ? leftDoor.name : "null")}, rightDoor: {(rightDoor != null ? rightDoor.name : "null")}");
+            Debug.Log($"[DoorAnimationController] openSpeed: {openSpeed}, openDistance: {openDistance}, currentOffset: {currentOffset}");
+        }
+        else
+        {
+            Debug.Log($"[DoorAnimationController] OpenDoor()が呼ばれましたが、既に開いていますまたは開く途中です");
         }
     }
 

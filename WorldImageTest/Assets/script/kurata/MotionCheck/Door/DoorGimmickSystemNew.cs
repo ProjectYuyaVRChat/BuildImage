@@ -157,6 +157,19 @@ public class DoorGimmickSystemNew : UdonSharpBehaviour
                     OpenDoor();
                     hasBeenOpened = true;
                 }
+                else if (allRequirementsMet && !doorController.IsDoorOpen && !doorController.IsOpening)
+                {
+                    // デバッグ情報を追加（順次モードで扉が開かない原因を特定するため）
+                    if (showDebugInfo)
+                    {
+                        Debug.LogWarning($"[DoorGimmickSystem] 条件は満たされていますが、hasBeenOpened={hasBeenOpened}のため扉が開きません。モード: {(motionMode == MOTION_MODE_SEQUENTIAL ? "順次" : "同時/カウンター")}");
+                    }
+                }
+                else if (!allRequirementsMet && showDebugInfo)
+                {
+                    // 条件が満たされていない場合のデバッグ情報
+                    Debug.Log($"[DoorGimmickSystem] ドアを開く条件が満たされていません。allRequirementsMet={allRequirementsMet}, IsDoorOpen={doorController.IsDoorOpen}, IsOpening={doorController.IsOpening}");
+                }
                 break;
                 
             case DOOR_MODE_AUTO_CLOSE:

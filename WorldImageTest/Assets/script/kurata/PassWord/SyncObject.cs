@@ -60,7 +60,7 @@ public class SyncObject : UdonSharpBehaviour
 
         // Position制限を適用
         Vector3 restrictedPositionDelta = ApplyPositionRestrictions(positionDelta);
-
+        
         // Rotation制限を適用
         Quaternion restrictedRotationDelta = ApplyRotationRestrictions(rotationDelta);
 
@@ -89,8 +89,8 @@ public class SyncObject : UdonSharpBehaviour
                 // 位置を相対移動（スケール補正後）
                 target.position += scaledDelta;
 
-                // 回転は参照元の現在値を直接コピーし、ロックした軸だけを維持
-                ApplyRotationWithRestrictions(target);
+                // 回転は制限適用後
+                target.rotation = restrictedRotationDelta * target.rotation;//*=はだめよローカルになるから
             }
         }
 
@@ -106,82 +106,35 @@ public class SyncObject : UdonSharpBehaviour
     private Vector3 ApplyPositionRestrictions(Vector3 positionDelta)
     {
         Vector3 restrictedDelta = positionDelta;
-
+        
         if (lockPositionX)
             restrictedDelta.x = 0f;
         if (lockPositionY)
             restrictedDelta.y = 0f;
         if (lockPositionZ)
             restrictedDelta.z = 0f;
-
+            
         return restrictedDelta;
     }
 
     /// <summary>
-    /// Rotationの制限を適用する（旧メソッド、互換性のため残す）
+    /// Rotationの制限を適用する
     /// </summary>
     /// <param name="rotationDelta">元の回転量</param>
     /// <returns>制限適用後の回転量</returns>
     private Quaternion ApplyRotationRestrictions(Quaternion rotationDelta)
     {
-        // オイラー角に変換して軸ごとに制限を適用（より正確）
+        // オイラー角に変換して制限を適用
         Vector3 eulerDelta = rotationDelta.eulerAngles;
         
-        // オイラー角を-180～180度の範囲に正規化
-        eulerDelta.x = NormalizeAngle(eulerDelta.x);
-        eulerDelta.y = NormalizeAngle(eulerDelta.y);
-        eulerDelta.z = NormalizeAngle(eulerDelta.z);
-
-        // ロックされた軸の角度を0にする
-        if (lockRotationX) eulerDelta.x = 0f;
-        if (lockRotationY) eulerDelta.y = 0f;
-        if (lockRotationZ) eulerDelta.z = 0f;
-
-        // クォータニオンに戻す
+        if (lockRotationX)
+            eulerDelta.x = 0f;
+        if (lockRotationY)
+            eulerDelta.y = 0f;
+        if (lockRotationZ)
+            eulerDelta.z = 0f;
+            
         return Quaternion.Euler(eulerDelta);
-    }
-
-    /// <summary>
-    /// ターゲットの回転に制限を適用して更新する（参照元の現在値を直接コピー）
-    /// </summary>
-    /// <param name="target">同期先のTransform</param>
-    private void ApplyRotationWithRestrictions(Transform target)
-    {
-        // 参照元の現在の回転をオイラー角に変換
-        Vector3 sourceEuler = transform.rotation.eulerAngles;
-        Vector3 sourceEulerNormalized = new Vector3(
-            NormalizeAngle(sourceEuler.x),
-            NormalizeAngle(sourceEuler.y),
-            NormalizeAngle(sourceEuler.z)
-        );
-
-        // ターゲットの現在の回転をオイラー角に変換
-        Vector3 targetEuler = target.rotation.eulerAngles;
-        Vector3 targetEulerNormalized = new Vector3(
-            NormalizeAngle(targetEuler.x),
-            NormalizeAngle(targetEuler.y),
-            NormalizeAngle(targetEuler.z)
-        );
-
-        // ロックされていない軸は参照元の値、ロックされた軸はターゲットの現在値を維持
-        Vector3 newEuler = new Vector3(
-            lockRotationX ? targetEulerNormalized.x : sourceEulerNormalized.x,
-            lockRotationY ? targetEulerNormalized.y : sourceEulerNormalized.y,
-            lockRotationZ ? targetEulerNormalized.z : sourceEulerNormalized.z
-        );
-
-        // クォータニオンに戻して設定
-        target.rotation = Quaternion.Euler(newEuler);
-    }
-
-    /// <summary>
-    /// 角度を-180～180度の範囲に正規化
-    /// </summary>
-    private float NormalizeAngle(float angle)
-    {
-        while (angle > 180f) angle -= 360f;
-        while (angle < -180f) angle += 360f;
-        return angle;
     }
 
     #region 制限設定メソッド
@@ -235,12 +188,12 @@ public class SyncObject : UdonSharpBehaviour
         status += lockPositionX ? "X" : "-";
         status += lockPositionY ? "Y" : "-";
         status += lockPositionZ ? "Z" : "-";
-
+        
         status += " | Rotation制限: ";
         status += lockRotationX ? "X" : "-";
         status += lockRotationY ? "Y" : "-";
         status += lockRotationZ ? "Z" : "-";
-
+        
         return status;
     }
 

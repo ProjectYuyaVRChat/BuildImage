@@ -237,8 +237,14 @@ public class DoorGimmickSystem : UdonSharpBehaviour
     
     private bool CheckSequentialRequirements()
     {
-        // すべてのステップが完了している場合は、間違った動作のチェックを停止
-        if (stepCompleted[0] && stepCompleted[1] && stepCompleted[2])
+        // 使用されているモーションのみで完了チェックを行う
+        bool allUsedStepsCompleted = true;
+        if (useMotion1 && !stepCompleted[0]) allUsedStepsCompleted = false;
+        if (useMotion2 && !stepCompleted[1]) allUsedStepsCompleted = false;
+        if (useMotion3 && !stepCompleted[2]) allUsedStepsCompleted = false;
+        
+        // すべての使用されているステップが完了している場合は、間違った動作のチェックを停止
+        if (allUsedStepsCompleted)
         {
             return true;
         }
@@ -277,6 +283,45 @@ public class DoorGimmickSystem : UdonSharpBehaviour
         if (resetOnWrongMotion)
         {
             CheckWrongMotions();
+        }
+        
+        // 使用されていないモーションのステップをスキップ
+        while (currentStep < 3)
+        {
+            bool stepEnabled = false;
+            switch (currentStep)
+            {
+                case 0: stepEnabled = useMotion1; break;
+                case 1: stepEnabled = useMotion2; break;
+                case 2: stepEnabled = useMotion3; break;
+            }
+            
+            if (stepEnabled) break; // 使用されているステップが見つかった
+            
+            // 使用されていないステップは自動的に完了扱いにする
+            stepCompleted[currentStep] = true;
+            if (showDebugInfo)
+            {
+                Debug.Log($"[DoorGimmick] ステップ{currentStep + 1}は使用されていないためスキップします");
+            }
+            currentStep++;
+            
+            // すべてのステップをチェック済みの場合
+            if (currentStep >= 3)
+            {
+                break;
+            }
+        }
+        
+        // すべてのステップをチェック済みの場合、完了を返す
+        if (currentStep >= 3)
+        {
+            // 最初に定義した変数を使用（再計算）
+            allUsedStepsCompleted = true;
+            if (useMotion1 && !stepCompleted[0]) allUsedStepsCompleted = false;
+            if (useMotion2 && !stepCompleted[1]) allUsedStepsCompleted = false;
+            if (useMotion3 && !stepCompleted[2]) allUsedStepsCompleted = false;
+            return allUsedStepsCompleted;
         }
         
         // 現在のステップのモーションをチェック
@@ -333,8 +378,13 @@ public class DoorGimmickSystem : UdonSharpBehaviour
             motionStabilizeTimers[currentStep] = 0f;
         }
         
-        // すべてのステップが完了しているかチェック
-        return stepCompleted[0] && stepCompleted[1] && stepCompleted[2];
+        // 使用されているモーションのみで完了チェックを行う（最初に定義した変数を再計算）
+        allUsedStepsCompleted = true;
+        if (useMotion1 && !stepCompleted[0]) allUsedStepsCompleted = false;
+        if (useMotion2 && !stepCompleted[1]) allUsedStepsCompleted = false;
+        if (useMotion3 && !stepCompleted[2]) allUsedStepsCompleted = false;
+        
+        return allUsedStepsCompleted;
     }
     
     private void CheckWrongMotions()
@@ -420,6 +470,28 @@ public class DoorGimmickSystem : UdonSharpBehaviour
         
         // 次のステップに進む
         currentStep++;
+        
+        // 使用されていないモーションのステップをスキップ
+        while (currentStep < 3)
+        {
+            bool stepEnabled = false;
+            switch (currentStep)
+            {
+                case 0: stepEnabled = useMotion1; break;
+                case 1: stepEnabled = useMotion2; break;
+                case 2: stepEnabled = useMotion3; break;
+            }
+            
+            if (stepEnabled) break; // 使用されているステップが見つかった
+            
+            // 使用されていないステップは自動的に完了扱いにする
+            stepCompleted[currentStep] = true;
+            if (showDebugInfo)
+            {
+                Debug.Log($"[DoorGimmick] ステップ{currentStep + 1}は使用されていないためスキップします");
+            }
+            currentStep++;
+        }
         
         // すべてのステップが完了した場合
         if (currentStep >= 3)
