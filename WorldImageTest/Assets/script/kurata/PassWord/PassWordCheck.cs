@@ -121,6 +121,23 @@ public class PassWordCheck : UdonSharpBehaviour
                 inputPassword = inputPassword.Substring(0, inputPassword.Length - 1);
             }
         }
+        else if (number == "Clear")
+        {
+            // Clearが押されたら全ての入力を削除
+            inputPassword = "";
+            if (displayText != null)
+            {
+                displayText.text = "";
+            }
+            
+            if (showDebugInfo)
+            {
+                Debug.Log("[PassWordCheck] Clearボタンが押されました。入力を全てクリアしました。");
+            }
+            
+            RequestSerialization();
+            return; // 早期リターン（displayTextは既に更新済み）
+        }
         else
         {
             // 数字を追加
