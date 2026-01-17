@@ -23,7 +23,10 @@ public class AnswerObj : UdonSharpBehaviour
             entranceGate.SetActive(true);
             if (!isCleared)
             {
-                gimmickManager.ReportClear();
+                if (gimmickManager != null)
+                {
+                    gimmickManager.ReportClear();
+                }
                 isCleared = true;
                 RequestSerialization();
             }
