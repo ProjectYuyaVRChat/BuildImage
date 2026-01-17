@@ -10,6 +10,7 @@ public class StageWarp : UdonSharpBehaviour
     [SerializeField] private GameObject warpPoint;
     [SerializeField] private float warpYQuaternion = 180f;
     private bool isSequenceRunning = false;
+    public PhotoTaker photo;
 
     public override void Interact()
     {
@@ -27,6 +28,10 @@ public class StageWarp : UdonSharpBehaviour
         VRCPlayerApi playerToWarp = VRCPlayerApi.GetPlayerById(interactingPlayerId);
         if (playerToWarp != null && playerToWarp.isLocal)
         {
+            if (photo != null)
+            {
+                photo.ToggleCapturing();
+            }
             playerToWarp.TeleportTo(
                 warpPoint.transform.position,
                 Quaternion.Euler(0, warpYQuaternion, 0)
