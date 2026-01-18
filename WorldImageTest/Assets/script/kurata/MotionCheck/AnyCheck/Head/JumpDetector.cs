@@ -87,6 +87,15 @@ public class JumpDetector : MotionDetectorBase
 
     protected override bool IsMotionDetectionEnabled()
     {
-        return areaTrigger == null || areaTrigger.IsAreaActive;
+        // 範囲検知システムが設定されていない場合は常に有効
+        if (areaTrigger == null)
+        {
+            return true;
+        }
+        
+        // エリアがアクティブかつ、ローカルプレイヤーがエリア内にいる場合のみモーション検知を有効にする
+        bool isAreaActive = areaTrigger.IsAreaActive;
+        bool isLocalPlayerInArea = areaTrigger.IsPlayerInArea(Networking.LocalPlayer);
+        return isAreaActive && isLocalPlayerInArea;
     }
 }
