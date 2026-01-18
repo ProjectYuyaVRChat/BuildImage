@@ -106,15 +106,17 @@ public class HeadTurnDetector : MotionDetectorBase
             return true;
         }
         
-        // 範囲検知システムがアクティブな場合のみモーション検知を有効にする
-        bool isEnabled = areaTrigger.IsAreaActive;
+        // エリアがアクティブかつ、ローカルプレイヤーがエリア内にいる場合のみモーション検知を有効にする
+        bool isAreaActive = areaTrigger.IsAreaActive;
+        bool isLocalPlayerInArea = areaTrigger.IsPlayerInArea(Networking.LocalPlayer);
+        bool isEnabled = isAreaActive && isLocalPlayerInArea;
         
         // デバッグ情報を表示（状態が変化した時のみ）
         if (doorGimmickSystem != null && doorGimmickSystem.showDebugInfo)
         {
             if (lastMotionDetectionState != isEnabled)
             {
-                Debug.Log($"[HeadTurnDetector] モーション検知: {(isEnabled ? "有効" : "無効")} (エリア: {areaTrigger.AreaName})");
+                Debug.Log($"[HeadTurnDetector] モーション検知: {(isEnabled ? "有効" : "無効")} (エリア: {areaTrigger.AreaName}, エリアアクティブ: {isAreaActive}, ローカルプレイヤー在籍: {isLocalPlayerInArea})");
                 lastMotionDetectionState = isEnabled;
             }
         }
