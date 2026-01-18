@@ -9,6 +9,17 @@ public class BoxCheckManager : UdonSharpBehaviour
     [Header("消したい壁")]
     public GameObject wall;
 
+    [SerializeField] private GimmickManager gimmickManager;
+    private bool isCleared = false;
+
+    void OnCorrectAction()
+    {
+        if (isCleared) return;
+
+        isCleared = true;
+        gimmickManager.ReportClear();
+    }
+    
     private void Update()
     {
         for (int i = 0; i < boxSlots.Length; i++)
