@@ -11,6 +11,7 @@ public class PositionReset : UdonSharpBehaviour
     private Vector3 resetPosition;
     private Quaternion resetRotate;
     private Rigidbody targetRigdbody;
+    public Animator button;
 
     private void Start()
     {
@@ -29,7 +30,7 @@ public class PositionReset : UdonSharpBehaviour
         {
             Networking.SetOwner(Networking.LocalPlayer, target);
         }
-        
+        button.SetTrigger("Push");
         target.transform.SetPositionAndRotation(resetPosition,resetRotate);
 
         if (targetRigdbody != null)
