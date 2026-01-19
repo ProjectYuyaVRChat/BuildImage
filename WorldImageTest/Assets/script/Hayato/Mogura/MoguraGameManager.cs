@@ -210,7 +210,7 @@ public class MoguraGameManager : UdonSharpBehaviour
         else if (isPlaying)
         {
             // ゲーム中はスコアを表示
-            statusText.text = "Score: " + currentScore + " / " + targetScore;
+            statusText.text = "Score:" + currentScore + "/" + targetScore;
             statusText2.text = "Score: " + currentScore + " / " + targetScore;
         }
         else
@@ -218,19 +218,19 @@ public class MoguraGameManager : UdonSharpBehaviour
             // ゲーム終了後または待機状態
             if (currentScore >= targetScore && totalGameTimer > 0) // クリア後
             {
-                statusText.text = "GAME CLEAR!!\nScore: " + currentScore;
-                statusText2.text = "GAME CLEAR!!\nScore: " + currentScore;
+                statusText.text = "GAME CLEAR!!";
+                statusText2.text = "GAME CLEAR!!";
                 ClearGame();
             }
             else if (totalGameTimer >= gameDuration) // 時間切れ
             {
-                statusText.text = "TIME UP...\nScore: " + currentScore;
-                statusText2.text = "TIME UP...\nScore: " + currentScore;
+                statusText.text = "Game Over";
+                statusText2.text = "Game Over";
             }
             else // 初期状態（totalGameTimerがリセットされている場合など）
             {
-                statusText.text = "Press Button\nto Start";
-                statusText2.text = "Press Button\nto Start";
+                statusText.text = "Press Button";
+                statusText2.text = "Press Button";
             }
         }
     }
