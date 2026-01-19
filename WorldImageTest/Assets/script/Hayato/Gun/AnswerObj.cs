@@ -10,6 +10,7 @@ public class AnswerObj : UdonSharpBehaviour
     [SerializeField] private GameObject entranceGate;
     [SerializeField] private GimmickManager gimmickManager;
     private bool isCleared = false;
+    [SerializeField] private Animator anime;
 
     private void Start()
     {
@@ -27,6 +28,7 @@ public class AnswerObj : UdonSharpBehaviour
                 {
                     gimmickManager.ReportClear();
                 }
+                anime.SetTrigger("Break");
                 isCleared = true;
                 RequestSerialization();
             }
