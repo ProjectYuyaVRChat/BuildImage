@@ -1,3 +1,4 @@
+using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -12,10 +13,17 @@ public class Gun : UdonSharpBehaviour
     [SerializeField] private float fireRate = 0.25f;  // 連射間隔
     
     [UdonSynced(UdonSyncMode.None)] private int _syncShotCount;
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip se;
     
     private int _localShotCount;
     
     private float _lastShotTime = 0f;
+
+    private void Start()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
 
     public override void OnPickupUseDown()
     {
@@ -38,6 +46,7 @@ public class Gun : UdonSharpBehaviour
         newBullet.transform.SetPositionAndRotation(firePoint.position, firePoint.rotation);
         
         newBullet.SetActive(true);
+        _audioSource.PlayOneShot(se);
         
         Rigidbody rb = newBullet.GetComponent<Rigidbody>();
         if (rb != null)
