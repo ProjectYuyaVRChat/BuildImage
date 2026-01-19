@@ -7,7 +7,6 @@ using VRC.Udon;
 
 public class AnswerObj : UdonSharpBehaviour
 {
-    [SerializeField] private GameObject entranceGate;
     [SerializeField] private GimmickManager gimmickManager;
     private bool isCleared = false;
     [SerializeField] private Animator anime;
@@ -16,7 +15,6 @@ public class AnswerObj : UdonSharpBehaviour
 
     private void Start()
     {
-        entranceGate.SetActive(false);
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -24,10 +22,6 @@ public class AnswerObj : UdonSharpBehaviour
     {
         if (other.gameObject.name == "Bullet(Clone)")
         {
-            if (entranceGate != null)
-            {
-                entranceGate.SetActive(true);
-            }
             if (!isCleared)
             {
                 if (gimmickManager != null)
