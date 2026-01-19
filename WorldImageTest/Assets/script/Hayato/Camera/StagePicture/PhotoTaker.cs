@@ -1,4 +1,3 @@
-using TMPro;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
@@ -7,66 +6,59 @@ using VRC.Udon;
 [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class PhotoTaker : UdonSharpBehaviour
 {
-    [SerializeField]private Camera worldCamera;
+    [SerializeField] private Camera worldCamera;
 
-    [UdonSynced]private bool isCapturing = true;
-    /*[SerializeField]private TextMeshProUGUI debugText;
-    [SerializeField]private TextMeshProUGUI debugText2;
-    [SerializeField]private TextMeshProUGUI debugText3;
-    private float counter = 0;*/
+    // 初期値はライブビュー(true)
+    [UdonSynced] private bool isCapturing = true;
 
     private void Start()
     {
         updateCameraState();
-        if (Networking.IsOwner(gameObject))
-        {
-            RequestSerialization();
-        }
     }
+
+    // ボタンに割り当てるメソッド
     public void ToggleCapturing()
     {
+        // 既に撮影済み(false)なら何もしない
+        if (!isCapturing) return;
+
         if (!Networking.IsOwner(gameObject))
         {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
         }
         
-        updateCameraState();
-        if (isCapturing == true)
-        {
-            isCapturing = !isCapturing;
-        }
+        // 1. フラグを「撮影済み(false)」にする
+        isCapturing = false;
+        
+        // 2. 他のプレイヤーへ同期
         RequestSerialization();
+
+        // 3. 自分のカメラ状態を更新
+        updateCameraState();
+    }
+
+    // (オプション) リセット用ボタンを作るならこれを割り当てる
+    public void ResetCamera()
+    {
+        if (!isCapturing) // 停止中なら
+        {
+            if (!Networking.IsOwner(gameObject)) Networking.SetOwner(Networking.LocalPlayer, gameObject);
+            isCapturing = true; // 再開する
+            RequestSerialization();
+            updateCameraState();
+        }
     }
 
     public override void OnDeserialization()
     {
-        /*counter++;
-        if (debugText2 != null)
-        {
-            debugText2.text = ($"PhotoTaker: OnDeserializationを受信しました。({counter}) isCapturingは {isCapturing} です。");
-        }*/
         updateCameraState();
     }
 
     private void updateCameraState()
     {
-        if (worldCamera == null)
+        if (worldCamera != null)
         {
-            Debug.Log("PhotoTaker: worldCameraがインスペクタで設定されていません。");
-            return;
-        }
-        
-        worldCamera.gameObject.SetActive(isCapturing);
-
-        if (isCapturing)
-        {
-            Debug.Log("PhotoTaker: ライブキャプチャを再開");
-            /*debugText.text = "PhotoTaker: ライブキャプチャを再開";*/
-        }
-        else
-        {
-            Debug.Log("PhotoTaker: 静止画として固定");
-            /*debugText.text = "PhotoTaker: 静止画として固定";*/
+            worldCamera.gameObject.SetActive(isCapturing);
         }
     }
 }
