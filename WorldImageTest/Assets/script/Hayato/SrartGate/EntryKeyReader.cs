@@ -8,14 +8,15 @@ public class EntryKeyReader : UdonSharpBehaviour
     [SerializeField] private int openID;
     [SerializeField] private Animator gate;
     private AudioSource audioSource;
-    [SerializeField] private AudioClip audioClip;
+    [SerializeField] private AudioClip open;
+    [SerializeField] private AudioClip scan;
 
     [UdonSynced(UdonSyncMode.None)] private bool isGateOpen;
     
 
     private void Start()
     {
-        if (audioClip != null)
+        if (open != null)
         {
             audioSource = GetComponent<AudioSource>();
         }
@@ -26,6 +27,7 @@ public class EntryKeyReader : UdonSharpBehaviour
         if (card == null) return;
 
         int id = card.keyID;
+        audioSource.PlayOneShot(scan);
 
         if (openID == id)
         {
@@ -43,9 +45,9 @@ public class EntryKeyReader : UdonSharpBehaviour
     {
         if (!isGateOpen)
         {
-            if (audioClip != null)
+            if (open != null)
             {
-                audioSource.PlayOneShot(audioClip);
+                audioSource.PlayOneShot(open);
             }
             isGateOpen = true;
             RequestSerialization();

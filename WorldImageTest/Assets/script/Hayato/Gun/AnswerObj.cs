@@ -11,10 +11,13 @@ public class AnswerObj : UdonSharpBehaviour
     [SerializeField] private GimmickManager gimmickManager;
     private bool isCleared = false;
     [SerializeField] private Animator anime;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip audioClip;
 
     private void Start()
     {
         entranceGate.SetActive(false);
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,6 +35,7 @@ public class AnswerObj : UdonSharpBehaviour
                     gimmickManager.ReportClear();
                 }
                 anime.SetTrigger("Break");
+                audioSource.PlayOneShot(audioClip);
                 isCleared = true;
                 SendCustomEventDelayedSeconds(nameof(DeleteItem), 0.5f);
             }
