@@ -28,6 +28,7 @@ public class MotionToggle : UdonSharpBehaviour
     [UdonSynced] private bool stepACompleted;
     [UdonSynced] private bool stepBCompleted;
     [UdonSynced] private bool stepCCompleted;
+    
 
     private bool prevA;
     private bool prevB;
