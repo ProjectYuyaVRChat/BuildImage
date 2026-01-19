@@ -9,7 +9,8 @@ public class GimmickManager : UdonSharpBehaviour
     [SerializeField] private int requiredClearCount = 3;
 
     [Header("すべてクリアした時の処理対象")]
-    [SerializeField] private GameObject completeObject; // 例：開くドア、表示される文字など
+    [SerializeField] private GameObject completeObject;
+    [SerializeField] private GameObject completeObject2;// 例：開くドア、表示される文字など
 
     // 現在のクリア数を同期変数として管理（途中参加者対応のため）
     [UdonSynced(UdonSyncMode.None)] private int _currentClearCount = 0;
@@ -53,6 +54,7 @@ public class GimmickManager : UdonSharpBehaviour
         
         // ここに「次の処理」を書く
         if (completeObject != null) completeObject.SetActive(true);
+        if (completeObject != null) completeObject2.SetActive(true);
     }
     
     // 途中参加などで変数が同期された時に呼ばれる
@@ -62,6 +64,7 @@ public class GimmickManager : UdonSharpBehaviour
         if (_currentClearCount >= requiredClearCount)
         {
             if (completeObject != null) completeObject.SetActive(true);
+            if (completeObject != null) completeObject2.SetActive(true);
         }
     }
 }
