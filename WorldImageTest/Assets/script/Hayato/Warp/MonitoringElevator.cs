@@ -39,10 +39,6 @@ public class MonitoringElevator : UdonSharpBehaviour
             
             // 全プレイヤーに対して「ワープを開始せよ」という命令を送る
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(TriggerAllClients));
-
-            // --- 状態のリセット ---
-            // 3秒後にマスターが各ブロックの状態をリセットする
-            SendCustomEventDelayedSeconds(nameof(MasterResetBlocks), 3.0f);
         }
     }
     
@@ -52,23 +48,5 @@ public class MonitoringElevator : UdonSharpBehaviour
         // ブロック内部のロジックにより、実際にワープするのは操作した本人のみ
         if (entrance1 != null) entrance1.Warp();
         if (entrance2 != null) entrance2.Warp();
-    }
-    
-    // マスターのみで実行されるリセット処理
-    public void MasterResetBlocks()
-    {
-        // マスターが各ブロックのオーナーになり、リセットを命令する
-        if (entrance1 != null)
-        {
-            Networking.SetOwner(Networking.LocalPlayer, entrance1.gameObject);
-            entrance1.ResetState();
-        }
-        if (entrance2 != null)
-        {
-            Networking.SetOwner(Networking.LocalPlayer, entrance2.gameObject);
-            entrance2.ResetState();
-        }
-        
-        isSequenceActive = false; // 再度、判定できるようにロックを解除する
     }
 }
