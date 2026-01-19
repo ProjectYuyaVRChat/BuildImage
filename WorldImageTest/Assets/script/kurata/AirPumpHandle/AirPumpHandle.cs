@@ -36,8 +36,8 @@ public class AirPumpHandle : UdonSharpBehaviour
         else
         {
              pumpRigidbody.constraints = RigidbodyConstraints.FreezePosition |
-                                        RigidbodyConstraints.FreezeRotation;
-           // 元の位置に戻す
+                                         RigidbodyConstraints.FreezeRotation;
+           // 元の位置に戻すやつ
            pumpPiston.localPosition = Vector3.Lerp(pumpPiston.localPosition, basePos, Time.deltaTime * 5f);
         }
     }

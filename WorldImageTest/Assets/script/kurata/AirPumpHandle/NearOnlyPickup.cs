@@ -16,7 +16,7 @@ public class NearOnlyPickup : UdonSharpBehaviour
         // 既に掴まれている場合は無視
         if (pickup.IsHeld) return;
 
-        // プレイヤーの手との距離を計算
+        // プレイヤーの手との距離の計算
         Vector3 handPos = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.RightHand).position;
         float distance = Vector3.Distance(handPos, pickup.transform.position);
 

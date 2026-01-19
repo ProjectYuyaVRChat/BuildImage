@@ -19,7 +19,7 @@ public class MotionImageUI : UdonSharpBehaviour
 
     public void SetImageState(int motionMode, bool[] motionStates)
     {
-        // まず全部オフ
+        // とりま全部オフ
         DisableAll();
 
         bool r = motionStates[(int)MotionType.RightHandUp];
@@ -31,7 +31,7 @@ public class MotionImageUI : UdonSharpBehaviour
             motionStates[(int)MotionType.HeadTiltBackward]
         );
 
-        // --- NORMAL ---
+        // --- のーまる ---
         if (!r && !l && !h)
         {
             Enable(normalPoseImage);

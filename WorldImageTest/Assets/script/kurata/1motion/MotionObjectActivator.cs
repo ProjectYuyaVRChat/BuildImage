@@ -15,7 +15,7 @@ public class MotionObjectActivator : UdonSharpBehaviour
     [SerializeField] private MotionType motion2 = MotionType.RightHandUp;
     [SerializeField] private MotionType motion3 = MotionType.HeadTiltLeft;
 
-    // 外部からモーション成功を通知するメソッド
+    // 外部からモーション成功を通知するやつ
     public void SetMotionSuccess(MotionType motionType)
     {
         if (motionType == motion1)
@@ -41,7 +41,7 @@ public class MotionObjectActivator : UdonSharpBehaviour
         }
     }
 
-    // 便利メソッド：MotionType ではなく直接モーション番号で設定
+    // MotionType ではなく直接モーション番号で設定
     public void SetMotion1Success()
     {
         if (motion1Object != null)

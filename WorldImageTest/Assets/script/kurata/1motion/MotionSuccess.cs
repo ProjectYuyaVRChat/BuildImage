@@ -20,7 +20,7 @@ public class MotionSuccess : UdonSharpBehaviour
 
     void Start()
     {
-        // 初期表示を全員で揃える
+        // 初期表示を全員で揃えたいよね
         UpdateDisplay();
     }
 
@@ -36,7 +36,7 @@ public class MotionSuccess : UdonSharpBehaviour
         if (new1 != motion1State || new2 != motion2State || new3 != motion3State)
         {
             // ローカルでモーションを成功させた人だけが同期を送る
-            // → 他の人が受信後に「自分は成功していない」判定で書き戻すのを防ぐ
+            // → 他の人が受信後に「自分は成功していない」判定で書き戻すのを防ぐために書いた
             if (!Networking.IsOwner(gameObject) && !(new1 || new2 || new3))
             {
                 // オーナーでなく、ローカルでは成功していないなら何もしない
@@ -52,12 +52,12 @@ public class MotionSuccess : UdonSharpBehaviour
             motion2State = new2;
             motion3State = new3;
 
-            RequestSerialization(); // ★同期発動（Manualモード）
+            RequestSerialization(); // 同期発動（Manual）
             UpdateDisplay();        // オーナー自身の画面も即時反映
         }
     }
 
-    // プレイヤー全員の表示更新
+    // プレイヤー”全員”の表示更新
     public override void OnDeserialization()
     {
         UpdateDisplay();

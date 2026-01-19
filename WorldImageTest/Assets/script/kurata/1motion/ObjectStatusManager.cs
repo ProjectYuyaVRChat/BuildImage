@@ -7,7 +7,7 @@ public class ObjectStatusManager : UdonSharpBehaviour
     [SerializeField] private GameObject[] successObjects = new GameObject[3]; // 成功用
     [SerializeField] private GameObject[] failObjects = new GameObject[3];    // 失敗用（不要なら空でもOK）
 
-    // 外部から渡されるデータ
+    // 外部から渡されるデータだお
     private int motionMode = 0;
     private bool[] motionStates = new bool[19];
     private MotionType[] requiredMotions = new MotionType[3];
@@ -51,11 +51,11 @@ public class ObjectStatusManager : UdonSharpBehaviour
 
             switch (motionMode)
             {
-                case 0: // Simultaneous
+                case 0: // 同時
                     active = motionStates[(int)requiredMotions[i]];
                     break;
 
-                case 1: // Sequential
+                case 1: // 順次
                     if (stepCompleted[i])
                         active = true;
                     else if (i == currentStep)
@@ -64,7 +64,7 @@ public class ObjectStatusManager : UdonSharpBehaviour
                         active = false;
                     break;
 
-                case 2: // Counter
+                case 2: // カウンター
                     active = achieved[i];
                     break;
             }
