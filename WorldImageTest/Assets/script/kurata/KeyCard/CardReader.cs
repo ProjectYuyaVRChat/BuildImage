@@ -23,9 +23,14 @@ public class CardReader : UdonSharpBehaviour
 
     public Animator GateAnimator;
     
+　　[Header("SE")]
+    public AudioClip successSE_A;
+    
+    AudioSource audioSource;
 
-    void Start()
+    private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         leftClosedPos = leftDoor.position;
         rightClosedPos = rightDoor.position;
         cardFlags = new bool[requiredCardCount];
@@ -48,6 +53,7 @@ public class CardReader : UdonSharpBehaviour
         Debug.Log($"カードキー {id} 読み取り成功");
         UpdateUI();
         CheckAllCards();
+        if (successSE_A) audioSource.PlayOneShot(successSE_A);
     }
 
 
