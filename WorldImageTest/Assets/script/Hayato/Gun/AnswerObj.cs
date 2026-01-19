@@ -21,7 +21,10 @@ public class AnswerObj : UdonSharpBehaviour
     {
         if (other.gameObject.name == "Bullet(Clone)")
         {
-            entranceGate.SetActive(true);
+            if (entranceGate != null)
+            {
+                entranceGate.SetActive(true);
+            }
             if (!isCleared)
             {
                 if (gimmickManager != null)
@@ -30,8 +33,13 @@ public class AnswerObj : UdonSharpBehaviour
                 }
                 anime.SetTrigger("Break");
                 isCleared = true;
-                RequestSerialization();
+                SendCustomEventDelayedSeconds(nameof(DeleteItem), 0.5f);
             }
         }
+    }
+
+    public void DeleteItem()
+    {
+        Destroy(gameObject);
     }
 }
