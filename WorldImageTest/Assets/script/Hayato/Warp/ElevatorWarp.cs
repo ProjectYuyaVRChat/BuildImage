@@ -12,13 +12,15 @@ public class ElevatorWarp : UdonSharpBehaviour
     [UdonSynced]
     private int interactingPlayerId = -1;
     
+    // 追加: ワープ処理中にIDを保持しておくためのローカル変数
+    private int _cachedTargetPlayerId = -1; 
     
     [Header("ワープ先")]
     [SerializeField] private GameObject warpPoint;
-    private Quaternion PlayerRotate;
-    private Vector3 WarpPosition;
+    // private Quaternion PlayerRotate; // 使われていないので削除可
+    // private Vector3 WarpPosition;    // 使われていないので削除可
     [Header("暗転UI")]
-    public GameObject fadeCanvas;         // Canvas本体
+    public GameObject fadeCanvas;         
     private Animator fadeAnimator;
     public float EndFadeTime = 2f;
 
@@ -30,12 +32,14 @@ public class ElevatorWarp : UdonSharpBehaviour
     AudioSource audioSource;
     
     [SerializeField] private Animator closeAnimation;
+    [SerializeField] private Animator openAnimation;
+    [SerializeField] private float y = 180f;
 
     private void Start()
     {
-        WarpPosition = warpPoint.transform.position;
-        fadeCanvas.SetActive(false);
-        fadeAnimator = fadeCanvas.GetComponentInChildren<Animator>();
+        // WarpPosition = warpPoint.transform.position; // 使っていないのでコメントアウト
+        if(fadeCanvas != null) fadeCanvas.SetActive(false); // nullチェック追加
+        if(fadeCanvas != null) fadeAnimator = fadeCanvas.GetComponentInChildren<Animator>();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -43,10 +47,8 @@ public class ElevatorWarp : UdonSharpBehaviour
     {
         if (isOn) return;
         
-        // このオブジェクトのオーナーを自分自身に設定し、同期変数を変更する権限を得る
         Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
         
-        // 状態を更新
         this.isOn = true;
         this.interactingPlayerId = Networking.LocalPlayer.playerId;
         
@@ -55,62 +57,63 @@ public class ElevatorWarp : UdonSharpBehaviour
 
     public void Warp()
     {
-        // 連続で実行されないようにガード
         if (isSequenceRunning) return; 
-        
-        // 誰も操作していない場合は何もしない
         if (interactingPlayerId == -1) return;
         
-        // このブロックを操作した本人だけがワープ処理を実行する
         VRCPlayerApi playerToWarp = VRCPlayerApi.GetPlayerById(interactingPlayerId);
         if (playerToWarp != null && playerToWarp.isLocal)
         {
             isSequenceRunning = true;
+            
+            // 【重要】ここでIDをローカル変数に退避させる
+            _cachedTargetPlayerId = interactingPlayerId;
+            
             DoFade();
         }
     }
 
     public void ElevatorOpenSE()
     {
-        audioSource.PlayOneShot(elevatorOpenSound);
+        if(audioSource) audioSource.PlayOneShot(elevatorOpenSound);
     }
     
     public void ElevatorCloseSE()
     {
-        audioSource.PlayOneShot(elevatorCloseSound);
+        if(audioSource) audioSource.PlayOneShot(elevatorCloseSound);
     }
     
     public void ElevatorUpSE()
     {
-        audioSource.PlayOneShot(elevatorUpSound);
+        if(audioSource) audioSource.PlayOneShot(elevatorUpSound);
     }
-    
-    
     
     public void DoFade()
     {
         ElevatorCloseSE();
-        closeAnimation.SetTrigger("DoorCloseTrigger");
-        fadeCanvas.SetActive(true);
-        SendCustomEventDelayedSeconds(nameof(StartFadeAnimater),3);
-        SendCustomEventDelayedSeconds(nameof(WarpPlayer),4);
-        SendCustomEventDelayedSeconds(nameof(EndFade),EndFadeTime + 4);
+        if(closeAnimation) closeAnimation.SetTrigger("DoorCloseTrigger");
+        if(fadeCanvas) fadeCanvas.SetActive(true);
+        SendCustomEventDelayedSeconds(nameof(StartFadeAnimater), 3);
+        SendCustomEventDelayedSeconds(nameof(WarpPlayer), 4);
+        SendCustomEventDelayedSeconds(nameof(EndFade), EndFadeTime + 4);
     }
 
     public void StartFadeAnimater()
     {
-        fadeAnimator.SetTrigger("StartFade");
+        if(fadeAnimator) fadeAnimator.SetTrigger("StartFade");
         ElevatorUpSE();
     }
     
     public void WarpPlayer()
     {
-        VRCPlayerApi playerToWarp = VRCPlayerApi.GetPlayerById(interactingPlayerId);
+        // 【修正】interactingPlayerId ではなく _cachedTargetPlayerId を使う
+        // これにより、途中で同期変数がリセットされてもワープできる
+        VRCPlayerApi playerToWarp = VRCPlayerApi.GetPlayerById(_cachedTargetPlayerId);
+        
         if (playerToWarp != null && playerToWarp.isLocal)
         {
             playerToWarp.TeleportTo(
                 warpPoint.transform.position,
-                Quaternion.Euler(0, 180f, 0)
+                Quaternion.Euler(0, y, 0)
             );
         }
     }
@@ -121,25 +124,40 @@ public class ElevatorWarp : UdonSharpBehaviour
         {
             ElevatorOpenSE();
             fadeAnimator.SetTrigger("EndFade");
-            SendCustomEventDelayedSeconds(nameof(DeleteCanvas),EndFadeTime);
+            SendCustomEventDelayedSeconds(nameof(DeleteCanvas), EndFadeTime);
         }
+        
+        DoorOpen();
+        
+        // ローカルのシーケンスフラグを下ろす
         isSequenceRunning = false;
         
+        // 最後に自分で状態をリセットする（これにより監視側のリセットに頼る必要がなくなる）
         ResetState();
+    }
+
+    private void DoorOpen()
+    {
+        if(openAnimation) openAnimation.SetTrigger("Open");
     }
 
     public void DeleteCanvas()
     {
-        fadeCanvas.SetActive(false);
+        if(fadeCanvas) fadeCanvas.SetActive(false);
     }
     
     public void ResetState()
     {
-        this.isOn = false;
-        this.interactingPlayerId = -1;
-        this.isSequenceRunning = false;
+        // オーナーだけが同期変数を変更できる
+        if(Networking.IsOwner(gameObject))
+        {
+            this.isOn = false;
+            this.interactingPlayerId = -1;
+            RequestSerialization();
+        }
         
-        // リセットした状態を全員に同期
-        RequestSerialization();
+        // ローカル変数の掃除
+        this.isSequenceRunning = false;
+        this._cachedTargetPlayerId = -1;
     }
 }
