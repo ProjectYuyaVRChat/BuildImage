@@ -152,6 +152,6 @@ public class MotionToggle : UdonSharpBehaviour
     {
         if (objectA) objectA.SetActive(!stepACompleted);
         if (objectB) objectB.SetActive(stepACompleted && !stepBCompleted);
-        if (objectC) objectC.SetActive(stepBCompleted && !stepCCompleted);
+        if (objectC) objectC.SetActive(stepBCompleted);
     }
 }
