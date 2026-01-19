@@ -56,15 +56,4 @@ public class GimmickManager : UdonSharpBehaviour
         if (completeObject != null) completeObject.SetActive(true);
         if (completeObject != null) completeObject2.SetActive(true);
     }
-    
-    // 途中参加などで変数が同期された時に呼ばれる
-    public override void OnDeserialization()
-    {
-        // すでにクリア済みなら状態を反映する
-        if (_currentClearCount >= requiredClearCount)
-        {
-            if (completeObject != null) completeObject.SetActive(true);
-            if (completeObject != null) completeObject2.SetActive(true);
-        }
-    }
 }

@@ -1,4 +1,5 @@
-﻿using UdonSharp;
+﻿using System;
+using UdonSharp;
 using UnityEngine;
 
 public class BoxCheckManager : UdonSharpBehaviour
@@ -16,6 +17,11 @@ public class BoxCheckManager : UdonSharpBehaviour
     public AudioClip successSE_A;
 
     AudioSource audioSource;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     void OnCorrectAction()
     {
