@@ -12,6 +12,11 @@ public class BoxCheckManager : UdonSharpBehaviour
     [SerializeField] private GimmickManager gimmickManager;
     private bool isCleared = false;
 
+    [Header("SE")]
+    public AudioClip successSE_A;
+
+    AudioSource audioSource;
+
     void OnCorrectAction()
     {
         if (isCleared) return;
@@ -33,5 +38,7 @@ public class BoxCheckManager : UdonSharpBehaviour
         // 全部正解
         wall.SetActive(false);
         enabled = false; // 以後チェックしない
+        if (successSE_A) audioSource.PlayOneShot(successSE_A);
+        OnCorrectAction();
     }
 }
