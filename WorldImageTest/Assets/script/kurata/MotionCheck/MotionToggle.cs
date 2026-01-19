@@ -20,6 +20,8 @@ public class MotionToggle : UdonSharpBehaviour
     public AudioClip successSE_A;
     public AudioClip successSE_B;
     public AudioClip successSE_C;
+    
+    public PhotoTaker photoTaker;
 
     AudioSource audioSource;
 
@@ -70,6 +72,7 @@ public class MotionToggle : UdonSharpBehaviour
                 Networking.SetOwner(Networking.LocalPlayer, gameObject);
             }
 
+            photoTaker.ToggleCapturing();
             stepACompleted = true;
             RequestSerialization();
             if (successSE_A) audioSource.PlayOneShot(successSE_A);
