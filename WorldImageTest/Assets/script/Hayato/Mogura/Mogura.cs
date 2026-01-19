@@ -7,19 +7,22 @@ using VRC.Udon;
 public class Mogura : UdonSharpBehaviour
 {
     [Header("設定")]
-    [SerializeField] private float upperLimit = 0f;
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float upperLimit = 0.5f; // 数値を調整しやすいよう初期値を設定
+    [SerializeField] private float speed = 1.0f;
     [SerializeField] private float downSpeed = 0.7f;
-    [SerializeField] private float waitSeconds = 0.2f;
+    [SerializeField] private float waitSeconds = 0.5f;
 
     [Header("参照")]
-    // ここにMoguraGameManagerを割り当てる必要があります
     [SerializeField] private MoguraGameManager gameManager; 
 
     private CapsuleCollider mogura;
-    private bool move = false;
-    [UdonSynced] private bool up = true;
+    private bool move = false; // ローカルでの動作フラグ
+    
+    [UdonSynced(UdonSyncMode.None)] 
+    private bool up = true; // 同期変数：true=上昇・待機フェーズ、false=下降フェーズ
+    
     private Vector3 startPosition;
+    private float timer = 0f; // 待機時間計測用
     
     private void Start()
     {
@@ -30,50 +33,56 @@ public class Mogura : UdonSharpBehaviour
 
     private void Update()
     {
-        if (move)
-        {
-            if (up)
-            {
-                // 上昇中
-                transform.position += Vector3.up * speed * Time.deltaTime;
+        // 動作中でなければ処理しない
+        if (!move) return;
 
+        // --- 上昇フェーズ ---
+        if (up)
+        {
+            // 現在の高さを計算
+            float currentDistance = transform.position.y - startPosition.y;
+
+            // まだ上限に達していない場合、上昇させる
+            if (currentDistance < upperLimit)
+            {
+                transform.position += Vector3.up * speed * Time.deltaTime;
+            }
+            else
+            {
+                // ローカルでも見た目を強制的に上限に合わせる（突き抜け防止）
+                Vector3 clampedPos = transform.position;
+                clampedPos.y = startPosition.y + upperLimit;
+                transform.position = clampedPos;
+
+                // 頂上に着いたらタイマーを回す（待機処理）
+                timer += Time.deltaTime;
+
+                // オーナーのみが状態を切り替える権限を持つ
                 if (Networking.IsOwner(gameObject))
                 {
-                    float currentDistance = transform.position.y - startPosition.y;
-
-                    if (currentDistance >= upperLimit)
+                    if (timer >= waitSeconds)
                     {
-                        up = false; // 下降へ切り替え
+                        // 待機完了 -> 下降モードへ
+                        up = false;
                         RequestSerialization();
                     }
                 }
             }
-            else
-            {
-                Wait();
-            }
         }
-    }
-
-    private void Wait()
-    {
-        SendCustomEventDelayedSeconds(nameof(Down), waitSeconds);
-    }
-
-    public void Down()
-    {
-        transform.position += Vector3.down * downSpeed * Time.deltaTime;
-                
-        if (Networking.IsOwner(gameObject))
+        // --- 下降フェーズ ---
+        else
         {
-            float currentDistance = transform.position.y - startPosition.y;
-                
-            // スタート位置に戻ったら停止
-            if (currentDistance <= 0)
+            transform.position += Vector3.down * downSpeed * Time.deltaTime;
+
+            // スタート位置より下に行ったら終了
+            if (transform.position.y <= startPosition.y)
             {
-                move = false; 
+                // 位置を正確にリセット
                 transform.position = startPosition;
-                RequestSerialization();
+                move = false;
+                
+                // 次回のために変数をリセット
+                timer = 0f;
             }
         }
     }
@@ -81,33 +90,47 @@ public class Mogura : UdonSharpBehaviour
     // Managerから呼ばれてモグラが出現する関数
     public void MoveMogura()
     {
-        Networking.SetOwner(Networking.LocalPlayer, gameObject);
-        mogura.enabled = true; // 当たり判定を有効化
-        move = true;
-        up = true;
+        // オーナー権限を取得してから変数を変更
+        if (!Networking.IsOwner(gameObject))
+        {
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+        }
+
+        mogura.enabled = true; // 当たり判定有効
+        
+        move = true; // 動作開始
+        up = true;   // 上昇モード
+        timer = 0f;  // タイマーリセット
+        
         RequestSerialization();
     }
     
     // ハンマーとの当たり判定
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "HummerHead")
-        {
-            // オーナー権限を取得
-            Networking.SetOwner(Networking.LocalPlayer, gameObject);
-            
-            // 当たり判定を無効化（二重計上防止のため）
-            mogura.enabled = false;
-            
-            // 下降モードに移行
-            up = false;
-            RequestSerialization();
+        // ハンマー以外は無視 & すでに叩かれて下降中なら無視
+        if (other == null || other.gameObject.name != "HummerHead") return;
+        if (!up) return; // すでに下がっている最中なら何もしない
 
-            // --- 追加部分：マネージャーにヒット通知を送る ---
-            if (gameManager != null)
-            {
-                gameManager.OnMoleHit();
-            }
+        // --- ヒット時の処理 ---
+        
+        // オーナー権限取得
+        Networking.SetOwner(Networking.LocalPlayer, gameObject);
+        
+        // 二重判定防止
+        mogura.enabled = false;
+        
+        // 即座に下降させるため up を false にする
+        up = false;
+        // 待機時間をスキップしたい場合はタイマーを満了させるか、ロジックで制御
+        // ここでは up=false にするだけで Update の else ブロックに入り下降が始まる
+        
+        RequestSerialization();
+
+        // マネージャーへの通知
+        if (gameManager != null)
+        {
+            gameManager.OnMoleHit();
         }
     }
 }
