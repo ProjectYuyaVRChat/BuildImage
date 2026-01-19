@@ -32,6 +32,8 @@ public class PhotoTaker : UdonSharpBehaviour
         
         // 2. 他のプレイヤーへ同期
         RequestSerialization();
+        
+        Debug.Log("sdddddddddddddd");
 
         // 3. 自分のカメラ状態を更新
         updateCameraState();
