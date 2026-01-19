@@ -10,6 +10,7 @@ public class AnswerObj : UdonSharpBehaviour
     [SerializeField] private GameObject entranceGate;
     [SerializeField] private GimmickManager gimmickManager;
     private bool isCleared = false;
+    [SerializeField] private Animator anime;
 
     private void Start()
     {
@@ -20,16 +21,25 @@ public class AnswerObj : UdonSharpBehaviour
     {
         if (other.gameObject.name == "Bullet(Clone)")
         {
-            entranceGate.SetActive(true);
+            if (entranceGate != null)
+            {
+                entranceGate.SetActive(true);
+            }
             if (!isCleared)
             {
                 if (gimmickManager != null)
                 {
                     gimmickManager.ReportClear();
                 }
+                anime.SetTrigger("Break");
                 isCleared = true;
-                RequestSerialization();
+                SendCustomEventDelayedSeconds(nameof(DeleteItem), 0.5f);
             }
         }
+    }
+
+    public void DeleteItem()
+    {
+        Destroy(gameObject);
     }
 }
