@@ -15,7 +15,10 @@ public class EntryKeyReader : UdonSharpBehaviour
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        if (audioClip != null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -40,7 +43,10 @@ public class EntryKeyReader : UdonSharpBehaviour
     {
         if (!isGateOpen)
         {
-            audioSource.PlayOneShot(audioClip);
+            if (audioClip != null)
+            {
+                audioSource.PlayOneShot(audioClip);
+            }
             isGateOpen = true;
             RequestSerialization();
         }
