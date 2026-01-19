@@ -24,6 +24,7 @@ public class TouchSoundTrigger : UdonSharpBehaviour
         {
             if (sound)
             {
+                Debug.Log("SE再生aaaaaaaaaaaaaaaaaaa");
                 audioSource.PlayOneShot(sound);
             }
         }
