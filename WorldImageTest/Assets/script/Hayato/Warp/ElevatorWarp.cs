@@ -12,13 +12,13 @@ public class ElevatorWarp : UdonSharpBehaviour
     [UdonSynced]
     private int interactingPlayerId = -1;
     
-    // 追加: ワープ処理中にIDを保持しておくためのローカル変数
+    // 【重要】監視スクリプトから「ON かつ プレイヤーIDも正常か」を確認するためのプロパティ
+    public bool IsReady => isOn && interactingPlayerId != -1;
+
     private int _cachedTargetPlayerId = -1; 
     
     [Header("ワープ先")]
     [SerializeField] private GameObject warpPoint;
-    // private Quaternion PlayerRotate; // 使われていないので削除可
-    // private Vector3 WarpPosition;    // 使われていないので削除可
     [Header("暗転UI")]
     public GameObject fadeCanvas;         
     private Animator fadeAnimator;
@@ -37,8 +37,7 @@ public class ElevatorWarp : UdonSharpBehaviour
 
     private void Start()
     {
-        // WarpPosition = warpPoint.transform.position; // 使っていないのでコメントアウト
-        if(fadeCanvas != null) fadeCanvas.SetActive(false); // nullチェック追加
+        if(fadeCanvas != null) fadeCanvas.SetActive(false);
         if(fadeCanvas != null) fadeAnimator = fadeCanvas.GetComponentInChildren<Animator>();
         audioSource = GetComponent<AudioSource>();
     }
@@ -47,6 +46,7 @@ public class ElevatorWarp : UdonSharpBehaviour
     {
         if (isOn) return;
         
+        // オーナー権限を取得してから変数をセット
         Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
         
         this.isOn = true;
@@ -57,20 +57,22 @@ public class ElevatorWarp : UdonSharpBehaviour
 
     public void Warp()
     {
-        if (isSequenceRunning) return; 
+        if (isSequenceRunning) return;
+        // IDが無効なら処理しない（ここが片方だけ失敗する原因のガードになる）
         if (interactingPlayerId == -1) return;
         
         VRCPlayerApi playerToWarp = VRCPlayerApi.GetPlayerById(interactingPlayerId);
+        
+        // ローカルプレイヤーの場合のみアニメーションとワープを実行
         if (playerToWarp != null && playerToWarp.isLocal)
         {
             isSequenceRunning = true;
-            
-            // 【重要】ここでIDをローカル変数に退避させる
             _cachedTargetPlayerId = interactingPlayerId;
-            
             DoFade();
         }
     }
+
+    // --- 以降のアニメーション・音声処理は変更なし ---
 
     public void ElevatorOpenSE()
     {
@@ -105,8 +107,6 @@ public class ElevatorWarp : UdonSharpBehaviour
     
     public void WarpPlayer()
     {
-        // 【修正】interactingPlayerId ではなく _cachedTargetPlayerId を使う
-        // これにより、途中で同期変数がリセットされてもワープできる
         VRCPlayerApi playerToWarp = VRCPlayerApi.GetPlayerById(_cachedTargetPlayerId);
         
         if (playerToWarp != null && playerToWarp.isLocal)
@@ -129,10 +129,10 @@ public class ElevatorWarp : UdonSharpBehaviour
         
         DoorOpen();
         
-        // ローカルのシーケンスフラグを下ろす
+        // ローカルのフラグを下ろす
         isSequenceRunning = false;
         
-        // 最後に自分で状態をリセットする（これにより監視側のリセットに頼る必要がなくなる）
+        // 最後に状態をリセット
         ResetState();
     }
 
@@ -148,7 +148,6 @@ public class ElevatorWarp : UdonSharpBehaviour
     
     public void ResetState()
     {
-        // オーナーだけが同期変数を変更できる
         if(Networking.IsOwner(gameObject))
         {
             this.isOn = false;
@@ -156,7 +155,6 @@ public class ElevatorWarp : UdonSharpBehaviour
             RequestSerialization();
         }
         
-        // ローカル変数の掃除
         this.isSequenceRunning = false;
         this._cachedTargetPlayerId = -1;
     }
