@@ -5,7 +5,6 @@ using VRC.Udon;
 
 /// <summary>
 /// プレイヤーの視点（頭）を追従するオブジェクト
-/// UdonSharp対応版
 /// </summary>
 public class PlayerViewTracker : UdonSharpBehaviour
 {
@@ -50,7 +49,7 @@ public class PlayerViewTracker : UdonSharpBehaviour
     [Tooltip("更新頻度（フレーム単位）")]
     public int updateFrequency = 1;
     
-    // プライベート変数
+    // プラベ変数
     private bool isInitialized = false;
     private int frameCounter = 0;
     private Vector3 targetPosition;

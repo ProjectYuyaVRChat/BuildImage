@@ -4,7 +4,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 
 /// <summary>
-/// InputSystemのイベントを使ってCubeを消すイベントハンドラー
+/// InputSystemのイベントを使ってCubeを消す
 /// </summary>
 public class InputSystemEventHandler : UdonSharpBehaviour
 {
@@ -28,9 +28,7 @@ public class InputSystemEventHandler : UdonSharpBehaviour
         InitializeSystem();
     }
     
-    /// <summary>
-    /// システムを初期化
-    /// </summary>
+
     private void InitializeSystem()
     {
         if (targetCube == null)
@@ -66,13 +64,12 @@ public class InputSystemEventHandler : UdonSharpBehaviour
     }
     
     /// <summary>
-    /// Cubeを消す
+    /// とりあえずCubeを消す
     /// </summary>
     private void DestroyCube()
     {
         if (targetCube == null || isDestroyed) return;
         
-        // CubeのGameObjectを取得して非アクティブにする
         GameObject cubeObject = targetCube.gameObject;
         if (cubeObject != null)
         {

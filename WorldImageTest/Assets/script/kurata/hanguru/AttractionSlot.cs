@@ -39,7 +39,7 @@ public class AttractionSlot : UdonSharpBehaviour
             rotateSpeed * Time.deltaTime
         );
 
-        // 判定
+        // ここで判定
         if (Vector3.Distance(other.transform.position, transform.position) < 0.05f)
         {
             if (other.gameObject == correctObject)

@@ -8,11 +8,11 @@ public class NumberCube : UdonSharpBehaviour
     [HideInInspector]
     public string assignedValue; // このCubeに割り当てられた値（数字や操作）
     [HideInInspector]
-    public PassWordCheck parentScript; // 親スクリプトへの参照
+    public PassWordCheck parentScript; // 親スクリプトいれて
 
     public override void Interact()
     {
-        // Cubeがクリックされたときに親スクリプトのAppendNumberを呼び出す
+        // Cubeがクリックされたときに親スクリプトのAppendNumberを呼び出すだけ
         parentScript.AppendNumber(assignedValue);
     }
 }

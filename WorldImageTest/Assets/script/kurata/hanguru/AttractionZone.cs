@@ -26,14 +26,12 @@ public class AttractionZone : UdonSharpBehaviour
         AttractableObject attractable = other.GetComponent<AttractableObject>();
         if (attractable == null) return;
 
-        // Move position toward center
         other.transform.position = Vector3.MoveTowards(
             other.transform.position,
             transform.position,
             pullSpeed * Time.deltaTime
         );
 
-        // Rotate gradually to zero
         other.transform.rotation = Quaternion.RotateTowards(
             other.transform.rotation,
             Quaternion.identity,

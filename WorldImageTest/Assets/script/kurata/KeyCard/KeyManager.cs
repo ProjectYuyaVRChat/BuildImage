@@ -6,7 +6,7 @@ using TMPro;
 
 /// <summary>
 /// 鍵管理システム
-/// 複数の鍵穴を管理し、鍵の状態を追跡する
+/// 複数の鍵穴を管理し、鍵の状態を追跡するYO!
 /// </summary>
 public class KeyManager : UdonSharpBehaviour
 {
@@ -22,7 +22,7 @@ public class KeyManager : UdonSharpBehaviour
     [Tooltip("デバッグ情報を表示するか")]
     public bool showDebugInfo = true;
     
-    // 内部変数
+    // 内部変数いじいじダメよ
     private bool[] doorStates; // 各扉の開閉状態
     private int totalDoors;
     private int openedDoors;
@@ -46,7 +46,7 @@ public class KeyManager : UdonSharpBehaviour
         totalDoors = keyholes.Length;
         doorStates = new bool[totalDoors];
         
-        // 初期状態を設定
+        // 初期状態設定
         for (int i = 0; i < totalDoors; i++)
         {
             doorStates[i] = false;
@@ -56,7 +56,7 @@ public class KeyManager : UdonSharpBehaviour
         
         if (showDebugInfo)
         {
-            Debug.Log($"[KeyManager] システム初期化完了: {totalDoors}個の鍵穴を管理");
+            Debug.Log($"[KeyManager]システム初期化完了: {totalDoors}個の鍵穴を管理");
         }
         
         UpdateOverallStatus();
@@ -81,8 +81,8 @@ public class KeyManager : UdonSharpBehaviour
         {
             if (keyholes[i] == null) continue;
             
-            // 扉が開いているかチェック（簡易的な判定）
-            // 実際の実装では、KeyholeSystemに扉の状態を取得するメソッドを追加することを推奨
+            // 扉が開いているかチェック
+            // KeyholeSystemに扉の状態を取得するメソッドを追加したほうがいい気がしてきた
             bool isDoorOpen = IsDoorOpen(i);
             
             if (isDoorOpen && !doorStates[i])
@@ -116,12 +116,11 @@ public class KeyManager : UdonSharpBehaviour
     /// <returns>扉が開いているか</returns>
     private bool IsDoorOpen(int index)
     {
-        // 実際の実装では、KeyholeSystemに扉の状態を取得するメソッドを追加することを推奨
-        // ここでは簡易的に、鍵穴の位置が初期位置から移動しているかで判定
+        // とりあえず適当に、鍵穴の位置が初期位置から移動しているかで判定
         if (keyholes[index] == null) return false;
         
-        // この判定は簡易的なものなので、実際の使用では改善が必要
-        return false; // 仮の実装
+        // この判定は簡易的なものなので、後で変えておきたい
+        return false;
     }
     
     /// <summary>
@@ -209,6 +208,7 @@ public class KeyManager : UdonSharpBehaviour
         
         UpdateOverallStatus();
     }
+
     
     /// <summary>
     /// すべての扉をリセット

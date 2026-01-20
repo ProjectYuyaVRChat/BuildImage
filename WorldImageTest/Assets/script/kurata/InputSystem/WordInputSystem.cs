@@ -4,7 +4,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 
 /// <summary>
-/// シンプルなCube制御システム
+/// シンプルにCube制御システム
 /// 外部から呼び出してCubeを消す
 /// </summary>
 public class WordInputSystem : UdonSharpBehaviour
@@ -25,9 +25,6 @@ public class WordInputSystem : UdonSharpBehaviour
         InitializeSystem();
     }
     
-    /// <summary>
-    /// システムを初期化
-    /// </summary>
     private void InitializeSystem()
     {
         if (targetCube == null)
@@ -44,13 +41,12 @@ public class WordInputSystem : UdonSharpBehaviour
     }
     
     /// <summary>
-    /// Cubeを消す（外部から呼び出し可能）
+    /// Cubeを消す（外部から呼び出し可能だから好きに使って）
     /// </summary>
     public void DestroyCube()
     {
         if (targetCube == null || isDestroyed) return;
         
-        // CubeのGameObjectを取得して非アクティブにする
         GameObject cubeObject = targetCube.gameObject;
         if (cubeObject != null)
         {
@@ -82,9 +78,7 @@ public class WordInputSystem : UdonSharpBehaviour
         return isDestroyed;
     }
     
-    /// <summary>
-    /// システムをリセット
-    /// </summary>
+ 
     public void ResetSystem()
     {
         if (targetCube != null && isDestroyed)

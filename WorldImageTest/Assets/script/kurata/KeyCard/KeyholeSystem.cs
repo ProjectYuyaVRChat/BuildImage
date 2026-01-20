@@ -5,7 +5,6 @@ using VRC.Udon;
 using TMPro;
 
 /// <summary>
-/// 鍵穴システム
 /// 鍵のサイズが一致した場合に扉を開ける
 /// </summary>
 public class KeyholeSystem : UdonSharpBehaviour
@@ -43,7 +42,7 @@ public class KeyholeSystem : UdonSharpBehaviour
     [Tooltip("間違った鍵が挿入された時の色")]
     public Color wrongKeyColor = Color.red;
     
-    // 内部変数
+    // 内部変数だからいじらんといて
     private Vector3 leftClosedPos;
     private Vector3 rightClosedPos;
     private bool doorOpened = false;
@@ -52,7 +51,7 @@ public class KeyholeSystem : UdonSharpBehaviour
     
     void Start()
     {
-        // 扉の初期位置を保存
+        // 扉の初期位置用だからあとで好きなようにしてもろて
         if (leftDoor != null) leftClosedPos = leftDoor.position;
         if (rightDoor != null) rightClosedPos = rightDoor.position;
         
@@ -63,7 +62,7 @@ public class KeyholeSystem : UdonSharpBehaviour
             keyholeRenderer.material.color = keyholeColor;
         }
         
-        // Colliderの設定を確認
+        // Colliderの設定用
         CheckColliderSetup();
         
         UpdateUI();
@@ -117,17 +116,17 @@ public class KeyholeSystem : UdonSharpBehaviour
         Debug.Log($"[KeyholeSystem] 鍵が挿入されました: {key.GetKeyInfo()}");
         Debug.Log($"[KeyholeSystem] 必要なサイズ: {GetKeySizeString(requiredKeySize)}, 挿入されたサイズ: {GetKeySizeString(insertedKeySize)}");
         
-        // 鍵のサイズをチェック
+        // 鍵のサイズチェック
         if (insertedKeySize == requiredKeySize)
         {
-            // 正しい鍵
+            // 正
             Debug.Log($"[KeyholeSystem] 正しい鍵です！扉を開きます。");
             SetKeyholeColor(correctKeyColor);
             OpenDoor();
         }
         else
         {
-            // 間違った鍵
+            // 間違い
             Debug.Log($"[KeyholeSystem] 間違った鍵です。必要なサイズ: {GetKeySizeString(requiredKeySize)}");
             SetKeyholeColor(wrongKeyColor);
             UpdateUI();
@@ -160,7 +159,7 @@ public class KeyholeSystem : UdonSharpBehaviour
     }
     
     /// <summary>
-    /// 扉を開く処理（既存のCardReaderの処理を再利用）
+    /// 扉を開く処理（既存のCardReaderのやつを再利用）
     /// </summary>
     public void OpenDoors()
     {
@@ -203,7 +202,7 @@ public class KeyholeSystem : UdonSharpBehaviour
     }
     
     /// <summary>
-    /// UIを更新
+    /// UIを更新用
     /// </summary>
     private void UpdateUI()
     {

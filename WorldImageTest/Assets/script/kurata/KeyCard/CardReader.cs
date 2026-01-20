@@ -82,7 +82,7 @@ public class CardReader : UdonSharpBehaviour
         doorOpened = true;
         Debug.Log("全カード読み取り完了 → ドア開く");
 
-        // 左右のドアをずらす
+        // 左右のドアをずらすだけなんであとで好きなようにしてもろて
         SendCustomEventDelayedSeconds(nameof(OpenDoors), 0.1f);
     }
 

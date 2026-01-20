@@ -14,7 +14,7 @@ public class PassWordCheck : UdonSharpBehaviour
     public TextMeshProUGUI displayText; // UI用のText
     
     [Header("オブジェクト設定")]
-    public GameObject door; // 扉のGameObject
+    public GameObject door;
     public GameObject[] numberCubes; // 数字や操作用のCubeを格納する配列
     
     [Header("ボタン設定")]
@@ -136,7 +136,7 @@ public class PassWordCheck : UdonSharpBehaviour
             }
             
             RequestSerialization();
-            return; // 早期リターン（displayTextは既に更新済み）
+            return;
         }
         else
         {
@@ -153,7 +153,7 @@ public class PassWordCheck : UdonSharpBehaviour
         if (inputPassword == correctPassword)
         {
             // 正しいパスワードが入力された時の処理
-            door.SetActive(false); // 扉を非アクティブにする
+            door.SetActive(false); // とりあえず扉を非アクティブにする
             
             if (showDebugInfo)
             {
@@ -219,7 +219,7 @@ public class PassWordCheck : UdonSharpBehaviour
             return;
         }
         
-        // 配列の長さが異なる場合は警告を表示（UdonSharpでは配列の長さを変更できない）
+        // 配列の長さが異なる場合は警告を表示（UdonSharpでは配列の長さを変更できないらしいぞ）
         if (newValues.Length != buttonValues.Length)
         {
             Debug.LogWarning($"[PassWordCheck] 配列の長さが一致しません。buttonValues: {buttonValues.Length}, newValues: {newValues.Length}");

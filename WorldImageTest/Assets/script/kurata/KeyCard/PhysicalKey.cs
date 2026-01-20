@@ -24,14 +24,14 @@ public class PhysicalKey : UdonSharpBehaviour
     
     void Start()
     {
-        // 鍵の色を設定
+        // 鍵の色設定
         keyRenderer = GetComponent<Renderer>();
         if (keyRenderer != null)
         {
             keyRenderer.material.color = keyColor;
         }
         
-        // 鍵の名前を設定
+        // 鍵の名前設定
         if (string.IsNullOrEmpty(keyName))
         {
             keyName = $"鍵({GetKeySizeString()})";

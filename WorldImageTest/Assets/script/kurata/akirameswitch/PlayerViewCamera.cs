@@ -8,7 +8,7 @@ using VRC.Udon;
 /// </summary>
 public class PlayerViewCamera : UdonSharpBehaviour
 {
-    public VRCPlayerApi targetPlayer; // Inspectorでセット可能
+    public VRCPlayerApi targetPlayer; // Inspectorでセットして
     public Vector3 offset = Vector3.zero;
     public bool rotateWithHead = true;
     public bool smooth = true;
@@ -32,7 +32,7 @@ public class PlayerViewCamera : UdonSharpBehaviour
             transform.position = desired;
     }
 
-    // 外部からターゲットを設定する関数
+    // 外からターゲットを設定する関数
     public void SetTarget(VRCPlayerApi newTarget)
     {
         targetPlayer = newTarget;
