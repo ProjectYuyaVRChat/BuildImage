@@ -1975,7 +1975,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &58123743
 Transform:
   m_ObjectHideFlags: 0
@@ -16394,6 +16394,7 @@ GameObject:
   - component: {fileID: 276397387}
   - component: {fileID: 276397389}
   - component: {fileID: 276397388}
+  - component: {fileID: 276397390}
   m_Layer: 0
   m_Name: gate1_pCube8
   m_TagString: Untagged
@@ -16467,6 +16468,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 276397386}
   m_Mesh: {fileID: -644103953229999487, guid: 8c7af97fb6f0eb44aab0b23183c20fb0, type: 3}
+--- !u!65 &276397390
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276397386}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0066256807, y: 0.024654664, z: 0.037934035}
+  m_Center: {x: -0.00000011920929, y: -0.0000000023283064, z: 0.0000000018626451}
 --- !u!1 &277487658 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2983328771633418787, guid: dc3a145330585c7479345598209f5763, type: 3}
@@ -55872,7 +55894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 765068c8473fa624ca66ee98b88f9f51, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.4922316
+      value: 0.444
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 765068c8473fa624ca66ee98b88f9f51, type: 3}
       propertyPath: m_LocalPosition.z
@@ -55908,7 +55930,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 765068c8473fa624ca66ee98b88f9f51, type: 3}
       propertyPath: m_Name
-      value: ofiice
+      value: ofiiceCard
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -60427,6 +60449,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 1382c88645e8f5d44854ba7ae8117b53, type: 2}
+    - target: {fileID: 5189765749699982849, guid: c2dbf611622c66e4d9865594371d383a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5454243317654953617, guid: c2dbf611622c66e4d9865594371d383a, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -62748,6 +62774,7 @@ GameObject:
   - component: {fileID: 1144908980}
   - component: {fileID: 1144908982}
   - component: {fileID: 1144908981}
+  - component: {fileID: 1144908983}
   m_Layer: 0
   m_Name: gate1_pCube8
   m_TagString: Untagged
@@ -62821,6 +62848,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144908979}
   m_Mesh: {fileID: -644103953229999487, guid: 8c7af97fb6f0eb44aab0b23183c20fb0, type: 3}
+--- !u!65 &1144908983
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144908979}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0066256807, y: 0.024654664, z: 0.037934035}
+  m_Center: {x: -0.00000011920929, y: -0.0000000023283064, z: 0.000000022351742}
 --- !u!1 &1147904948 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 710c4917924085a44955095c47ace620, type: 3}
@@ -73673,6 +73721,10 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 2393577180723575218, guid: f397e4a9ef754be47b0c0f8673141ddc, type: 3}
+    - target: {fileID: 5836790032486690088, guid: f397e4a9ef754be47b0c0f8673141ddc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6459841878430521543, guid: f397e4a9ef754be47b0c0f8673141ddc, type: 3}
       propertyPath: serializationData.Prefab
       value: 
@@ -83919,7 +83971,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1760215725
 Transform:
   m_ObjectHideFlags: 0
@@ -88033,6 +88085,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 6b0cdb0fb2567e44998d2af0ba86f89f, type: 2}
+    - target: {fileID: 5189765749699982849, guid: c2dbf611622c66e4d9865594371d383a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5454243317654953617, guid: c2dbf611622c66e4d9865594371d383a, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -104057,7 +104113,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 765068c8473fa624ca66ee98b88f9f51, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.4922316
+      value: 0.412
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 765068c8473fa624ca66ee98b88f9f51, type: 3}
       propertyPath: m_LocalPosition.z
@@ -104093,7 +104149,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 765068c8473fa624ca66ee98b88f9f51, type: 3}
       propertyPath: m_Name
-      value: ofiice
+      value: fiiceCrad
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 765068c8473fa624ca66ee98b88f9f51, type: 3}
       propertyPath: m_IsActive
