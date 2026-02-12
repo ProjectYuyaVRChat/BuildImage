@@ -24,11 +24,15 @@ public class Mogura : UdonSharpBehaviour
     private Vector3 startPosition;
     private float timer = 0f; // 待機時間計測用
     
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip attackSE;
+    
     private void Start()
     {
         mogura = this.GetComponent<CapsuleCollider>();
         mogura.enabled = false;
         startPosition = transform.position;
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -122,6 +126,9 @@ public class Mogura : UdonSharpBehaviour
         
         // 即座に下降させるため up を false にする
         up = false;
+        _audioSource.PlayOneShot(attackSE);
+        
+        
         // 待機時間をスキップしたい場合はタイマーを満了させるか、ロジックで制御
         // ここでは up=false にするだけで Update の else ブロックに入り下降が始まる
         
