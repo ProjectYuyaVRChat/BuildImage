@@ -15,11 +15,7 @@ public class GimmickManager : UdonSharpBehaviour
     // 現在のクリア数を同期変数として管理（途中参加者対応のため）
     [UdonSynced(UdonSyncMode.None)] private int _currentClearCount = 0;
 
-    void Start()
-    {
-        // 最初は完了オブジェクトを非表示にしておく等の初期化
-        if (completeObject != null) completeObject.SetActive(false);
-    }
+    
 
     // 各ギミックから呼ばれる関数
     public void ReportClear()
@@ -43,7 +39,8 @@ public class GimmickManager : UdonSharpBehaviour
         if (_currentClearCount >= requiredClearCount)
         {
             // 全員に対して完了アクションを実行
-            SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, nameof(OnAllCleared));
+            //SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, nameof(OnAllCleared));
+            OnAllCleared();
         }
     }
 
@@ -54,6 +51,6 @@ public class GimmickManager : UdonSharpBehaviour
         
         // ここに「次の処理」を書く
         if (completeObject != null) completeObject.SetActive(true);
-        if (completeObject != null) completeObject2.SetActive(true);
+        if (completeObject2 != null) completeObject2.SetActive(true);
     }
 }

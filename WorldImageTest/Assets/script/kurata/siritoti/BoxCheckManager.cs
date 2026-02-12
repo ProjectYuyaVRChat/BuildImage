@@ -28,7 +28,6 @@ public class BoxCheckManager : UdonSharpBehaviour
         if (isCleared) return;
 
         isCleared = true;
-        gimmickManager.ReportClear();
     }
     
     private void Update()
@@ -40,8 +39,8 @@ public class BoxCheckManager : UdonSharpBehaviour
                 return; // 1個でも間違ってたら終了
             }
         }
-
         // 全部正解
+        gimmickManager.ReportClear();
         wall.SetActive(false);
         enabled = false; // 以後チェックしない
         if (successSE_A) audioSource.PlayOneShot(successSE_A);
